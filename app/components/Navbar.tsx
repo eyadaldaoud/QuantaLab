@@ -842,73 +842,79 @@ export default function Navbar({ currentExperimentSlug }: NavbarProps) {
               </kbd>
             </div>
 
-          {/* GitHub Repo Link */}
-          <a
-            href="https://github.com/eyadaldaoud/QuantaLab"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="nav-github-link"
-            title="View QuantaLab on GitHub"
-            aria-label="GitHub Repository"
-          >
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
-              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
-            </svg>
-          </a>
+            {/* Results List */}
+            <div
+              ref={searchListRef}
+              className="palette-results-list"
+              role="listbox"
+            >
+              {filteredSearchEntries.length > 0 ? (
+                filteredSearchEntries.map((item, index) => {
+                  const isSelected = index === selectedSearchIndex;
+                  return (
+                    <div
+                      key={item.id}
+                      className={`palette-result-item ${
+                        isSelected ? "is-selected" : ""
+                      }`}
+                      onClick={() => selectSearchResult(item)}
+                      onMouseEnter={() => setSelectedSearchIndex(index)}
+                      role="option"
+                      aria-selected={isSelected}
+                    >
+                      <span className="result-icon">{item.icon}</span>
+                      <div className="result-details">
+                        <div className="result-title-line">
+                          <span className="result-title">{item.title}</span>
+                          {item.badge && (
+                            <span
+                              className="result-badge"
+                              style={{
+                                color: item.badgeColor || "var(--quantum-cyan)",
+                                borderColor: item.badgeColor || "rgba(56, 225, 255, 0.3)",
+                              }}
+                            >
+                              {item.badge}
+                            </span>
+                          )}
+                        </div>
+                        <span className="result-desc">{item.description}</span>
+                      </div>
+                      <span className="result-action-label" aria-hidden="true">
+                        {isSelected ? "↵ OPEN" : ""}
+                      </span>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="palette-no-results">
+                  <span className="no-results-icon">🔭</span>
+                  <p className="no-results-heading">
+                    No matching active simulations or formulas
+                  </p>
+                  <p className="no-results-sub">
+                    Try searching for &ldquo;double slit&rdquo;, &ldquo;eraser&rdquo;, &ldquo;fringe&rdquo;, &ldquo;visibility&rdquo;, or &ldquo;diffraction&rdquo;.
+                  </p>
+                </div>
+              )}
+            </div>
 
-          {/* Mobile Menu Hamburger */}
-          <button
-            type="button"
-            className="mobile-menu-toggle"
-            onClick={() => setIsMobileMenuOpen((o) => !o)}
-            aria-label="Toggle mobile menu"
-            aria-expanded={isMobileMenuOpen}
-          >
-            <span className="hamburger-bar" />
-            <span className="hamburger-bar" />
-            <span className="hamburger-bar" />
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile Drawer */}
-      {isMobileMenuOpen && (
-        <div className="mobile-nav-drawer">
-          <Link
-            href="/"
-            className="mobile-nav-link"
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            🏠 Experiments Catalog
-          </Link>
-          <Link
-            href="/experiments/double-slit"
-            className="mobile-nav-link live-link"
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            🌊 Double-Slit 3D Simulation (Live)
-          </Link>
-          <Link
-            href="/experiments/quantum-eraser"
-            className="mobile-nav-link live-link"
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            🪞 Quantum Eraser Lab (Live)
-          </Link>
-          <Link
-            href="/#about"
-            className="mobile-nav-link"
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            🔬 Physics Principles &amp; Architecture
-          </Link>
-          <Link
-            href="/#docs"
-            className="mobile-nav-link"
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            📖 Documentation &amp; Contribute
-          </Link>
+            {/* Modal Keyboard Shortcuts Footer */}
+            <div className="palette-footer">
+              <div className="palette-keys-hint">
+                <span className="key-item">
+                  <kbd>↑</kbd> <kbd>↓</kbd> Navigate
+                </span>
+                <span className="key-item">
+                  <kbd>↵</kbd> Select
+                </span>
+                <span className="key-item">
+                  <kbd>ESC</kbd> Close
+                </span>
+              </div>
+              <span className="palette-footer-brand">QUANTA·LAB COMMAND</span>
+            </div>
+          </div>
         </div>
       )}
     </>
