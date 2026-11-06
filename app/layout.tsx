@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -12,10 +12,25 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: "#03070d",
+};
+
 export const metadata: Metadata = {
   title: "QuantaLab — Virtual 3D Quantum & Modern Physics Laboratory",
   description:
     "An open-source, interactive 3D simulation platform for exploring quantum mechanics, wave-particle duality, space quantization, and modern physics directly in your browser.",
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/icon.svg", type: "image/svg+xml" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: "/icon.svg",
+  },
   keywords: [
     "Quantum Physics",
     "Double-Slit Experiment",
