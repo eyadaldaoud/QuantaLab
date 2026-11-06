@@ -63,10 +63,10 @@ export default function Footer() {
 
           {/* Col 4: Open Source & Community */}
           <div className="footer-col">
-            <h4 className="footer-heading">OPEN ARCHITECTURE</h4>
+            <h4 className="footer-heading">OPEN SOURCE &amp; CODE</h4>
             <p className="footer-subtext">
-              Built with a modular experiment registry designed to welcome community-contributed
-              simulations.
+              QuantaLab is fully open source. Inspect the physics equations, WebGL shaders,
+              and contribute new quantum experiments.
             </p>
             <div className="footer-cta-box">
               <span className="footer-cta-title">Want to contribute an experiment?</span>
