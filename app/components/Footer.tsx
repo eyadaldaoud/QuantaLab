@@ -74,7 +74,7 @@ export default function Footer() {
                 Follow our step-by-step developer guide in the repository documentation.
               </p>
               <a
-                href="https://github.com/eyadaldaoud/QuantaLab"
+                href="https://github.com/eyadaldaoud/double-slit-experiment"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="footer-github-btn"
