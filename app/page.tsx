@@ -6,6 +6,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ExperimentCard from "./components/ExperimentCard";
 import ExperimentModal from "./components/ExperimentModal";
+import ApparatusPreview from "./components/ApparatusPreview";
 import {
   EXPERIMENTS,
   ExperimentMetadata,
@@ -13,15 +14,21 @@ import {
 
 export default function HomePage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const [selectedSpotlightSlug, setSelectedSpotlightSlug] = useState<string>("double-slit");
   const [activeModalExp, setActiveModalExp] = useState<ExperimentMetadata | null>(null);
 
-  // Active experiment for spotlight
+  // Active experiment for dynamic spotlight
   const featuredExperiment = useMemo(
-    () => EXPERIMENTS.find((e) => e.slug === "double-slit") || EXPERIMENTS[0],
+    () => EXPERIMENTS.find((e) => e.slug === selectedSpotlightSlug) || EXPERIMENTS[0],
+    [selectedSpotlightSlug]
+  );
+
+  const activeExperiments = useMemo(
+    () => EXPERIMENTS.filter((e) => e.status === "active"),
     []
   );
 
-  // Filtered experiments
+  // Filtered experiments for catalog
   const filteredExperiments = useMemo(() => {
     return EXPERIMENTS.filter((exp) => {
       const matchCategory =
@@ -66,6 +73,7 @@ export default function HomePage() {
               and investigate fundamental quantum mechanics directly in your browser.
             </p>
 
+            {/* Dynamic Multi-Lab Hero Actions Group */}
             <div className="hero-actions-group">
               <Link
                 href="/experiments/double-slit"
@@ -73,13 +81,42 @@ export default function HomePage() {
                 title="Launch the 3D Double-Slit Experiment apparatus"
               >
                 <span className="btn-icon">⚡</span>
-                <span>LAUNCH DOUBLE-SLIT SIMULATION</span>
+                <span>LAUNCH DOUBLE-SLIT BENCH</span>
                 <span className="btn-arrow">→</span>
               </Link>
 
-              <a href="#experiments" className="btn-hero-secondary">
-                <span>Explore Experiments</span>
-                <span className="btn-scroll-arrow">↓</span>
+              <Link
+                href="/experiments/quantum-eraser"
+                className="btn-hero-secondary btn-hero-eraser"
+                title="Launch the 3D Quantum Eraser apparatus"
+              >
+                <span className="btn-icon">🪞</span>
+                <span>LAUNCH QUANTUM ERASER</span>
+                <span className="btn-arrow">→</span>
+              </Link>
+
+              <a
+                href="https://github.com/eyadaldaoud/double-slit-experiment"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-hero-github"
+                title="View Source Code & Physics on GitHub"
+              >
+                <svg
+                  className="hero-github-icon"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  width="18"
+                  height="18"
+                  aria-hidden="true"
+                >
+                  <path
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+                  />
+                </svg>
+                <span>GitHub Repo</span>
               </a>
             </div>
 
@@ -87,12 +124,12 @@ export default function HomePage() {
             <div className="hero-metrics-strip">
               <div className="metric-pill">
                 <span className="metric-num">3D</span>
-                <span className="metric-label">Interactive Optical Bench</span>
+                <span className="metric-label">Interactive Optical Benches</span>
               </div>
               <div className="metric-divider" />
               <div className="metric-pill">
                 <span className="metric-num">100%</span>
-                <span className="metric-label">Analytical Wave Physics</span>
+                <span className="metric-label">Analytical Quantum Physics</span>
               </div>
               <div className="metric-divider" />
               <div className="metric-pill">
@@ -109,17 +146,48 @@ export default function HomePage() {
         </section>
 
         {/* =========================================================================
-            2. FEATURED EXPERIMENT SPOTLIGHT
+            2. DYNAMIC FEATURED EXPERIMENT SPOTLIGHT
            ========================================================================= */}
         {featuredExperiment && (
           <section className="featured-spotlight-section">
             <div className="section-container">
+              {/* Dynamic Experiment Switcher Tabs */}
+              <div className="spotlight-tabs-bar" role="tablist" aria-label="Select Featured Apparatus">
+                {activeExperiments.map((exp) => {
+                  const isSelected = selectedSpotlightSlug === exp.slug;
+                  return (
+                    <button
+                      key={exp.id}
+                      type="button"
+                      role="tab"
+                      aria-selected={isSelected}
+                      className={`spotlight-tab-btn ${isSelected ? "is-selected" : ""}`}
+                      onClick={() => setSelectedSpotlightSlug(exp.slug)}
+                    >
+                      <span className="spotlight-tab-icon">{exp.icon}</span>
+                      <span className="spotlight-tab-title">{exp.title}</span>
+                      <span
+                        className="spotlight-tab-badge"
+                        style={{
+                          borderColor: exp.accentColor,
+                          color: exp.accentColor,
+                        }}
+                      >
+                        LIVE 3D
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+
               <div className="spotlight-card">
                 <div className="spotlight-badge-row">
                   <span className="spotlight-badge-live">
                     <span className="live-dot" /> LIVE 3D APPARATUS
                   </span>
-                  <span className="spotlight-category-tag">FEATURED EXPERIMENT</span>
+                  <span className="spotlight-category-tag">
+                    {featuredExperiment.category.toUpperCase()} • {featuredExperiment.difficulty.toUpperCase()}
+                  </span>
                 </div>
 
                 <div className="spotlight-grid">
@@ -128,33 +196,59 @@ export default function HomePage() {
                     <p className="spotlight-subtitle">{featuredExperiment.subtitle}</p>
                     <p className="spotlight-desc">{featuredExperiment.summary}</p>
 
+                    {/* Dynamic Highlights List tailored to the selected experiment */}
                     <div className="spotlight-highlights-list">
-                      <div className="spotlight-hl-item">
-                        <span className="hl-icon">🌊</span>
-                        <div>
-                          <strong>Wave Superposition Mode:</strong> Photons traverse both slits simultaneously as continuous probability wavelets, producing alternating interference fringes.
-                        </div>
-                      </div>
-                      <div className="spotlight-hl-item">
-                        <span className="hl-icon">👁️</span>
-                        <div>
-                          <strong>Physical Observer Collapse:</strong> Engaging slit detectors reveals &ldquo;which-path&rdquo; information, collapsing superposition into two classical particle bands.
-                        </div>
-                      </div>
-                      <div className="spotlight-hl-item">
-                        <span className="hl-icon">🎛️</span>
-                        <div>
-                          <strong>Analytical Distribution &amp; Audio:</strong> Real-time Poisson/Monte Carlo photon arrivals with live histogram and Web Audio synthesis chimes.
-                        </div>
-                      </div>
+                      {featuredExperiment.slug === "double-slit" ? (
+                        <>
+                          <div className="spotlight-hl-item">
+                            <span className="hl-icon">🌊</span>
+                            <div>
+                              <strong>Wave Superposition Mode:</strong> Photons traverse both slits simultaneously as continuous probability wavelets, producing alternating interference fringes.
+                            </div>
+                          </div>
+                          <div className="spotlight-hl-item">
+                            <span className="hl-icon">👁️</span>
+                            <div>
+                              <strong>Physical Observer Collapse:</strong> Engaging slit detectors reveals &ldquo;which-path&rdquo; information, collapsing superposition into two classical particle bands.
+                            </div>
+                          </div>
+                          <div className="spotlight-hl-item">
+                            <span className="hl-icon">🎛️</span>
+                            <div>
+                              <strong>Analytical Distribution &amp; Audio:</strong> Real-time Poisson/Monte Carlo photon arrivals with live histogram and Web Audio synthesis chimes.
+                            </div>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="spotlight-hl-item">
+                            <span className="hl-icon">🔀</span>
+                            <div>
+                              <strong>Which-Path Polarization Tagging:</strong> Orthogonal |H⟩ and |V⟩ polarizers tag slit paths into physical polarization states, destroying wave interference.
+                            </div>
+                          </div>
+                          <div className="spotlight-hl-item">
+                            <span className="hl-icon">🪞</span>
+                            <div>
+                              <strong>Continuous Analyzer Angle θ:</strong> Rotate the diagonal analyzer basis to dynamically vary fringe visibility from V = 0.00 (which-path preserved) to V = 1.00 (erasure).
+                            </div>
+                          </div>
+                          <div className="spotlight-hl-item">
+                            <span className="hl-icon">🔬</span>
+                            <div>
+                              <strong>Sorted Complementary Subsets:</strong> Polarizing beam splitter sorts photons into Channels A and B, producing complementary anti-fringes whose sum is strictly flat.
+                            </div>
+                          </div>
+                        </>
+                      )}
                     </div>
 
                     <div className="spotlight-cta-row">
                       <Link
-                        href="/experiments/double-slit"
+                        href={featuredExperiment.route}
                         className="btn-spotlight-launch"
                       >
-                        <span>Enter 3D Laboratory Apparatus</span>
+                        <span>Launch {featuredExperiment.title}</span>
                         <span>→</span>
                       </Link>
                       <button
@@ -167,48 +261,12 @@ export default function HomePage() {
                     </div>
                   </div>
 
+                  {/* Refined Dynamic SVG Apparatus Optical Bench Drawing */}
                   <div className="spotlight-preview-panel">
-                    <div className="preview-apparatus-frame">
-                      <div className="preview-hud-top">
-                        <span className="hud-label">APPARATUS // 3D OPTICAL BENCH</span>
-                        <span className="hud-pill-active">SIMULATION READY</span>
-                      </div>
-
-                      <div className="preview-illustration">
-                        <div className="laser-beam-line" />
-                        <div className="slit-barrier-visual">
-                          <div className="slit-cut" />
-                          <div className="slit-cut" />
-                        </div>
-                        <div className="wave-interference-arcs">
-                          <div className="wave-arc arc-1" />
-                          <div className="wave-arc arc-2" />
-                          <div className="wave-arc arc-3" />
-                        </div>
-                        <div className="detector-screen-visual">
-                          <div className="fringe-bar f-bright" />
-                          <div className="fringe-bar f-dim" />
-                          <div className="fringe-bar f-bright" />
-                          <div className="fringe-bar f-dim" />
-                          <div className="fringe-bar f-bright" />
-                        </div>
-                      </div>
-
-                      <div className="preview-hud-bottom">
-                        <div className="preview-stat">
-                          <span className="stat-label">WAVELENGTH</span>
-                          <span className="stat-val">532 nm (Green DPSS)</span>
-                        </div>
-                        <div className="preview-stat">
-                          <span className="stat-label">DETECTOR</span>
-                          <span className="stat-val">Phosphor Screen</span>
-                        </div>
-                        <div className="preview-stat">
-                          <span className="stat-label">OBSERVER</span>
-                          <span className="stat-val val-cyan">Wave Superposition</span>
-                        </div>
-                      </div>
-                    </div>
+                    <ApparatusPreview
+                      experiment={featuredExperiment}
+                      onOpenSpecs={() => setActiveModalExp(featuredExperiment)}
+                    />
                   </div>
                 </div>
               </div>
