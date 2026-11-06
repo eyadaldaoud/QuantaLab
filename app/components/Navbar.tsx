@@ -21,7 +21,7 @@ interface SearchEntry {
   keywords?: string[];
 }
 
-const GITHUB_REPO_URL = "https://github.com/eyadaldaoud/double-slit-experiment";
+const GITHUB_REPO_URL = "https://github.com/eyadaldaoud/QuantaLab";
 
 export default function Navbar({ currentExperimentSlug }: NavbarProps) {
   const pathname = usePathname();

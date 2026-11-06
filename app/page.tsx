@@ -96,7 +96,7 @@ export default function HomePage() {
               </Link>
 
               <a
-                href="https://github.com/eyadaldaoud/double-slit-experiment"
+                href="https://github.com/eyadaldaoud/QuantaLab"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-hero-github"
@@ -466,7 +466,7 @@ export default function HomePage() {
                   <span>Check out our step-by-step developer guide in the project repository.</span>
                 </div>
                 <a
-                  href="https://github.com/eyadaldaoud/double-slit-experiment/blob/main/docs/ADDING_AN_EXPERIMENT.md"
+                  href="https://github.com/eyadaldaoud/QuantaLab/blob/master/docs/ADDING_AN_EXPERIMENT.md"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn-launch-exp"
