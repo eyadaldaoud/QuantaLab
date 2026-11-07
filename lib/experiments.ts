@@ -3,7 +3,8 @@ export type ExperimentCategory =
   | "Wave Optics"
   | "Modern Physics"
   | "Quantum Optics"
-  | "Quantum Information";
+  | "Quantum Information"
+  | "Mathematical Physics";
 
 export type ExperimentStatus = "active" | "in-development" | "planned";
 
@@ -158,6 +159,64 @@ export const EXPERIMENTS: ExperimentMetadata[] = [
       "Colorblind-safe visualization distinguishing detection channels by color and shape",
       "Analytical Fraunhofer wave intensity curves with live Monte Carlo histogram overlay",
       "3-step guided discovery walkthrough and mathematical theory modals",
+    ],
+  },
+  {
+    id: "inscribed-square",
+    slug: "inscribed-square",
+    title: "The Inscribed Square Problem",
+    subtitle: "Toeplitz Conjecture, Jordan Loops & Symplectic Topology",
+    category: "Mathematical Physics",
+    status: "active",
+    difficulty: "Intermediate",
+    route: "/experiments/inscribed-square",
+    icon: "⏹️",
+    accentColor: "#f59e0b",
+    accentGlow: "rgba(245, 158, 11, 0.25)",
+    summary:
+      "Draw any closed loop or explore topological presets. Watch the real-time geometric solver identify four points on your loop that form a perfect inscribed square, and explore the 3D Möbius configuration space proving the theorem for smooth curves.",
+    historicalContext: {
+      year: "1911 / 1929 / 2020",
+      discoverers: "Otto Toeplitz (1911), Lev Šnirel'man (1929), Joshua Greene & Andrew Lobb (2020)",
+      significance:
+        "One of the most celebrated problems in geometry: does every simple closed curve in the plane contain four vertices forming a square? Proven for smooth curves via symplectic topology; open for general continuous fractal loops.",
+    },
+    keyFormulas: [
+      {
+        label: "Orthogonal Diagonals",
+        math: "\\vec{AC} \\perp \\vec{BD}, \\quad |\\vec{AC}| = |\\vec{BD}|",
+        description: "Four vertices form a square if and only if their diagonals are equal in length, perpendicular, and bisect each other",
+      },
+      {
+        label: "Square Center & Midpoint",
+        math: "M = \\frac{A + C}{2} = \\frac{B + D}{2}",
+        description: "Midpoint condition ensuring both pairs of opposite vertices share an identical centroid in the Euclidean plane",
+      },
+      {
+        label: "Möbius Configuration Space",
+        math: "(S^1 \\times S^1) / \\mathbb{Z}_2 \\cong \\text{Möbius Strip}",
+        description: "Unordered pairs of points on a loop map to a non-orientable topological surface whose intersections guarantee geometric rectangles",
+      },
+      {
+        label: "Greene-Lobb Symplectic Theorem",
+        math: "\\forall r > 0, \\quad \\exists \\text{ Inscribed Rectangle of Aspect Ratio } r",
+        description: "Breakthrough 2020 theorem proving every smooth Jordan curve contains inscribed rectangles of every aspect ratio",
+      },
+    ],
+    learningOutcomes: [
+      "Draw custom freehand loops and observe real-time detection of inscribed squares.",
+      "Understand the algebraic and geometric conditions that uniquely characterize a square.",
+      "Explore how topological invariants (Möbius strip embedding) prove the existence of inscribed geometries.",
+      "Learn why the problem is solved for smooth curves but remains one of math's great open questions for rough fractals.",
+    ],
+    tags: ["Inscribed Square", "Toeplitz Conjecture", "Topology", "Jordan Curve", "Möbius Strip", "Greene-Lobb"],
+    features: [
+      "Interactive freehand curve drawing canvas with touch and mouse drawing",
+      "Geometric preset catalog (Ellipse, Clover, Teardrop Limacon, Astroid Star, Perturbed Wobble)",
+      "Real-time diagonal scanning optimizer identifying valid inscribed squares",
+      "Live geometry verification telemetry (side lengths, 90° corner angles, diagonal equality)",
+      "3D Topological Möbius Configuration Space visualizer (3Blue1Brown projection)",
+      "Multi-square detection highlighting alternate inscribed square orientations",
     ],
   },
 ];

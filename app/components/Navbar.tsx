@@ -46,6 +46,8 @@ export default function Navbar({ currentExperimentSlug }: NavbarProps) {
       ? "double-slit"
       : pathname?.startsWith("/experiments/quantum-eraser")
       ? "quantum-eraser"
+      : pathname?.startsWith("/experiments/inscribed-square")
+      ? "inscribed-square"
       : undefined
   );
 
@@ -314,7 +316,7 @@ export default function Navbar({ currentExperimentSlug }: NavbarProps) {
                 </span>
                 <span className="brand-live-badge">
                   <span className="live-beacon-dot" />
-                  <span>2 LABS LIVE</span>
+                  <span>{activeExperiments.length} LABS LIVE</span>
                 </span>
               </div>
               <span className="brand-tagline">VIRTUAL QUANTUM &amp; OPTICS BENCH</span>

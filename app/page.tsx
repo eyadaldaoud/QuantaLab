@@ -41,6 +41,7 @@ export default function HomePage() {
     "All",
     "Quantum Mechanics",
     "Wave Optics",
+    "Mathematical Physics",
   ];
 
   return (
@@ -216,6 +217,27 @@ export default function HomePage() {
                             <span className="hl-icon">🎛️</span>
                             <div>
                               <strong>Analytical Distribution &amp; Audio:</strong> Real-time Poisson/Monte Carlo photon arrivals with live histogram and Web Audio synthesis chimes.
+                            </div>
+                          </div>
+                        </>
+                      ) : featuredExperiment.slug === "inscribed-square" ? (
+                        <>
+                          <div className="spotlight-hl-item">
+                            <span className="hl-icon">✏️</span>
+                            <div>
+                              <strong>Freehand Loop &amp; Presets:</strong> Draw any continuous closed loop with mouse or touch, or choose mathematical presets (Ellipse, Clover, Teardrop, Astroid, Wobble).
+                            </div>
+                          </div>
+                          <div className="spotlight-hl-item">
+                            <span className="hl-icon">📐</span>
+                            <div>
+                              <strong>Real-Time Square Optimizer:</strong> Scans diagonal pairs to locate four points lying strictly on the loop that satisfy orthogonal bisecting diagonals.
+                            </div>
+                          </div>
+                          <div className="spotlight-hl-item">
+                            <span className="hl-icon">➰</span>
+                            <div>
+                              <strong>3D Möbius Configuration Space:</strong> Explore 3Blue1Brown-style topological surface projections where self-intersections guarantee inscribed squares and rectangles.
                             </div>
                           </div>
                         </>

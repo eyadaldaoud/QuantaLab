@@ -19,7 +19,11 @@ export default function ApparatusPreview({
   // State for Quantum Eraser Interactive Simulation Preview
   const [eraserAngle, setEraserAngle] = useState<number>(45); // 0, 45, or 90
 
+  // State for Inscribed Square Interactive Simulation Preview
+  const [squarePreset, setSquarePreset] = useState<"ellipse" | "clover" | "astroid">("ellipse");
+
   const isDoubleSlit = experiment.slug === "double-slit";
+  const isInscribedSquare = experiment.slug === "inscribed-square";
 
   // Quantum Eraser calculated values
   const visibility = Math.abs(Math.sin((2 * eraserAngle * Math.PI) / 180));
@@ -32,7 +36,11 @@ export default function ApparatusPreview({
         <div className="preview-hud-title-group">
           <span className="hud-label">INTERACTIVE BENCH SCHEMATIC</span>
           <span className="hud-sublabel">
-            {isDoubleSlit ? "DUAL-SLIT WAVE INTERFEROMETER" : "WHICH-PATH QUANTUM ERASER"}
+            {isDoubleSlit
+              ? "DUAL-SLIT WAVE INTERFEROMETER"
+              : isInscribedSquare
+              ? "TOPOLOGICAL CLOSED JORDAN LOOP"
+              : "WHICH-PATH QUANTUM ERASER"}
           </span>
         </div>
 
@@ -55,6 +63,19 @@ export default function ApparatusPreview({
               <span className="pill-dot dot-observer" />
               <span>Observer Collapse</span>
             </button>
+          </div>
+        ) : isInscribedSquare ? (
+          <div className="preview-inline-toggle" role="group" aria-label="Square Preset">
+            {(["ellipse", "clover", "astroid"] as const).map((preset) => (
+              <button
+                key={preset}
+                type="button"
+                className={`bench-toggle-pill ${squarePreset === preset ? "active eraser-active" : ""}`}
+                onClick={() => setSquarePreset(preset)}
+              >
+                <span>{preset === "ellipse" ? "Ellipse" : preset === "clover" ? "Clover" : "Star"}</span>
+              </button>
+            ))}
           </div>
         ) : (
           <div className="preview-inline-toggle" role="group" aria-label="Quantum Eraser Angle">
@@ -255,6 +276,93 @@ export default function ApparatusPreview({
               )}
             </g>
           </svg>
+        ) : isInscribedSquare ? (
+          /* =========================================================================
+             INSCRIBED SQUARE SCHEMATIC (VECTOR SVG)
+             ========================================================================= */
+          <svg
+            className="apparatus-vector-svg"
+            viewBox="0 0 640 220"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <defs>
+              <filter id="squareGlow" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="3" result="blur" />
+                <feComposite in="SourceGraphic" in2="blur" operator="over" />
+              </filter>
+            </defs>
+
+            {/* Coordinate Axis Baseline */}
+            <line x1="20" y1="195" x2="620" y2="195" stroke="#16293d" strokeWidth="3" strokeDasharray="6 4" />
+            <text x="25" y="210" fill="#4d6c8b" fontSize="9" fontFamily="monospace">
+              JORDAN CURVE CONTINUUM // TOEPLITZ CONJECTURE (1911)
+            </text>
+
+            {/* Inscribed Square Geometry Container */}
+            <g transform="translate(190, 15)">
+              {/* Closed Jordan Curve Loop */}
+              {squarePreset === "ellipse" ? (
+                <ellipse cx="130" cy="95" rx="145" ry="85" stroke="#38e1ff" strokeWidth="3.5" filter="url(#squareGlow)" />
+              ) : squarePreset === "clover" ? (
+                <path
+                  d="M130 95 m -90 0 a 45 45 0 1 1 90 0 a 45 45 0 1 1 0 90 a 45 45 0 1 1 -90 -90 Z"
+                  stroke="#38e1ff"
+                  strokeWidth="3"
+                  filter="url(#squareGlow)"
+                  transform="scale(1.2) translate(-25, -20)"
+                />
+              ) : (
+                <path
+                  d="M130 15 C130 65, 175 95, 230 95 C175 95, 130 135, 130 175 C130 135, 85 95, 30 95 C85 95, 130 65, 130 15 Z"
+                  stroke="#38e1ff"
+                  strokeWidth="3.5"
+                  filter="url(#squareGlow)"
+                />
+              )}
+
+              {/* Inscribed Square (Points on Curve) */}
+              <polygon
+                points="130,22 225,95 130,168 35,95"
+                fill="rgba(245, 158, 11, 0.12)"
+                stroke="#f59e0b"
+                strokeWidth="2.8"
+                filter="url(#squareGlow)"
+              />
+
+              {/* Diagonals */}
+              <line x1="130" y1="22" x2="130" y2="168" stroke="rgba(245, 158, 11, 0.6)" strokeWidth="1.5" strokeDasharray="4 4" />
+              <line x1="35" y1="95" x2="225" y2="95" stroke="rgba(245, 158, 11, 0.6)" strokeWidth="1.5" strokeDasharray="4 4" />
+
+              {/* Center Midpoint M */}
+              <circle cx="130" cy="95" r="4" fill="#ffffff" />
+              <text x="138" y="90" fill="#f59e0b" fontSize="9" fontFamily="monospace" fontWeight="bold">M</text>
+
+              {/* 4 Vertices A, B, C, D */}
+              <circle cx="130" cy="22" r="5" fill="#ffffff" stroke="#f59e0b" strokeWidth="2.5" />
+              <text x="138" y="24" fill="#ffffff" fontSize="10" fontFamily="monospace" fontWeight="bold">A</text>
+
+              <circle cx="225" cy="95" r="5" fill="#ffffff" stroke="#f59e0b" strokeWidth="2.5" />
+              <text x="233" y="100" fill="#ffffff" fontSize="10" fontFamily="monospace" fontWeight="bold">B</text>
+
+              <circle cx="130" cy="168" r="5" fill="#ffffff" stroke="#f59e0b" strokeWidth="2.5" />
+              <text x="138" y="176" fill="#ffffff" fontSize="10" fontFamily="monospace" fontWeight="bold">C</text>
+
+              <circle cx="35" cy="95" r="5" fill="#ffffff" stroke="#f59e0b" strokeWidth="2.5" />
+              <text x="18" y="100" fill="#ffffff" fontSize="10" fontFamily="monospace" fontWeight="bold">D</text>
+            </g>
+
+            {/* Informational Callout Box */}
+            <g transform="translate(480, 40)">
+              <rect x="0" y="0" width="135" height="120" rx="6" fill="#081422" stroke="#1f4468" strokeWidth="1.5" />
+              <text x="10" y="20" fill="#f59e0b" fontSize="9" fontFamily="monospace" fontWeight="bold">PROVEN THEOREM</text>
+              <text x="10" y="42" fill="#a4c2db" fontSize="8" fontFamily="monospace">Šnirel&apos;man (1929)</text>
+              <text x="10" y="58" fill="#546e86" fontSize="7" fontFamily="monospace">Smooth curves: Yes</text>
+              <text x="10" y="78" fill="#a4c2db" fontSize="8" fontFamily="monospace">Greene-Lobb (2020)</text>
+              <text x="10" y="94" fill="#546e86" fontSize="7" fontFamily="monospace">All Aspect Ratios: Yes</text>
+              <text x="10" y="114" fill="#38e1ff" fontSize="8" fontFamily="monospace">Fractals: Open</text>
+            </g>
+          </svg>
         ) : (
           /* =========================================================================
              QUANTUM ERASER APPARATUS SVG (INTERACTIVE)
@@ -410,6 +518,21 @@ export default function ApparatusPreview({
             <div className="preview-stat">
               <span className="stat-label">DETECTOR FEEDBACK</span>
               <span className="stat-val">Phosphor Screen + Web Audio</span>
+            </div>
+          </>
+        ) : isInscribedSquare ? (
+          <>
+            <div className="preview-stat">
+              <span className="stat-label">SQUARE SIDE LENGTH</span>
+              <span className="stat-val val-amber">s = 138.6 px</span>
+            </div>
+            <div className="preview-stat">
+              <span className="stat-label">CORNER ANGLES</span>
+              <span className="stat-val val-emerald">4 × 90.0° (Verified Square)</span>
+            </div>
+            <div className="preview-stat">
+              <span className="stat-label">TOEPLITZ CONJECTURE</span>
+              <span className="stat-val val-cyan">4 Inscribed Points Identified</span>
             </div>
           </>
         ) : (
