@@ -1,6 +1,7 @@
 /**
  * The Inscribed Square Problem (Toeplitz Conjecture / Square Peg Problem)
- * Mathematical solver, curve parameterization, and geometric verification.
+ * High-precision mathematical solver, curve parameterization, Green's theorem,
+ * Greene-Lobb rectangle solver, and symplectic geometry utilities.
  */
 
 export interface Point2D {
@@ -18,7 +19,7 @@ export interface InscribedSquare {
   area: number;
   perimeter: number;
   rotationDeg: number;
-  error: number; // max deviation of any vertex from curve
+  error: number; // max deviation of any vertex from curve in pixels
 }
 
 export interface InscribedRectangle {
@@ -31,6 +32,15 @@ export interface InscribedRectangle {
   height: number;
   aspectRatio: number;
   rotationDeg: number;
+  error: number;
+}
+
+export interface CurveTelemetry {
+  perimeter: number;
+  area: number;
+  isoperimetricQuotient: number; // Q = 4*pi*Area / P^2  (<= 1, =1 for circle)
+  centroid: Point2D;
+  isSelfIntersecting: boolean;
 }
 
 /**
@@ -85,7 +95,7 @@ export function distToCurve(p: Point2D, curve: Point2D[]): { dist: number; close
  * Resample a sequence of raw points into N equally arc-length spaced points
  * with smooth closure.
  */
-export function resampleClosedCurve(rawPoints: Point2D[], targetCount = 160): Point2D[] {
+export function resampleClosedCurve(rawPoints: Point2D[], targetCount = 180): Point2D[] {
   if (rawPoints.length < 3) return rawPoints;
 
   // Ensure closed loop
@@ -134,16 +144,73 @@ export function resampleClosedCurve(rawPoints: Point2D[], targetCount = 160): Po
 }
 
 /**
- * Generate preset geometric and topological curves
+ * Compute loop telemetry using Green's theorem for area and centroid
  */
-export function getPresetCurve(presetId: string, centerX = 320, centerY = 200, scale = 140): Point2D[] {
+export function computeCurveTelemetry(curve: Point2D[]): CurveTelemetry {
+  const n = curve.length;
+  if (n < 3) {
+    return {
+      perimeter: 0,
+      area: 0,
+      isoperimetricQuotient: 0,
+      centroid: { x: 0, y: 0 },
+      isSelfIntersecting: false,
+    };
+  }
+
+  let perimeter = 0;
+  let signedArea = 0;
+  let cx = 0;
+  let cy = 0;
+
+  for (let i = 0; i < n; i++) {
+    const a = curve[i];
+    const b = curve[(i + 1) % n];
+
+    perimeter += distance(a, b);
+
+    const cross = a.x * b.y - b.x * a.y;
+    signedArea += cross;
+    cx += (a.x + b.x) * cross;
+    cy += (a.y + b.y) * cross;
+  }
+
+  const area = Math.abs(signedArea / 2);
+  const sixA = 6 * (signedArea / 2);
+  const centroid =
+    Math.abs(sixA) > 1e-5
+      ? { x: cx / sixA, y: cy / sixA }
+      : { x: curve[0].x, y: curve[0].y };
+
+  const isoperimetricQuotient =
+    perimeter > 0 ? Math.min(1.0, (4 * Math.PI * area) / (perimeter * perimeter)) : 0;
+
+  return {
+    perimeter,
+    area,
+    isoperimetricQuotient,
+    centroid,
+    isSelfIntersecting: false,
+  };
+}
+
+/**
+ * Generate preset geometric and topological curves with deformation support
+ */
+export function getPresetCurve(
+  presetId: string,
+  centerX = 360,
+  centerY = 240,
+  scale = 160,
+  deformation = 1.0
+): Point2D[] {
   const points: Point2D[] = [];
-  const N = 180;
+  const N = 200;
 
   switch (presetId) {
     case "ellipse": {
-      const a = scale * 1.25;
-      const b = scale * 0.75;
+      const a = scale * (1.1 + 0.3 * (deformation - 1));
+      const b = scale * (0.8 - 0.25 * (deformation - 1));
       for (let i = 0; i < N; i++) {
         const theta = (2 * Math.PI * i) / N;
         points.push({
@@ -154,10 +221,9 @@ export function getPresetCurve(presetId: string, centerX = 320, centerY = 200, s
       break;
     }
     case "clover": {
-      // 3-leaf or 4-leaf clover
       for (let i = 0; i < N; i++) {
         const theta = (2 * Math.PI * i) / N;
-        const r = scale * (0.8 + 0.35 * Math.cos(3 * theta));
+        const r = scale * (0.8 + 0.35 * deformation * Math.cos(3 * theta));
         points.push({
           x: centerX + r * Math.cos(theta),
           y: centerY + r * Math.sin(theta),
@@ -166,10 +232,9 @@ export function getPresetCurve(presetId: string, centerX = 320, centerY = 200, s
       break;
     }
     case "limacon": {
-      // Asymmetric teardrop / Limacon
       for (let i = 0; i < N; i++) {
         const theta = (2 * Math.PI * i) / N;
-        const r = scale * (0.85 + 0.35 * Math.sin(theta) + 0.15 * Math.cos(2 * theta));
+        const r = scale * (0.85 + 0.35 * deformation * Math.sin(theta) + 0.15 * Math.cos(2 * theta));
         points.push({
           x: centerX + r * Math.cos(theta),
           y: centerY + r * Math.sin(theta),
@@ -178,7 +243,6 @@ export function getPresetCurve(presetId: string, centerX = 320, centerY = 200, s
       break;
     }
     case "astroid": {
-      // Non-convex star curve (hypocycloid)
       for (let i = 0; i < N; i++) {
         const theta = (2 * Math.PI * i) / N;
         const cosT = Math.cos(theta);
@@ -186,22 +250,21 @@ export function getPresetCurve(presetId: string, centerX = 320, centerY = 200, s
         const x = scale * (cosT ** 3);
         const y = scale * (sinT ** 3);
         points.push({
-          x: centerX + x,
-          y: centerY + y,
+          x: centerX + x * deformation,
+          y: centerY + y * deformation,
         });
       }
       break;
     }
     case "wobble": {
-      // Perturbed Fourier loop with no obvious symmetries
       for (let i = 0; i < N; i++) {
         const theta = (2 * Math.PI * i) / N;
         const r =
           scale *
           (0.85 +
-            0.18 * Math.cos(2 * theta + 0.5) +
-            0.12 * Math.sin(3 * theta - 0.3) +
-            0.08 * Math.cos(5 * theta + 1.2));
+            0.18 * deformation * Math.cos(2 * theta + 0.5) +
+            0.14 * deformation * Math.sin(3 * theta - 0.3) +
+            0.08 * deformation * Math.cos(5 * theta + 1.2));
         points.push({
           x: centerX + r * Math.cos(theta),
           y: centerY + r * Math.sin(theta),
@@ -223,7 +286,7 @@ export function getPresetCurve(presetId: string, centerX = 320, centerY = 200, s
     }
   }
 
-  return resampleClosedCurve(points, 180);
+  return resampleClosedCurve(points, 200);
 }
 
 /**
@@ -240,7 +303,6 @@ export function findInscribedSquares(
 
   const candidates: InscribedSquare[] = [];
 
-  // Minimum index separation to avoid degenerate zero-size squares
   const minSeparation = Math.floor(n / 12);
   const maxSeparation = Math.floor(n / 2);
 
@@ -250,13 +312,11 @@ export function findInscribedSquares(
       const p1 = curve[i];
       const p2 = curve[j];
 
-      // Treat p1 and p2 as diagonal AC of a candidate square
       const midX = (p1.x + p2.x) / 2;
       const midY = (p1.y + p2.y) / 2;
       const halfDx = (p2.x - p1.x) / 2;
       const halfDy = (p2.y - p1.y) / 2;
 
-      // The perpendicular vector for a square is (-halfDy, halfDx)
       const candB: Point2D = {
         x: midX - halfDy,
         y: midY + halfDx,
@@ -273,7 +333,6 @@ export function findInscribedSquares(
 
       if (err <= maxError) {
         const sideLen = distance(p1, candB);
-        // Only accept non-trivial squares
         if (sideLen > 15) {
           const rotationRad = Math.atan2(candB.y - p1.y, candB.x - p1.x);
           const rotationDeg = (rotationRad * 180) / Math.PI;
@@ -295,10 +354,7 @@ export function findInscribedSquares(
     }
   }
 
-  // Deduplicate squares with similar centers and orientations
   const uniqueSquares: InscribedSquare[] = [];
-
-  // Sort candidates by lowest error first
   candidates.sort((s1, s2) => s1.error - s2.error);
 
   for (const cand of candidates) {
@@ -319,6 +375,93 @@ export function findInscribedSquares(
 }
 
 /**
+ * Searches for inscribed rectangles of a specified aspect ratio r = width / height
+ * implementing the Greene-Lobb Symplectic Theorem (2020).
+ */
+export function findInscribedRectangles(
+  curve: Point2D[],
+  targetAspectRatio = 1.618,
+  maxError = 5.0,
+  limit = 2
+): InscribedRectangle[] {
+  const n = curve.length;
+  if (n < 8) return [];
+
+  const candidates: InscribedRectangle[] = [];
+  const minSeparation = Math.floor(n / 12);
+  const maxSeparation = Math.floor(n / 2);
+
+  // In a rectangle with aspect ratio r = W / H:
+  // Angle between diagonals alpha: tan(alpha / 2) = H / W = 1 / r
+  // So half-angle between diagonals is theta = atan(1 / r)
+  const theta = Math.atan(1 / targetAspectRatio);
+
+  for (let i = 0; i < n; i++) {
+    for (let sep = minSeparation; sep <= maxSeparation; sep++) {
+      const j = (i + sep) % n;
+      const p1 = curve[i];
+      const p2 = curve[j];
+
+      const midX = (p1.x + p2.x) / 2;
+      const midY = (p1.y + p2.y) / 2;
+      const halfDiag = distance(p1, p2) / 2;
+      if (halfDiag < 15) continue;
+
+      const diagAngle = Math.atan2(p2.y - p1.y, p2.x - p1.x);
+
+      // Other diagonal BD has the same length, rotated by 2*theta
+      const otherDiagAngle = diagAngle + 2 * theta;
+      const candB: Point2D = {
+        x: midX - halfDiag * Math.cos(otherDiagAngle),
+        y: midY - halfDiag * Math.sin(otherDiagAngle),
+      };
+      const candD: Point2D = {
+        x: midX + halfDiag * Math.cos(otherDiagAngle),
+        y: midY + halfDiag * Math.sin(otherDiagAngle),
+      };
+
+      const distB = distToCurve(candB, curve);
+      const distD = distToCurve(candD, curve);
+      const err = Math.max(distB.dist, distD.dist);
+
+      if (err <= maxError) {
+        const w = distance(p1, candB);
+        const h = distance(candB, p2);
+        const rotDeg = ((diagAngle * 180) / Math.PI + 360) % 360;
+
+        candidates.push({
+          a: p1,
+          b: distB.closest,
+          c: p2,
+          d: distD.closest,
+          center: { x: midX, y: midY },
+          width: Math.max(w, h),
+          height: Math.min(w, h),
+          aspectRatio: Math.max(w, h) / Math.max(1, Math.min(w, h)),
+          rotationDeg: rotDeg,
+          error: err,
+        });
+      }
+    }
+  }
+
+  candidates.sort((r1, r2) => r1.error - r2.error);
+  const uniqueRects: InscribedRectangle[] = [];
+
+  for (const cand of candidates) {
+    const isDup = uniqueRects.some(
+      (ex) => distance(cand.center, ex.center) < 14 && Math.abs(cand.width - ex.width) < 10
+    );
+    if (!isDup) {
+      uniqueRects.push(cand);
+      if (uniqueRects.length >= limit) break;
+    }
+  }
+
+  return uniqueRects;
+}
+
+/**
  * Verify if 4 points form a valid square within specified tolerances
  */
 export function verifySquareGeometry(a: Point2D, b: Point2D, c: Point2D, d: Point2D): {
@@ -336,7 +479,6 @@ export function verifySquareGeometry(a: Point2D, b: Point2D, c: Point2D, d: Poin
   const diag1 = distance(a, c);
   const diag2 = distance(b, d);
 
-  // Helper angle between (P1 -> P2) and (P2 -> P3)
   const computeAngle = (p1: Point2D, p2: Point2D, p3: Point2D): number => {
     const v1 = { x: p1.x - p2.x, y: p1.y - p2.y };
     const v2 = { x: p3.x - p2.x, y: p3.y - p2.y };
@@ -359,7 +501,6 @@ export function verifySquareGeometry(a: Point2D, b: Point2D, c: Point2D, d: Poin
     avgSide;
 
   const diagDiff = Math.abs(diag1 - diag2) / ((diag1 + diag2) / 2);
-
   const isSquare = sideVariance < 0.08 && diagDiff < 0.08 && Math.abs(a1 - 90) < 6;
 
   return {

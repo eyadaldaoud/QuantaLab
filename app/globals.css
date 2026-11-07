@@ -6229,3 +6229,309 @@ button, input, select {
   color: var(--quantum-cyan);
   box-shadow: 0 0 12px rgba(56, 225, 255, 0.25);
 }
+
+/* =========================================================================
+   INSCRIBED SQUARE & GREENE-LOBB LABORATORY ENHANCED STYLES
+   ========================================================================= */
+
+.mode-toggle-group {
+  display: flex;
+  background: rgba(10, 20, 35, 0.7);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 3px;
+  gap: 3px;
+}
+
+.mode-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--ink-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.mode-btn:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.mode-btn.active {
+  background: rgba(56, 225, 255, 0.15);
+  border-color: rgba(56, 225, 255, 0.5);
+  color: var(--quantum-cyan);
+  box-shadow: 0 0 12px rgba(56, 225, 255, 0.25);
+}
+
+.mode-icon {
+  font-size: 0.9rem;
+}
+
+/* Floating overlay controls directly above canvas */
+.canvas-floating-controls {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  gap: 6px;
+  z-index: 10;
+  background: rgba(8, 18, 30, 0.75);
+  backdrop-filter: blur(12px);
+  padding: 4px 6px;
+  border-radius: 20px;
+  border: 1px solid rgba(56, 225, 255, 0.2);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+.canvas-mini-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  padding: 3px 8px;
+  color: var(--ink-muted);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.canvas-mini-btn:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.canvas-mini-btn.active {
+  background: rgba(56, 225, 255, 0.2);
+  border-color: rgba(56, 225, 255, 0.5);
+  color: var(--quantum-cyan);
+  box-shadow: 0 0 10px rgba(56, 225, 255, 0.3);
+}
+
+/* Sliders & Dynamic Deformation Controls */
+.slider-control-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+
+.slider-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.78rem;
+  color: var(--ink-secondary);
+}
+
+.slider-val-readout {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--quantum-cyan);
+}
+
+.modern-slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modern-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--quantum-cyan);
+  cursor: pointer;
+  box-shadow: 0 0 10px var(--quantum-cyan);
+  transition: transform 0.1s ease;
+}
+
+.modern-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+.modern-slider.slider-purple::-webkit-slider-thumb {
+  background: #c084fc;
+  box-shadow: 0 0 10px #c084fc;
+}
+
+.auto-morph-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.btn-auto-morph {
+  flex: 1;
+  padding: 0.5rem 0.8rem;
+  background: rgba(56, 225, 255, 0.08);
+  border: 1px solid rgba(56, 225, 255, 0.3);
+  border-radius: 6px;
+  color: #ffffff;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-auto-morph:hover {
+  background: rgba(56, 225, 255, 0.18);
+  border-color: var(--quantum-cyan);
+  box-shadow: 0 0 12px rgba(56, 225, 255, 0.25);
+}
+
+.btn-auto-morph.active {
+  background: rgba(80, 227, 156, 0.2);
+  border-color: #50e39c;
+  color: #50e39c;
+  box-shadow: 0 0 14px rgba(80, 227, 156, 0.3);
+}
+
+.btn-morph-reset {
+  padding: 0.5rem 0.8rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  color: var(--ink-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-morph-reset:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+/* Aspect Ratio Presets */
+.aspect-ratio-presets {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+}
+
+.ratio-pill-btn {
+  padding: 0.45rem 0.6rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  color: var(--ink-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+}
+
+.ratio-pill-btn:hover {
+  background: rgba(168, 85, 247, 0.12);
+  border-color: rgba(168, 85, 247, 0.4);
+  color: #ffffff;
+}
+
+.ratio-pill-btn.active {
+  background: rgba(168, 85, 247, 0.2);
+  border-color: #c084fc;
+  color: #c084fc;
+  font-weight: 700;
+  box-shadow: 0 0 10px rgba(168, 85, 247, 0.25);
+}
+
+/* Möbius Strip Visualizer Stages */
+.mobius-stage-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.mobius-stage-btn {
+  flex: 1;
+  padding: 0.45rem 0.75rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  color: var(--ink-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.mobius-stage-btn:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.mobius-stage-btn.active {
+  background: rgba(245, 158, 11, 0.15);
+  border-color: #f59e0b;
+  color: #f59e0b;
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.25);
+}
+
+/* Diagnostics Grid */
+.diagnostics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.diag-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.6rem 0.75rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 6px;
+}
+
+.diag-label {
+  font-size: 0.65rem;
+  font-family: var(--font-mono);
+  color: var(--ink-muted);
+  letter-spacing: 0.5px;
+}
+
+.diag-val {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.val-purple {
+  color: #c084fc;
+  text-shadow: 0 0 8px rgba(192, 132, 252, 0.4);
+}
+
+.dot-purple {
+  background: #c084fc;
+  box-shadow: 0 0 8px #c084fc;
+}

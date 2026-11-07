@@ -70,3 +70,4 @@ describe("Inscribed Square Problem (Toeplitz Conjecture) Math Engine", () => {
     expect(nonSquare.isSquare).toBe(false);
   });
 });
+
