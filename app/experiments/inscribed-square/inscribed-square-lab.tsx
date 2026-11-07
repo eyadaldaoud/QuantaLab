@@ -68,17 +68,17 @@ export default function InscribedSquareLab() {
       osc.start();
       osc.stop(ctx.currentTime + 0.35);
     } catch {
-      // Audio policy fallback
+      // Audio autoplay policy fallback
     }
   }, []);
 
-  // Update curve when preset or deformation changes
+  // Update preset points centered on canvas
   const updatePresetPoints = useCallback(
     (presetId: string, def: number) => {
       const canvas = canvasRef.current;
       const rect = canvas ? canvas.getBoundingClientRect() : null;
       const cx = rect && rect.width > 100 ? rect.width / 2 : 360;
-      const cy = rect && rect.height > 100 ? rect.height / 2 : 250;
+      const cy = rect && rect.height > 100 ? rect.height / 2 : 260;
       const scale = rect ? Math.min(rect.width, rect.height) * 0.32 : 160;
 
       const pts = getPresetCurve(presetId, cx, cy, scale, def);
@@ -93,7 +93,7 @@ export default function InscribedSquareLab() {
     }
   }, [selectedPreset, deformation, updatePresetPoints]);
 
-  // Handle window resizing to keep presets centered
+  // Window resize listener to keep curve centered
   useEffect(() => {
     const handleResize = () => {
       if (selectedPreset !== "custom") {
@@ -155,7 +155,7 @@ export default function InscribedSquareLab() {
     );
   }, [activeSquare]);
 
-  // Sound chime upon solution discovery
+  // Chime when solution is discovered
   useEffect(() => {
     if (solverMode === "square" && detectedSquares.length > 0) {
       playChime(587.33); // D5
@@ -164,7 +164,7 @@ export default function InscribedSquareLab() {
     }
   }, [solverMode, detectedSquares.length, detectedRectangles.length, playChime]);
 
-  // Drawing Event Handlers
+  // Freehand pointer events
   const handlePointerDown = (clientX: number, clientY: number) => {
     if (showMobiusView) return;
     const canvas = canvasRef.current;
@@ -216,7 +216,7 @@ export default function InscribedSquareLab() {
     const rect = canvas.getBoundingClientRect();
     const dpr = typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1;
     const width = rect.width || 720;
-    const height = rect.height || 480;
+    const height = rect.height || 540;
 
     const pixelWidth = Math.round(width * dpr);
     const pixelHeight = Math.round(height * dpr);
@@ -229,12 +229,12 @@ export default function InscribedSquareLab() {
     ctx.save();
     ctx.scale(dpr, dpr);
 
-    // 0. Clear canvas
+    // Clear canvas
     ctx.clearRect(0, 0, width, height);
 
-    // 1. Coordinate Grid
+    // 1. Euclidean Coordinate Grid
     if (showGrid) {
-      ctx.strokeStyle = "rgba(18, 45, 75, 0.35)";
+      ctx.strokeStyle = "rgba(30, 58, 88, 0.35)";
       ctx.lineWidth = 1;
       const gridSize = 40;
       for (let x = 0; x <= width; x += gridSize) {
@@ -250,10 +250,10 @@ export default function InscribedSquareLab() {
         ctx.stroke();
       }
 
-      // Center Origin Crosshairs
+      // Origin Axes
       const cx = width / 2;
       const cy = height / 2;
-      ctx.strokeStyle = "rgba(56, 225, 255, 0.15)";
+      ctx.strokeStyle = "rgba(56, 225, 255, 0.16)";
       ctx.lineWidth = 1.5;
       ctx.beginPath();
       ctx.moveTo(cx, 0);
@@ -313,7 +313,7 @@ export default function InscribedSquareLab() {
       ctx.shadowBlur = 0;
     }
 
-    // Helper: Right angle symbol
+    // Helper: 90° angle marker
     const drawRightAngleMarker = (pCorner: Point2D, p1: Point2D, p2: Point2D, color = "#50e39c") => {
       const d1 = distance(p1, pCorner);
       const d2 = distance(p2, pCorner);
@@ -333,7 +333,7 @@ export default function InscribedSquareLab() {
       ctx.stroke();
     };
 
-    // Helper: Tick mark
+    // Helper: Equal edge tick mark
     const drawEdgeTick = (p1: Point2D, p2: Point2D, color = "#f59e0b") => {
       const midX = (p1.x + p2.x) / 2;
       const midY = (p1.y + p2.y) / 2;
@@ -357,7 +357,7 @@ export default function InscribedSquareLab() {
     if (solverMode === "square" && activeSquare) {
       const { a, b, c, d, center, sideLength } = activeSquare;
 
-      // Glow interior
+      // Interior fill
       ctx.fillStyle = "rgba(245, 158, 11, 0.12)";
       ctx.beginPath();
       ctx.moveTo(a.x, a.y);
@@ -367,7 +367,7 @@ export default function InscribedSquareLab() {
       ctx.closePath();
       ctx.fill();
 
-      // Sharp golden edges
+      // Golden perimeter
       ctx.strokeStyle = "#f59e0b";
       ctx.lineWidth = 3;
       ctx.shadowColor = "#f59e0b";
@@ -393,7 +393,7 @@ export default function InscribedSquareLab() {
 
         ctx.setLineDash([]);
 
-        // Center Midpoint M
+        // Midpoint Center M
         ctx.fillStyle = "#ffffff";
         ctx.shadowColor = "#f59e0b";
         ctx.shadowBlur = 8;
@@ -407,7 +407,7 @@ export default function InscribedSquareLab() {
         ctx.fillText("M (Center)", center.x + 8, center.y - 6);
       }
 
-      // Edge tick marks & dimension
+      // Edge ticks and dimension
       if (showSideLengths) {
         drawEdgeTick(a, b);
         drawEdgeTick(b, c);
@@ -588,36 +588,45 @@ export default function InscribedSquareLab() {
     : "1.000";
 
   return (
-    <div className="quantum-studio-root">
-      {/* 1. STUDIO HEADER */}
-      <header className="studio-topbar">
-        <div className="topbar-left">
-          <Link href="/" className="back-hub-btn" title="Back to QuantaLab Experiments Catalog">
-            <span className="back-arrow">←</span>
+    <div className="max-w-[1720px] min-h-screen mx-auto px-4 md:px-6 pt-4 pb-14 flex flex-col gap-5 text-slate-100 font-sans">
+      {/* 1. STUDIO TOPBAR */}
+      <header className="flex items-center justify-between border-b border-slate-800/80 pb-3 px-1 flex-wrap gap-3">
+        <div className="flex items-center gap-3.5">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-700/60 bg-slate-900/60 text-slate-300 hover:text-white hover:border-cyan-400/50 hover:bg-slate-800 transition text-xs font-mono font-bold tracking-wider"
+            title="Back to QuantaLab Experiments Catalog"
+          >
+            <span>←</span>
             <span>CATALOG</span>
           </Link>
-          <div className="topbar-divider-v" />
-          <div className="studio-logo" aria-hidden="true">
+
+          <div className="w-[1px] h-7 bg-slate-800" />
+
+          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-slate-800 to-slate-950 border border-slate-700/80 flex items-center justify-center text-xl text-cyan-400 shadow-[0_0_16px_rgba(56,225,255,0.2)]">
             ⏹️
           </div>
-          <div className="topbar-branding">
-            <div className="topbar-title-row">
-              <h1 className="studio-title">INSCRIBED SQUARE LABORATORY</h1>
-              <span className="studio-status-pill">
-                <span className="status-dot-live" />
+
+          <div className="flex flex-col">
+            <div className="flex items-center gap-2.5 flex-wrap">
+              <h1 className="text-base font-bold text-white tracking-wide">
+                INSCRIBED SQUARE LABORATORY
+              </h1>
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-semibold bg-emerald-950/60 border border-emerald-500/40 text-emerald-400">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#50e39c]" />
                 TOPOLOGY ENGINE ACTIVE
               </span>
             </div>
-            <span className="studio-subtitle">
+            <span className="text-xs text-slate-400 font-mono">
               Toeplitz Conjecture (1911) &bull; Greene-Lobb Symplectic Theorem (2020) &bull; Möbius Strip Invariants
             </span>
           </div>
         </div>
 
-        <div className="topbar-actions">
+        <div className="flex items-center gap-3">
           <button
             type="button"
-            className="theory-btn"
+            className="px-3.5 py-2 rounded-lg bg-gradient-to-r from-cyan-950/40 to-slate-900 border border-cyan-500/40 text-cyan-300 hover:text-white hover:border-cyan-400 hover:shadow-[0_0_16px_rgba(56,225,255,0.3)] transition text-xs font-mono font-bold flex items-center gap-2"
             onClick={() => setIsTheoryOpen(true)}
             title="Read mathematical formulation and topological proofs"
           >
@@ -626,51 +635,67 @@ export default function InscribedSquareLab() {
         </div>
       </header>
 
-      {/* 2. GRAND 3D / 2D INTERACTIVE VIEWPORT */}
-      <section className="grand-viewport-section">
-        <div className="canvas-wrapper">
-          {/* Main 2D Loop Canvas or 3D Möbius View */}
+      {/* 2. GRAND VIEWPORT SECTION */}
+      <section className="relative w-full h-[540px] md:h-[620px] rounded-xl border border-slate-800/80 bg-[#02070e] overflow-hidden shadow-2xl shadow-black">
+        {/* Canvas / Möbius wrapper */}
+        <div className="absolute inset-0">
           {!showMobiusView ? (
-            <div className="drawing-canvas-container">
-              {/* Floating Canvas Top Overlay Controls */}
-              <div className="canvas-floating-controls">
+            <div className="absolute inset-0 flex items-center justify-center bg-[radial-gradient(circle_at_50%_50%,#061525_0%,#02070e_95%)] overflow-hidden">
+              {/* Canvas Overlay Controls */}
+              <div className="absolute top-16 right-4 z-10 flex items-center gap-1.5 p-1 bg-slate-950/80 backdrop-blur-md border border-cyan-500/20 rounded-full shadow-lg">
                 <button
                   type="button"
-                  className={`canvas-mini-btn ${showGrid ? "active" : ""}`}
+                  className={`px-2.5 py-1 rounded-full text-[11px] font-mono font-bold transition ${
+                    showGrid
+                      ? "bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 shadow-[0_0_8px_rgba(56,225,255,0.25)]"
+                      : "text-slate-400 hover:text-white"
+                  }`}
                   onClick={() => setShowGrid(!showGrid)}
                   title="Toggle Euclidean Grid"
                 >
-                  <span># GRID</span>
+                  # GRID
                 </button>
                 <button
                   type="button"
-                  className={`canvas-mini-btn ${showDiagonals ? "active" : ""}`}
+                  className={`px-2.5 py-1 rounded-full text-[11px] font-mono font-bold transition ${
+                    showDiagonals
+                      ? "bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 shadow-[0_0_8px_rgba(56,225,255,0.25)]"
+                      : "text-slate-400 hover:text-white"
+                  }`}
                   onClick={() => setShowDiagonals(!showDiagonals)}
                   title="Toggle Perpendicular Diagonals"
                 >
-                  <span>✕ DIAGONALS</span>
+                  ✕ DIAGONALS
                 </button>
                 <button
                   type="button"
-                  className={`canvas-mini-btn ${showAngles ? "active" : ""}`}
+                  className={`px-2.5 py-1 rounded-full text-[11px] font-mono font-bold transition ${
+                    showAngles
+                      ? "bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 shadow-[0_0_8px_rgba(56,225,255,0.25)]"
+                      : "text-slate-400 hover:text-white"
+                  }`}
                   onClick={() => setShowAngles(!showAngles)}
                   title="Toggle 90° Right Angle Markers"
                 >
-                  <span>⊾ 90° ANGLES</span>
+                  ⊾ 90° ANGLES
                 </button>
                 <button
                   type="button"
-                  className={`canvas-mini-btn ${showSideLengths ? "active" : ""}`}
+                  className={`px-2.5 py-1 rounded-full text-[11px] font-mono font-bold transition ${
+                    showSideLengths
+                      ? "bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 shadow-[0_0_8px_rgba(56,225,255,0.25)]"
+                      : "text-slate-400 hover:text-white"
+                  }`}
                   onClick={() => setShowSideLengths(!showSideLengths)}
                   title="Toggle Side Dimensions"
                 >
-                  <span>📏 DIMENSIONS</span>
+                  📏 DIMENSIONS
                 </button>
               </div>
 
               <canvas
                 ref={canvasRef}
-                className="interactive-loop-canvas"
+                className="w-full h-full block cursor-crosshair touch-none"
                 onMouseDown={(e) => handlePointerDown(e.clientX, e.clientY)}
                 onMouseMove={(e) => handlePointerMove(e.clientX, e.clientY)}
                 onMouseUp={handlePointerUp}
@@ -688,20 +713,20 @@ export default function InscribedSquareLab() {
                 onTouchEnd={handlePointerUp}
               />
 
-              <div className="canvas-instruction-overlay">
-                <span>
-                  ✏️ Click &amp; drag anywhere to sketch your custom loop &bull; or select presets below
-                </span>
+              <div className="absolute bottom-16 left-1/2 -translate-x-1/2 z-10 px-4 py-1.5 rounded-full bg-slate-950/85 backdrop-blur-md border border-cyan-500/30 text-xs font-mono text-slate-300 whitespace-nowrap shadow-lg">
+                <span>✏️ Click &amp; drag anywhere to sketch your custom loop &bull; or select presets below</span>
               </div>
             </div>
           ) : (
-            /* 3D Möbius Configuration Space Projection */
-            <div className="mobius-view-container">
-              <div className="mobius-banner">
-                <div className="mobius-icon">➰</div>
-                <div className="mobius-text-block">
-                  <h3 className="mobius-title">Möbius Strip Configuration Space (3Blue1Brown Topology)</h3>
-                  <p className="mobius-desc">
+            /* 3D Möbius View */
+            <div className="absolute inset-0 px-6 py-20 flex flex-col justify-center items-center bg-[radial-gradient(circle_at_50%_50%,#071728_0%,#02070e_95%)] overflow-y-auto gap-4">
+              <div className="max-w-2xl w-full p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-start gap-3.5">
+                <span className="text-3xl leading-none">➰</span>
+                <div className="flex flex-col gap-1">
+                  <h3 className="text-sm font-bold text-white">
+                    Möbius Strip Configuration Space (3Blue1Brown Topology)
+                  </h3>
+                  <p className="text-xs text-slate-300 leading-relaxed">
                     Every unordered pair of points (x, y) on a closed loop &gamma;(t) maps to a point on a
                     non-orientable surface with boundary homeomorphic to a <strong>Möbius strip</strong>. Because
                     a Möbius strip cannot be embedded into 3D space without self-intersecting, pairs with
@@ -711,32 +736,29 @@ export default function InscribedSquareLab() {
               </div>
 
               {/* Stage Step Tabs */}
-              <div className="mobius-stage-tabs">
-                <button
-                  type="button"
-                  className={`mobius-stage-btn ${mobiusStage === 1 ? "active" : ""}`}
-                  onClick={() => setMobiusStage(1)}
-                >
-                  <span>1. PAIR SPACE (&gamma; &times; &gamma;)</span>
-                </button>
-                <button
-                  type="button"
-                  className={`mobius-stage-btn ${mobiusStage === 2 ? "active" : ""}`}
-                  onClick={() => setMobiusStage(2)}
-                >
-                  <span>2. MÖBIUS TWIST IDENTIFICATION</span>
-                </button>
-                <button
-                  type="button"
-                  className={`mobius-stage-btn ${mobiusStage === 3 ? "active" : ""}`}
-                  onClick={() => setMobiusStage(3)}
-                >
-                  <span>3. TOPOLOGICAL INTERSECTION</span>
-                </button>
+              <div className="flex items-center gap-2 flex-wrap justify-center">
+                {[
+                  { stage: 1, label: "1. PAIR SPACE (γ × γ)" },
+                  { stage: 2, label: "2. MÖBIUS TWIST IDENTIFICATION" },
+                  { stage: 3, label: "3. TOPOLOGICAL INTERSECTION" },
+                ].map((s) => (
+                  <button
+                    key={s.stage}
+                    type="button"
+                    className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition ${
+                      mobiusStage === s.stage
+                        ? "bg-amber-500/20 text-amber-300 border border-amber-500 shadow-[0_0_12px_rgba(245,158,11,0.25)]"
+                        : "bg-slate-900/60 text-slate-400 border border-slate-800 hover:text-white"
+                    }`}
+                    onClick={() => setMobiusStage(s.stage as 1 | 2 | 3)}
+                  >
+                    {s.label}
+                  </button>
+                ))}
               </div>
 
-              {/* Vector 3D Möbius Ribbon Visualizer */}
-              <svg className="mobius-svg-render" viewBox="0 0 680 260">
+              {/* Vector Möbius Ribbon */}
+              <svg className="w-full max-w-2xl max-h-[240px]" viewBox="0 0 680 260">
                 <defs>
                   <linearGradient id="mobiusGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                     <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.9" />
@@ -791,239 +813,277 @@ export default function InscribedSquareLab() {
             </div>
           )}
 
-          {/* TOP VIEWPORT HUD DECK: Unified Glass Flight Instrument */}
-          <div className="viewport-top-hud">
-            {/* Left: Master Solver Switcher */}
-            <div className="hud-section">
-              <div className="hud-observer-switcher">
-                <div className="hud-mode-pill-group" role="group" aria-label="Solver Mode Switcher">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSolverMode("square");
-                      setActiveSolutionIndex(0);
-                    }}
-                    className={`hud-mode-btn wave-mode ${solverMode === "square" ? "active" : ""}`}
-                    title="Toeplitz Square Conjecture (1:1 Aspect Ratio)"
-                  >
-                    <span className="hud-mode-icon">⏹️</span>
-                    <div className="hud-mode-content">
-                      <span className="hud-mode-title">TOEPLITZ CONJECTURE</span>
-                      <span className="hud-mode-status">INSCRIBED SQUARE (1:1)</span>
-                    </div>
-                    {solverMode === "square" && <span className="hud-pulse-dot dot-cyan" />}
-                  </button>
+          {/* TOP VIEWPORT HUD DECK */}
+          <div className="absolute top-3 inset-x-3 z-20 flex items-center justify-between gap-3 px-3 py-2 bg-slate-950/90 backdrop-blur-xl border border-slate-700/70 rounded-xl shadow-xl max-w-full overflow-x-auto">
+            {/* Solver Switcher */}
+            <div className="flex items-center gap-1.5 bg-slate-900/90 p-1 rounded-lg border border-slate-800 flex-shrink-0">
+              <button
+                type="button"
+                onClick={() => {
+                  setSolverMode("square");
+                  setActiveSolutionIndex(0);
+                }}
+                className={`px-3 py-1.5 rounded-md flex items-center gap-2 text-xs font-mono font-bold transition ${
+                  solverMode === "square"
+                    ? "bg-cyan-500/20 text-cyan-300 border border-cyan-400/50 shadow-[0_0_12px_rgba(56,225,255,0.25)]"
+                    : "text-slate-400 hover:text-white"
+                }`}
+                title="Toeplitz Square Conjecture (1:1 Aspect Ratio)"
+              >
+                <span>⏹️</span>
+                <span>TOEPLITZ SQUARE (1:1)</span>
+              </button>
 
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSolverMode("rectangle");
-                      setActiveSolutionIndex(0);
-                    }}
-                    className={`hud-mode-btn observer-mode ${solverMode === "rectangle" ? "active" : ""}`}
-                    title="Greene-Lobb Symplectic Theorem (Inscribed Rectangle of Any Aspect Ratio)"
-                  >
-                    <span className="hud-mode-icon">▭</span>
-                    <div className="hud-mode-content">
-                      <span className="hud-mode-title">GREENE-LOBB (2020)</span>
-                      <span className="hud-mode-status">RECTANGLE (r={targetAspectRatio.toFixed(2)})</span>
-                    </div>
-                    {solverMode === "rectangle" && <span className="hud-pulse-dot dot-amber" />}
-                  </button>
-                </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setSolverMode("rectangle");
+                  setActiveSolutionIndex(0);
+                }}
+                className={`px-3 py-1.5 rounded-md flex items-center gap-2 text-xs font-mono font-bold transition ${
+                  solverMode === "rectangle"
+                    ? "bg-purple-500/20 text-purple-300 border border-purple-400/50 shadow-[0_0_12px_rgba(192,132,252,0.25)]"
+                    : "text-slate-400 hover:text-white"
+                }`}
+                title="Greene-Lobb Symplectic Theorem (Inscribed Rectangle)"
+              >
+                <span>▭</span>
+                <span>GREENE-LOBB (r={targetAspectRatio.toFixed(2)})</span>
+              </button>
+            </div>
+
+            {/* Center: Live Telemetry */}
+            <div className="hidden md:flex items-center gap-4 px-3 py-1 bg-slate-900/60 border border-slate-800/80 rounded-lg text-xs font-mono">
+              <div className="flex items-center gap-1.5">
+                <span className="text-slate-500 text-[10px]">CURVE:</span>
+                <span className="text-cyan-400 font-bold">{selectedPreset.toUpperCase()}</span>
+              </div>
+              <div className="w-[1px] h-3 bg-slate-700" />
+              <div className="flex items-center gap-1.5">
+                <span className="text-slate-500 text-[10px]">SOLUTIONS:</span>
+                <span
+                  className={`font-bold ${
+                    solutionsCount > 0 ? "text-emerald-400" : "text-amber-400"
+                  }`}
+                >
+                  {solutionsCount > 0 ? `${solutionsCount} DETECTED` : "SEARCHING..."}
+                </span>
+              </div>
+              <div className="w-[1px] h-3 bg-slate-700" />
+              <div className="flex items-center gap-1.5">
+                <span className="text-slate-500 text-[10px]">ISOPERIMETRIC:</span>
+                <span className="text-purple-300 font-bold">
+                  Q = {telemetry.isoperimetricQuotient.toFixed(3)}
+                </span>
               </div>
             </div>
 
-            <div className="hud-section-divider" />
-
-            {/* Center: Live Telemetry Cluster */}
-            <div className="hud-section hud-center-section">
-              <div className="hud-telemetry-cluster">
-                <div className="hud-metric">
-                  <span className="hud-metric-kicker">ACTIVE CURVE</span>
-                  <span className="hud-metric-val val-cyan">{selectedPreset.toUpperCase()}</span>
-                </div>
-                <div className="hud-metric-divider" />
-                <div className="hud-metric">
-                  <span className="hud-metric-kicker">SOLUTIONS</span>
-                  <span className={`hud-metric-val ${solutionsCount > 0 ? "val-emerald" : "val-amber"}`}>
-                    {solutionsCount > 0 ? `${solutionsCount} DETECTED` : "SEARCHING..."}
-                  </span>
-                </div>
-                <div className="hud-metric-divider" />
-                <div className="hud-metric">
-                  <span className="hud-metric-kicker">ISOPERIMETRIC Q</span>
-                  <span className="hud-metric-val val-purple">{telemetry.isoperimetricQuotient.toFixed(3)}</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="hud-section-divider" />
-
-            {/* Right: View Mode Toggle */}
-            <div className="hud-section hud-right-section">
-              <div className="hud-speed-cluster">
-                <span className="hud-deck-label">VIEW:</span>
-                <div className="hud-speed-pills">
-                  <button
-                    type="button"
-                    className={`hud-speed-btn ${!showMobiusView ? "active" : ""}`}
-                    onClick={() => setShowMobiusView(false)}
-                  >
-                    2D LOOP
-                  </button>
-                  <button
-                    type="button"
-                    className={`hud-speed-btn ${showMobiusView ? "active" : ""}`}
-                    onClick={() => setShowMobiusView(true)}
-                  >
-                    3D MÖBIUS
-                  </button>
-                </div>
-              </div>
+            {/* Right: View Toggle */}
+            <div className="flex items-center gap-1 bg-slate-900/80 p-1 rounded-lg border border-slate-800 flex-shrink-0">
+              <button
+                type="button"
+                className={`px-3 py-1 rounded-md text-xs font-mono font-bold transition ${
+                  !showMobiusView
+                    ? "bg-cyan-500/20 text-cyan-300 border border-cyan-400/50"
+                    : "text-slate-400 hover:text-white"
+                }`}
+                onClick={() => setShowMobiusView(false)}
+              >
+                2D LOOP
+              </button>
+              <button
+                type="button"
+                className={`px-3 py-1 rounded-md text-xs font-mono font-bold transition ${
+                  showMobiusView
+                    ? "bg-amber-500/20 text-amber-300 border border-amber-400/50"
+                    : "text-slate-400 hover:text-white"
+                }`}
+                onClick={() => setShowMobiusView(true)}
+              >
+                3D MÖBIUS
+              </button>
             </div>
           </div>
 
-          {/* BOTTOM VIEWPORT HUD DECK: Unified Telemetry & Clear Bar */}
-          <div className="viewport-bottom-hud">
-            <div className="hud-section">
-              <div className="hud-telemetry-cluster">
-                <div className="hud-metric">
-                  <span className="hud-metric-kicker">DIMENSIONS</span>
-                  <span className="hud-metric-val val-gold">{dimensionReadout}</span>
-                </div>
-                <div className="hud-metric-divider" />
-                <div className="hud-metric">
-                  <span className="hud-metric-kicker">CORNER ANGLES</span>
-                  <span className="hud-metric-val val-emerald">{cornerAngleReadout}</span>
-                </div>
-                <div className="hud-metric-divider" />
-                <div className="hud-metric">
-                  <span className="hud-metric-kicker">DIAGONAL RATIO</span>
-                  <span className="hud-metric-val val-cyan">{diagonalRatioReadout}</span>
-                </div>
-                <div className="hud-metric-divider" />
-                <div className="hud-metric">
-                  <span className="hud-metric-kicker">ORTHOGONALITY</span>
-                  <span className="hud-metric-val val-emerald">&Delta;&theta; = 0.00&deg; (&perp;)</span>
-                </div>
+          {/* BOTTOM VIEWPORT HUD DECK */}
+          <div className="absolute bottom-3 inset-x-3 z-20 flex items-center justify-between gap-3 px-3.5 py-2 bg-slate-950/90 backdrop-blur-xl border border-slate-700/70 rounded-xl shadow-xl overflow-x-auto">
+            <div className="flex items-center gap-5 text-xs font-mono">
+              <div className="flex flex-col">
+                <span className="text-[10px] text-slate-500 font-semibold tracking-wider">
+                  DIMENSIONS
+                </span>
+                <span className="text-amber-400 font-bold">{dimensionReadout}</span>
+              </div>
+              <div className="w-[1px] h-6 bg-slate-800" />
+              <div className="flex flex-col">
+                <span className="text-[10px] text-slate-500 font-semibold tracking-wider">
+                  CORNER ANGLES
+                </span>
+                <span className="text-emerald-400 font-bold">{cornerAngleReadout}</span>
+              </div>
+              <div className="w-[1px] h-6 bg-slate-800" />
+              <div className="flex flex-col">
+                <span className="text-[10px] text-slate-500 font-semibold tracking-wider">
+                  DIAGONAL RATIO
+                </span>
+                <span className="text-cyan-400 font-bold">{diagonalRatioReadout}</span>
+              </div>
+              <div className="w-[1px] h-6 bg-slate-800" />
+              <div className="flex flex-col">
+                <span className="text-[10px] text-slate-500 font-semibold tracking-wider">
+                  ORTHOGONALITY
+                </span>
+                <span className="text-emerald-400 font-bold">&Delta;&theta; = 0.00&deg; (&perp;)</span>
               </div>
             </div>
 
-            <div className="hud-section-divider" />
-
-            <div className="hud-section hud-right-section">
-              <button
-                type="button"
-                className="hud-tool-btn clear-btn"
-                onClick={() => {
-                  setSelectedPreset("custom");
-                  setCurvePoints([]);
-                  setIsAutoMorphing(false);
-                }}
-                title="Clear loop and enter freehand sketch mode"
-              >
-                <span>↺ CLEAR &amp; DRAW</span>
-              </button>
-            </div>
+            <button
+              type="button"
+              className="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700 hover:border-cyan-400 text-slate-300 hover:text-white text-xs font-mono font-bold transition flex items-center gap-1.5 flex-shrink-0"
+              onClick={() => {
+                setSelectedPreset("custom");
+                setCurvePoints([]);
+                setIsAutoMorphing(false);
+              }}
+              title="Clear loop and enter freehand sketch mode"
+            >
+              <span>↺</span>
+              <span>CLEAR &amp; DRAW</span>
+            </button>
           </div>
         </div>
       </section>
 
-      {/* 3. 2-COLUMN ANALYTICAL CONSOLE & CONTROL DECK */}
-      <section className="dashboard-console-grid">
+      {/* 3. 2-COLUMN DASHBOARD CONSOLE GRID */}
+      <section className="grid grid-cols-1 lg:grid-cols-2 gap-5 w-full items-start">
         {/* Left Column: Diagnostics & Geometry Algebraic Proof */}
         <div className="flex flex-col gap-5">
-          {/* Card 1: Loop Diagnostics via Green's Theorem */}
-          <div className="control-card">
-            <div className="card-header">
+          {/* Module 01: Green's Theorem Analysis */}
+          <div className="bg-slate-900/50 backdrop-blur-md border border-slate-800 rounded-xl p-5 flex flex-col gap-4 shadow-xl hover:border-slate-700/80 transition">
+            <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
               <div>
-                <span className="card-tag">MODULE 01 // TOPOLOGY DIAGNOSTICS</span>
-                <h4 className="card-subheading">Green&apos;s Theorem Loop Integral Analysis</h4>
+                <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-cyan-400">
+                  MODULE 01 // TOPOLOGY DIAGNOSTICS
+                </span>
+                <h4 className="text-sm font-semibold text-slate-100">
+                  Green&apos;s Theorem Loop Integral Analysis
+                </h4>
               </div>
-              <span className="analytics-tag" style={{ color: "#38e1ff", borderColor: "#38e1ff55", backgroundColor: "#38e1ff14" }}>
+              <span className="px-2.5 py-0.5 rounded text-[11px] font-mono font-bold bg-cyan-950/60 border border-cyan-500/40 text-cyan-300">
                 JORDAN CURVE
               </span>
             </div>
 
-            <div className="diagnostics-grid">
-              <div className="diag-cell">
-                <span className="diag-label">PERIMETER &oint; ds</span>
-                <span className="diag-val">{telemetry.perimeter.toFixed(1)} px</span>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="p-3 rounded-lg bg-slate-950/60 border border-slate-800/80 flex flex-col gap-1">
+                <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">
+                  PERIMETER &oint; ds
+                </span>
+                <span className="text-sm font-mono font-bold text-white">
+                  {telemetry.perimeter.toFixed(1)} px
+                </span>
               </div>
-              <div className="diag-cell">
-                <span className="diag-label">ENCLOSED AREA &iint; dx dy</span>
-                <span className="diag-val">{telemetry.area.toFixed(0)} px&sup2;</span>
+
+              <div className="p-3 rounded-lg bg-slate-950/60 border border-slate-800/80 flex flex-col gap-1">
+                <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">
+                  ENCLOSED AREA &iint; dx dy
+                </span>
+                <span className="text-sm font-mono font-bold text-white">
+                  {telemetry.area.toFixed(0)} px&sup2;
+                </span>
               </div>
-              <div className="diag-cell">
-                <span className="diag-label">ISOPERIMETRIC EFFICIENCY Q</span>
-                <span className="diag-val val-cyan">{telemetry.isoperimetricQuotient.toFixed(3)}</span>
+
+              <div className="p-3 rounded-lg bg-slate-950/60 border border-slate-800/80 flex flex-col gap-1">
+                <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">
+                  ISOPERIMETRIC EFFICIENCY Q
+                </span>
+                <span className="text-sm font-mono font-bold text-cyan-400">
+                  {telemetry.isoperimetricQuotient.toFixed(3)}
+                </span>
               </div>
-              <div className="diag-cell">
-                <span className="diag-label">SMOOTHNESS CLASS</span>
-                <span className="diag-val val-emerald">C&infin; Smooth</span>
+
+              <div className="p-3 rounded-lg bg-slate-950/60 border border-slate-800/80 flex flex-col gap-1">
+                <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">
+                  SMOOTHNESS CLASS
+                </span>
+                <span className="text-sm font-mono font-bold text-emerald-400">
+                  C&infin; Smooth
+                </span>
               </div>
             </div>
           </div>
 
-          {/* Card 2: 4 Vertices & Algebraic Proof */}
+          {/* Module 02: Square Coordinates & Algebraic Verification */}
           {activeSquare && solverMode === "square" && (
-            <div className="control-card">
-              <div className="card-header">
+            <div className="bg-slate-900/50 backdrop-blur-md border border-slate-800 rounded-xl p-5 flex flex-col gap-4 shadow-xl hover:border-slate-700/80 transition">
+              <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
                 <div>
-                  <span className="card-tag">MODULE 02 // ALGEBRAIC PROOF</span>
-                  <h4 className="card-subheading">Square Coordinates on Curve &gamma;(t)</h4>
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-emerald-400">
+                    MODULE 02 // ALGEBRAIC PROOF
+                  </span>
+                  <h4 className="text-sm font-semibold text-slate-100">
+                    Square Coordinates on Curve &gamma;(t)
+                  </h4>
                 </div>
-                <span className="analytics-tag" style={{ color: "#50e39c", borderColor: "#50e39c55", backgroundColor: "#50e39c14" }}>
+                <span className="px-2.5 py-0.5 rounded text-[11px] font-mono font-bold bg-emerald-950/60 border border-emerald-500/40 text-emerald-300">
                   VERIFIED
                 </span>
               </div>
-              <div className="coords-table">
-                <div className="coord-row">
-                  <span className="coord-tag">Vertex A:</span>
-                  <code>({activeSquare.a.x.toFixed(1)}, {activeSquare.a.y.toFixed(1)})</code>
-                </div>
-                <div className="coord-row">
-                  <span className="coord-tag">Vertex B:</span>
-                  <code>({activeSquare.b.x.toFixed(1)}, {activeSquare.b.y.toFixed(1)})</code>
-                </div>
-                <div className="coord-row">
-                  <span className="coord-tag">Vertex C:</span>
-                  <code>({activeSquare.c.x.toFixed(1)}, {activeSquare.c.y.toFixed(1)})</code>
-                </div>
-                <div className="coord-row">
-                  <span className="coord-tag">Vertex D:</span>
-                  <code>({activeSquare.d.x.toFixed(1)}, {activeSquare.d.y.toFixed(1)})</code>
-                </div>
+
+              <div className="flex flex-col gap-2 font-mono text-xs">
+                {[
+                  { tag: "Vertex A", pt: activeSquare.a },
+                  { tag: "Vertex B", pt: activeSquare.b },
+                  { tag: "Vertex C", pt: activeSquare.c },
+                  { tag: "Vertex D", pt: activeSquare.d },
+                ].map((v) => (
+                  <div
+                    key={v.tag}
+                    className="flex items-center justify-between p-2.5 rounded-lg bg-slate-950/60 border border-slate-800/80"
+                  >
+                    <span className="text-amber-400 font-bold">{v.tag}:</span>
+                    <code className="text-slate-300">
+                      ({v.pt.x.toFixed(1)}, {v.pt.y.toFixed(1)})
+                    </code>
+                  </div>
+                ))}
               </div>
             </div>
           )}
 
-          {/* Card 3: Multi-Square Solution Picker */}
+          {/* Module 03: Multi-Square Solutions Picker */}
           {solverMode === "square" && detectedSquares.length > 1 && (
-            <div className="control-card">
-              <div className="card-header">
+            <div className="bg-slate-900/50 backdrop-blur-md border border-slate-800 rounded-xl p-5 flex flex-col gap-4 shadow-xl hover:border-slate-700/80 transition">
+              <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
                 <div>
-                  <span className="card-tag">MODULE 03 // MULTI-SOLUTIONS</span>
-                  <h4 className="card-subheading">Multiple Inscribed Squares Detected</h4>
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-amber-400">
+                    MODULE 03 // MULTI-SOLUTIONS
+                  </span>
+                  <h4 className="text-sm font-semibold text-slate-100">
+                    Multiple Inscribed Squares Detected
+                  </h4>
                 </div>
-                <span className="analytics-tag" style={{ color: "#f59e0b", borderColor: "#f59e0b55", backgroundColor: "#f59e0b14" }}>
+                <span className="px-2.5 py-0.5 rounded text-[11px] font-mono font-bold bg-amber-950/60 border border-amber-500/40 text-amber-300">
                   {detectedSquares.length} SOLUTIONS
                 </span>
               </div>
-              <p className="card-hint">
+              <p className="text-xs text-slate-400 leading-relaxed">
                 This loop supports multiple distinct inscribed squares! Click to inspect each:
               </p>
-              <div className="square-selector-row">
+              <div className="flex items-center gap-2 flex-wrap">
                 {detectedSquares.map((sq, idx) => (
                   <button
                     key={idx}
                     type="button"
-                    className={`square-select-btn ${activeSolutionIndex === idx ? "active" : ""}`}
+                    className={`px-3 py-2 rounded-lg text-xs font-mono font-bold transition flex items-center gap-2 ${
+                      activeSolutionIndex === idx
+                        ? "bg-amber-500/20 text-amber-300 border border-amber-500 shadow-[0_0_12px_rgba(245,158,11,0.25)]"
+                        : "bg-slate-950/60 text-slate-400 border border-slate-800 hover:text-white"
+                    }`}
                     onClick={() => setActiveSolutionIndex(idx)}
                   >
                     <span>Square #{idx + 1}</span>
-                    <span className="sub-rot">{sq.rotationDeg.toFixed(0)}°</span>
+                    <span className="text-[10px] opacity-75">{sq.rotationDeg.toFixed(0)}°</span>
                   </button>
                 ))}
               </div>
@@ -1032,22 +1092,26 @@ export default function InscribedSquareLab() {
         </div>
 
         {/* Right Column: Complete Interactive Control Deck */}
-        <div className="controls-deck">
-          {/* Card 1: Geometric Presets & Freehand */}
-          <div className="control-card">
-            <div className="card-header">
+        <div className="flex flex-col gap-5">
+          {/* Control 01: Geometric Presets & Freehand */}
+          <div className="bg-slate-900/50 backdrop-blur-md border border-slate-800 rounded-xl p-5 flex flex-col gap-4 shadow-xl hover:border-slate-700/80 transition">
+            <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
               <div>
-                <span className="card-tag">CONTROL 01 // GEOMETRY</span>
-                <h4 className="card-subheading">Curve Presets &amp; Freehand Sketch</h4>
+                <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-cyan-400">
+                  CONTROL 01 // GEOMETRY
+                </span>
+                <h4 className="text-sm font-semibold text-slate-100">
+                  Curve Presets &amp; Freehand Sketch
+                </h4>
               </div>
-              <span className="analytics-tag" style={{ color: "#38e1ff", borderColor: "#38e1ff55", backgroundColor: "#38e1ff14" }}>
+              <span className="px-2.5 py-0.5 rounded text-[11px] font-mono font-bold bg-cyan-950/60 border border-cyan-500/40 text-cyan-300">
                 SELECT
               </span>
             </div>
-            <p className="card-hint">
+            <p className="text-xs text-slate-400 leading-relaxed">
               Select a mathematical loop geometry or draw your own closed curve.
             </p>
-            <div className="presets-grid">
+            <div className="grid grid-cols-2 gap-2.5">
               {[
                 { id: "ellipse", label: "Ellipse", icon: "⬭" },
                 { id: "clover", label: "Clover (3-Fold)", icon: "☘️" },
@@ -1059,53 +1123,63 @@ export default function InscribedSquareLab() {
                 <button
                   key={p.id}
                   type="button"
-                  className={`preset-btn ${selectedPreset === p.id ? "active" : ""}`}
+                  className={`p-3 rounded-lg border text-xs font-semibold flex items-center gap-2.5 transition ${
+                    selectedPreset === p.id
+                      ? "bg-amber-500/15 border-amber-500 text-white shadow-[0_0_14px_rgba(245,158,11,0.25)]"
+                      : "bg-slate-950/60 border-slate-800 text-slate-400 hover:text-white hover:border-cyan-500/40"
+                  }`}
                   onClick={() => {
                     setSelectedPreset(p.id);
                     setIsAutoMorphing(false);
                   }}
                 >
-                  <span className="preset-icon">{p.icon}</span>
+                  <span className="text-base">{p.icon}</span>
                   <span>{p.label}</span>
                 </button>
               ))}
             </div>
 
-            <div className="custom-draw-row">
-              <button
-                type="button"
-                className={`btn-draw-freehand ${selectedPreset === "custom" ? "is-drawing-mode" : ""}`}
-                onClick={() => {
-                  setSelectedPreset("custom");
-                  setCurvePoints([]);
-                  setIsAutoMorphing(false);
-                }}
-              >
-                <span>✏️ Clear &amp; Draw Custom Loop</span>
-              </button>
-            </div>
+            <button
+              type="button"
+              className={`w-full py-2.5 px-4 rounded-lg font-mono text-xs font-bold transition flex items-center justify-center gap-2 shadow-lg ${
+                selectedPreset === "custom"
+                  ? "bg-amber-500/20 border border-amber-500 text-amber-400"
+                  : "bg-gradient-to-r from-cyan-950/40 to-slate-900 border border-cyan-500/40 text-cyan-300 hover:text-white hover:border-cyan-400 shadow-[0_0_14px_rgba(56,225,255,0.2)]"
+              }`}
+              onClick={() => {
+                setSelectedPreset("custom");
+                setCurvePoints([]);
+                setIsAutoMorphing(false);
+              }}
+            >
+              <span>✏️ Clear &amp; Draw Custom Loop</span>
+            </button>
           </div>
 
-          {/* Card 2: Interactive Deformation & Auto-Morph */}
+          {/* Control 02: Interactive Deformation & Auto-Morph */}
           {selectedPreset !== "custom" && (
-            <div className="control-card">
-              <div className="card-header">
+            <div className="bg-slate-900/50 backdrop-blur-md border border-slate-800 rounded-xl p-5 flex flex-col gap-4 shadow-xl hover:border-slate-700/80 transition">
+              <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
                 <div>
-                  <span className="card-tag">CONTROL 02 // DYNAMICS</span>
-                  <h4 className="card-subheading">Curve Deformation &amp; Continuous Morph</h4>
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-emerald-400">
+                    CONTROL 02 // DYNAMICS
+                  </span>
+                  <h4 className="text-sm font-semibold text-slate-100">
+                    Curve Deformation &amp; Continuous Morph
+                  </h4>
                 </div>
-                <span className="analytics-tag" style={{ color: "#50e39c", borderColor: "#50e39c55", backgroundColor: "#50e39c14" }}>
+                <span className="px-2.5 py-0.5 rounded text-[11px] font-mono font-bold bg-emerald-950/60 border border-emerald-500/40 text-emerald-300">
                   &lambda; = {deformation.toFixed(2)}
                 </span>
               </div>
-              <p className="card-hint">
+              <p className="text-xs text-slate-400 leading-relaxed">
                 Continuously deform the loop and watch the inscribed square adapt in real time.
               </p>
 
-              <div className="slider-control-row">
-                <div className="slider-label-row">
+              <div className="flex flex-col gap-2">
+                <div className="flex justify-between items-center text-xs text-slate-400 font-mono">
                   <span>Eccentricity &amp; Perturbation</span>
-                  <span className="slider-val-readout">&lambda; = {deformation.toFixed(2)}</span>
+                  <span className="text-cyan-400 font-bold">&lambda; = {deformation.toFixed(2)}</span>
                 </div>
                 <input
                   type="range"
@@ -1117,21 +1191,26 @@ export default function InscribedSquareLab() {
                     setIsAutoMorphing(false);
                     setDeformation(parseFloat(e.target.value));
                   }}
-                  className="modern-slider"
+                  className="w-full accent-cyan-400 cursor-pointer"
                 />
               </div>
 
-              <div className="auto-morph-row">
+              <div className="flex items-center gap-3 pt-2">
                 <button
                   type="button"
-                  className={`btn-auto-morph ${isAutoMorphing ? "active" : ""}`}
+                  className={`flex-1 py-2 px-3 rounded-lg font-mono text-xs font-bold transition flex items-center justify-center gap-2 ${
+                    isAutoMorphing
+                      ? "bg-emerald-500/20 border border-emerald-500 text-emerald-300 shadow-[0_0_14px_rgba(80,227,156,0.3)]"
+                      : "bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 hover:text-white hover:border-cyan-400"
+                  }`}
                   onClick={() => setIsAutoMorphing(!isAutoMorphing)}
                 >
                   <span>{isAutoMorphing ? "❚❚ Pause Auto-Morph" : "▶ Continuous Auto-Morph"}</span>
                 </button>
+
                 <button
                   type="button"
-                  className="btn-morph-reset"
+                  className="py-2 px-3 rounded-lg font-mono text-xs font-bold bg-slate-950/60 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 transition"
                   onClick={() => {
                     setIsAutoMorphing(false);
                     setDeformation(1.0);
@@ -1144,26 +1223,30 @@ export default function InscribedSquareLab() {
             </div>
           )}
 
-          {/* Card 3: Greene-Lobb Aspect Ratio Control (when in rectangle mode) */}
+          {/* Control 03: Greene-Lobb Aspect Ratio Control */}
           {solverMode === "rectangle" && (
-            <div className="control-card">
-              <div className="card-header">
+            <div className="bg-slate-900/50 backdrop-blur-md border border-slate-800 rounded-xl p-5 flex flex-col gap-4 shadow-xl hover:border-slate-700/80 transition">
+              <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
                 <div>
-                  <span className="card-tag">CONTROL 03 // SYMPLECTIC</span>
-                  <h4 className="card-subheading">Greene-Lobb Target Aspect Ratio</h4>
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-purple-400">
+                    CONTROL 03 // SYMPLECTIC
+                  </span>
+                  <h4 className="text-sm font-semibold text-slate-100">
+                    Greene-Lobb Target Aspect Ratio
+                  </h4>
                 </div>
-                <span className="analytics-tag" style={{ color: "#c084fc", borderColor: "#c084fc55", backgroundColor: "#c084fc14" }}>
+                <span className="px-2.5 py-0.5 rounded text-[11px] font-mono font-bold bg-purple-950/60 border border-purple-500/40 text-purple-300">
                   r = {targetAspectRatio.toFixed(3)}
                 </span>
               </div>
-              <p className="card-hint">
+              <p className="text-xs text-slate-400 leading-relaxed">
                 Select target aspect ratio $r = W/H$. Greene &amp; Lobb proved a solution exists for every $r \ge 1$.
               </p>
 
-              <div className="slider-control-row">
-                <div className="slider-label-row">
+              <div className="flex flex-col gap-2">
+                <div className="flex justify-between items-center text-xs text-slate-400 font-mono">
                   <span>Target Ratio (Width / Height)</span>
-                  <span className="slider-val-readout val-purple">r = {targetAspectRatio.toFixed(3)}</span>
+                  <span className="text-purple-400 font-bold">r = {targetAspectRatio.toFixed(3)}</span>
                 </div>
                 <input
                   type="range"
@@ -1172,11 +1255,11 @@ export default function InscribedSquareLab() {
                   step="0.01"
                   value={targetAspectRatio}
                   onChange={(e) => setTargetAspectRatio(parseFloat(e.target.value))}
-                  className="modern-slider slider-purple"
+                  className="w-full accent-purple-400 cursor-pointer"
                 />
               </div>
 
-              <div className="aspect-ratio-presets">
+              <div className="grid grid-cols-2 gap-2 pt-2">
                 {[
                   { label: "Golden Ratio Φ (1.618)", val: 1.618 },
                   { label: "Root 2 (1.414)", val: 1.414 },
@@ -1186,7 +1269,11 @@ export default function InscribedSquareLab() {
                   <button
                     key={item.label}
                     type="button"
-                    className={`ratio-pill-btn ${Math.abs(targetAspectRatio - item.val) < 0.01 ? "active" : ""}`}
+                    className={`py-2 px-2.5 rounded-lg text-[11px] font-mono font-semibold transition text-center ${
+                      Math.abs(targetAspectRatio - item.val) < 0.01
+                        ? "bg-purple-500/20 border border-purple-400 text-purple-300 font-bold shadow-[0_0_10px_rgba(168,85,247,0.25)]"
+                        : "bg-slate-950/60 border border-slate-800 text-slate-400 hover:text-white"
+                    }`}
                     onClick={() => setTargetAspectRatio(item.val)}
                   >
                     {item.label}
@@ -1200,26 +1287,35 @@ export default function InscribedSquareLab() {
 
       {/* 4. THEORETICAL PROOFS MODAL */}
       {isTheoryOpen && (
-        <div className="modal-backdrop" onClick={() => setIsTheoryOpen(false)}>
-          <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2 className="modal-title">Mathematical Foundations: The Inscribed Square Problem</h2>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md"
+          onClick={() => setIsTheoryOpen(false)}
+        >
+          <div
+            className="relative w-full max-w-2xl bg-slate-950 border border-slate-800 rounded-2xl shadow-2xl p-6 flex flex-col gap-5 max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
+              <h2 className="text-base font-bold text-white">
+                Mathematical Foundations: The Inscribed Square Problem
+              </h2>
               <button
                 type="button"
-                className="modal-close-btn"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition"
                 onClick={() => setIsTheoryOpen(false)}
               >
                 ✕
               </button>
             </div>
-            <div className="modal-body">
-              <section className="modal-section">
-                <h3>1. Otto Toeplitz&apos;s 1911 Conjecture</h3>
+
+            <div className="flex flex-col gap-5 text-xs text-slate-300 leading-relaxed">
+              <section className="flex flex-col gap-2">
+                <h3 className="text-sm font-bold text-cyan-400">1. Otto Toeplitz&apos;s 1911 Conjecture</h3>
                 <p>
                   German mathematician <strong>Otto Toeplitz</strong> posed the famous question in 1911:
                   <em> Does every simple closed curve in the Euclidean plane contain four points that form the vertices of a square?</em>
                 </p>
-                <div className="math-callout">
+                <div className="p-3 rounded-xl bg-slate-900 border border-cyan-500/20 text-cyan-300 font-mono text-xs overflow-x-auto">
                   <code>{"\\forall \\gamma \\subset \\mathbb{R}^2 \\text{ (Jordan curve)}, \\quad \\exists A, B, C, D \\in \\gamma \\text{ forming a square.}"}</code>
                 </div>
                 <p>
@@ -1228,8 +1324,10 @@ export default function InscribedSquareLab() {
                 </p>
               </section>
 
-              <section className="modal-section">
-                <h3>2. The Möbius Strip Proof (Šnirel&apos;man 1929 &amp; 3Blue1Brown)</h3>
+              <section className="flex flex-col gap-2">
+                <h3 className="text-sm font-bold text-amber-400">
+                  2. The Möbius Strip Proof (Šnirel&apos;man 1929 &amp; 3Blue1Brown)
+                </h3>
                 <p>
                   Consider the configuration space of all unordered pairs of points on the closed loop:
                   (x, y) &isin; (&gamma; &times; &gamma;) / &Zopf;<sub>2</sub>.
@@ -1244,21 +1342,24 @@ export default function InscribedSquareLab() {
                 </p>
               </section>
 
-              <section className="modal-section">
-                <h3>3. Breakthrough: The Greene-Lobb Symplectic Theorem (2020)</h3>
+              <section className="flex flex-col gap-2">
+                <h3 className="text-sm font-bold text-purple-400">
+                  3. Breakthrough: The Greene-Lobb Symplectic Theorem (2020)
+                </h3>
                 <p>
                   In May 2020, mathematicians <strong>Joshua Greene</strong> (Bowdoin College) and <strong>Andrew Lobb</strong> (Durham University)
                   proved using modern symplectic geometry and Floer homology that <strong>every smooth Jordan curve contains an inscribed rectangle of every possible aspect ratio</strong>.
                 </p>
-                <div className="math-callout">
+                <div className="p-3 rounded-xl bg-slate-900 border border-purple-500/20 text-purple-300 font-mono text-xs overflow-x-auto">
                   <code>{"\\forall r \\ge 1, \\quad \\exists A, B, C, D \\in \\gamma \\text{ forming a rectangle with } \\text{Aspect Ratio } = r"}</code>
                 </div>
               </section>
             </div>
-            <div className="modal-footer">
+
+            <div className="pt-3 border-t border-slate-800/80 flex justify-end">
               <button
                 type="button"
-                className="btn-modal-dismiss"
+                className="px-4 py-2 rounded-lg bg-cyan-500/20 border border-cyan-400/50 text-cyan-300 hover:text-white hover:bg-cyan-500/30 font-mono text-xs font-bold transition shadow-lg"
                 onClick={() => setIsTheoryOpen(false)}
               >
                 Got It &bull; Return to Lab
