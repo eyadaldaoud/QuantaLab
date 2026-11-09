@@ -642,10 +642,10 @@ export default function InscribedSquareLab() {
           {!showMobiusView ? (
             <div className="absolute inset-0 flex items-center justify-center bg-[radial-gradient(circle_at_50%_50%,#061525_0%,#02070e_95%)] overflow-hidden">
               {/* Canvas Overlay Controls */}
-              <div className="absolute top-16 right-4 z-10 flex items-center gap-1.5 p-1 bg-slate-950/80 backdrop-blur-md border border-cyan-500/20 rounded-full shadow-lg">
+              <div className="absolute top-16 right-2 sm:right-4 z-10 flex items-center gap-1 sm:gap-1.5 p-1 bg-slate-950/80 backdrop-blur-md border border-cyan-500/20 rounded-full shadow-lg">
                 <button
                   type="button"
-                  className={`px-2.5 py-1 rounded-full text-[11px] font-mono font-bold transition ${
+                  className={`px-2 sm:px-2.5 py-1 rounded-full text-[10px] sm:text-[11px] font-mono font-bold transition ${
                     showGrid
                       ? "bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 shadow-[0_0_8px_rgba(56,225,255,0.25)]"
                       : "text-slate-400 hover:text-white"
@@ -653,11 +653,12 @@ export default function InscribedSquareLab() {
                   onClick={() => setShowGrid(!showGrid)}
                   title="Toggle Euclidean Grid"
                 >
-                  # GRID
+                  <span className="hidden sm:inline"># </span>#
+                  <span className="hidden sm:inline"> GRID</span>
                 </button>
                 <button
                   type="button"
-                  className={`px-2.5 py-1 rounded-full text-[11px] font-mono font-bold transition ${
+                  className={`px-2 sm:px-2.5 py-1 rounded-full text-[10px] sm:text-[11px] font-mono font-bold transition ${
                     showDiagonals
                       ? "bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 shadow-[0_0_8px_rgba(56,225,255,0.25)]"
                       : "text-slate-400 hover:text-white"
@@ -665,11 +666,11 @@ export default function InscribedSquareLab() {
                   onClick={() => setShowDiagonals(!showDiagonals)}
                   title="Toggle Perpendicular Diagonals"
                 >
-                  ✕ DIAGONALS
+                  ✕<span className="hidden sm:inline"> DIAG</span>
                 </button>
                 <button
                   type="button"
-                  className={`px-2.5 py-1 rounded-full text-[11px] font-mono font-bold transition ${
+                  className={`px-2 sm:px-2.5 py-1 rounded-full text-[10px] sm:text-[11px] font-mono font-bold transition ${
                     showAngles
                       ? "bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 shadow-[0_0_8px_rgba(56,225,255,0.25)]"
                       : "text-slate-400 hover:text-white"
@@ -677,11 +678,11 @@ export default function InscribedSquareLab() {
                   onClick={() => setShowAngles(!showAngles)}
                   title="Toggle 90° Right Angle Markers"
                 >
-                  ⊾ 90° ANGLES
+                  ⊾<span className="hidden sm:inline"> 90°</span>
                 </button>
                 <button
                   type="button"
-                  className={`px-2.5 py-1 rounded-full text-[11px] font-mono font-bold transition ${
+                  className={`px-2 sm:px-2.5 py-1 rounded-full text-[10px] sm:text-[11px] font-mono font-bold transition ${
                     showSideLengths
                       ? "bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 shadow-[0_0_8px_rgba(56,225,255,0.25)]"
                       : "text-slate-400 hover:text-white"
@@ -689,7 +690,7 @@ export default function InscribedSquareLab() {
                   onClick={() => setShowSideLengths(!showSideLengths)}
                   title="Toggle Side Dimensions"
                 >
-                  📏 DIMENSIONS
+                  📏<span className="hidden sm:inline"> DIM</span>
                 </button>
               </div>
 
@@ -713,7 +714,7 @@ export default function InscribedSquareLab() {
                 onTouchEnd={handlePointerUp}
               />
 
-              <div className="absolute bottom-16 left-1/2 -translate-x-1/2 z-10 px-4 py-1.5 rounded-full bg-slate-950/85 backdrop-blur-md border border-cyan-500/30 text-xs font-mono text-slate-300 whitespace-nowrap shadow-lg">
+              <div className="hidden sm:block absolute bottom-16 left-1/2 -translate-x-1/2 z-10 px-4 py-1.5 rounded-full bg-slate-950/85 backdrop-blur-md border border-cyan-500/30 text-xs font-mono text-slate-300 whitespace-nowrap shadow-lg">
                 <span>✏️ Click &amp; drag anywhere to sketch your custom loop &bull; or select presets below</span>
               </div>
             </div>
@@ -814,16 +815,16 @@ export default function InscribedSquareLab() {
           )}
 
           {/* TOP VIEWPORT HUD DECK */}
-          <div className="absolute top-3 inset-x-3 z-20 flex items-center justify-between gap-3 px-3 py-2 bg-slate-950/90 backdrop-blur-xl border border-slate-700/70 rounded-xl shadow-xl max-w-full overflow-x-auto">
+          <div className="absolute top-3 inset-x-3 z-20 flex items-center justify-between gap-2 px-2 sm:px-3 py-2 bg-slate-950/90 backdrop-blur-xl border border-slate-700/70 rounded-xl shadow-xl max-w-full overflow-x-auto">
             {/* Solver Switcher */}
-            <div className="flex items-center gap-1.5 bg-slate-900/90 p-1 rounded-lg border border-slate-800 flex-shrink-0">
+            <div className="flex items-center gap-1 sm:gap-1.5 bg-slate-900/90 p-1 rounded-lg border border-slate-800 flex-shrink-0">
               <button
                 type="button"
                 onClick={() => {
                   setSolverMode("square");
                   setActiveSolutionIndex(0);
                 }}
-                className={`px-3 py-1.5 rounded-md flex items-center gap-2 text-xs font-mono font-bold transition ${
+                className={`px-2 sm:px-3 py-1.5 rounded-md flex items-center gap-1 sm:gap-2 text-xs font-mono font-bold transition ${
                   solverMode === "square"
                     ? "bg-cyan-500/20 text-cyan-300 border border-cyan-400/50 shadow-[0_0_12px_rgba(56,225,255,0.25)]"
                     : "text-slate-400 hover:text-white"
@@ -831,7 +832,8 @@ export default function InscribedSquareLab() {
                 title="Toeplitz Square Conjecture (1:1 Aspect Ratio)"
               >
                 <span>⏹️</span>
-                <span>TOEPLITZ SQUARE (1:1)</span>
+                <span className="hidden sm:inline">TOEPLITZ SQUARE (1:1)</span>
+                <span className="sm:hidden">SQUARE</span>
               </button>
 
               <button
@@ -840,7 +842,7 @@ export default function InscribedSquareLab() {
                   setSolverMode("rectangle");
                   setActiveSolutionIndex(0);
                 }}
-                className={`px-3 py-1.5 rounded-md flex items-center gap-2 text-xs font-mono font-bold transition ${
+                className={`px-2 sm:px-3 py-1.5 rounded-md flex items-center gap-1 sm:gap-2 text-xs font-mono font-bold transition ${
                   solverMode === "rectangle"
                     ? "bg-purple-500/20 text-purple-300 border border-purple-400/50 shadow-[0_0_12px_rgba(192,132,252,0.25)]"
                     : "text-slate-400 hover:text-white"
@@ -848,7 +850,8 @@ export default function InscribedSquareLab() {
                 title="Greene-Lobb Symplectic Theorem (Inscribed Rectangle)"
               >
                 <span>▭</span>
-                <span>GREENE-LOBB (r={targetAspectRatio.toFixed(2)})</span>
+                <span className="hidden sm:inline">GREENE-LOBB (r={targetAspectRatio.toFixed(2)})</span>
+                <span className="sm:hidden">RECT</span>
               </button>
             </div>
 
@@ -906,8 +909,8 @@ export default function InscribedSquareLab() {
           </div>
 
           {/* BOTTOM VIEWPORT HUD DECK */}
-          <div className="absolute bottom-3 inset-x-3 z-20 flex items-center justify-between gap-3 px-3.5 py-2 bg-slate-950/90 backdrop-blur-xl border border-slate-700/70 rounded-xl shadow-xl overflow-x-auto">
-            <div className="flex items-center gap-5 text-xs font-mono">
+          <div className="absolute bottom-3 inset-x-3 z-20 flex items-center justify-between gap-3 px-3 sm:px-3.5 py-2 bg-slate-950/90 backdrop-blur-xl border border-slate-700/70 rounded-xl shadow-xl overflow-x-auto">
+            <div className="hidden sm:flex items-center gap-5 text-xs font-mono">
               <div className="flex flex-col">
                 <span className="text-[10px] text-slate-500 font-semibold tracking-wider">
                   DIMENSIONS
@@ -935,6 +938,11 @@ export default function InscribedSquareLab() {
                 </span>
                 <span className="text-emerald-400 font-bold">&Delta;&theta; = 0.00&deg; (&perp;)</span>
               </div>
+            </div>
+            {/* Mobile: show just one key metric */}
+            <div className="flex sm:hidden items-center gap-2 text-xs font-mono">
+              <span className="text-slate-500 text-[10px] font-semibold">DIM:</span>
+              <span className="text-amber-400 font-bold">{dimensionReadout}</span>
             </div>
 
             <button
