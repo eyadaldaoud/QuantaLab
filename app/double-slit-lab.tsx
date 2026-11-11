@@ -1705,6 +1705,52 @@ export default function DoubleSlitLab() {
         </div>
       </section>
 
+      {/* On mobile, keep playback and speed controls in the page flow below
+          the scene so they never cover the 3D experiment. */}
+      <div className="mobile-playback-controls">
+        <div className="mobile-playback-actions">
+          <button
+            type="button"
+            onClick={() => setIsRunning((r) => !r)}
+            className={`hud-stream-btn ${isRunning ? "stream-pause" : "stream-play"}`}
+            title={isRunning ? "Pause continuous photon stream" : "Resume continuous photon stream"}
+          >
+            {isRunning ? "❚❚ PAUSE STREAM" : "▶ RESUME STREAM"}
+          </button>
+          <button
+            type="button"
+            onClick={fireSingle}
+            className="hud-single-btn"
+            title="Fire exactly one single photon in slow motion"
+          >
+            ⚡ FIRE 1 PHOTON
+          </button>
+        </div>
+        <div className="mobile-speed-control">
+          <span className="mobile-speed-label">SPEED</span>
+          <div className="hud-speed-pills" role="radiogroup" aria-label="Simulation Speed">
+            {[
+              { value: 0.1, label: "0.1x" },
+              { value: 0.25, label: "0.25x" },
+              { value: 0.5, label: "0.5x" },
+              { value: 1.0, label: "1x" },
+              { value: 2.0, label: "2x" },
+              { value: 4.0, label: "4x" },
+            ].map((speed) => (
+              <button
+                key={speed.value}
+                type="button"
+                onClick={() => setSpeedMultiplier(speed.value)}
+                className={`hud-speed-btn ${speedMultiplier === speed.value ? "active" : ""}`}
+                aria-pressed={speedMultiplier === speed.value}
+              >
+                {speed.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* 2-Column Analytical Dashboard: Live Plot + Complete Experiment Controls */}
       <section className="dashboard-console-grid">
         {/* Left Column: Live Probability Distribution Graph */}

@@ -788,6 +788,10 @@ button, input, select {
   box-shadow: 0 0 8px rgba(56, 225, 255, 0.25);
 }
 
+.mobile-playback-controls {
+  display: none;
+}
+
 /* ==========================================================================
    5. 2-Column Analytical Dashboard Console Grid
    ========================================================================== */
@@ -1916,55 +1920,61 @@ button, input, select {
     white-space: nowrap;
   }
   .viewport-bottom-hud {
-    flex-direction: column;
-    align-items: stretch;
-    bottom: 0.4rem;
-    left: 0.4rem;
-    right: 0.4rem;
-    gap: 0.35rem;
-    pointer-events: none;
+    display: none;
   }
   .hud-telemetry-cluster {
     display: none;
   }
-  .hud-playback-cluster {
-    width: 100%;
+  .mobile-playback-controls {
     display: flex;
-    gap: 0.35rem;
-    pointer-events: auto;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+    margin-top: -0.75rem;
+    padding: 0.65rem;
+    background: rgba(6, 12, 20, 0.88);
+    border: 1px solid rgba(34, 56, 80, 0.9);
+    border-radius: 10px;
   }
-  .hud-stream-btn {
+  .mobile-playback-actions {
+    display: flex;
+    gap: 0.45rem;
+  }
+  .mobile-playback-actions .hud-stream-btn,
+  .mobile-playback-actions .hud-single-btn {
     flex: 1;
-    height: 36px;
-    font-size: 0.68rem;
-    padding: 0 0.5rem;
-    justify-content: center;
+    min-width: 0;
+    min-height: 42px;
+    height: auto;
+    padding: 0.5rem 0.35rem;
+    font-size: 0.65rem;
+    line-height: 1.25;
+    text-align: center;
   }
-  .hud-single-btn {
+  .mobile-speed-control {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+  .mobile-speed-label {
+    color: var(--ink-muted);
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+  }
+  .mobile-speed-control .hud-speed-pills {
+    min-width: 0;
     flex: 1;
-    height: 36px;
-    font-size: 0.68rem;
-    padding: 0 0.5rem;
-    justify-content: center;
+    justify-content: flex-end;
   }
-  .hud-speed-cluster {
-    width: fit-content;
-    max-width: 100%;
-    align-self: flex-end;
-    overflow: visible;
-    padding: 0.15rem 0.25rem;
-    background: rgba(6, 12, 20, 0.72);
-    pointer-events: auto;
-  }
-  .hud-speed-pills {
-    flex-wrap: nowrap;
-  }
-  .hud-speed-btn {
-    font-size: 0.64rem;
-    min-width: 40px;
-    min-height: 36px;
-    padding: 0.25rem 0.35rem;
-    flex-shrink: 0;
+  .mobile-speed-control .hud-speed-btn {
+    flex: 1;
+    min-width: 0;
+    min-height: 38px;
+    padding: 0.35rem 0.25rem;
+    font-size: 0.62rem;
   }
   .analytics-card-wide {
     padding: 1rem 0.85rem;
