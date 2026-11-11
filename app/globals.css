@@ -1948,23 +1948,22 @@ button, input, select {
     justify-content: center;
   }
   .hud-speed-cluster {
-    width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    padding: 0.2rem 0.35rem;
+    width: fit-content;
+    max-width: 100%;
+    align-self: flex-end;
+    overflow: visible;
+    padding: 0.15rem 0.25rem;
+    background: rgba(6, 12, 20, 0.72);
     pointer-events: auto;
   }
-  .hud-speed-cluster::-webkit-scrollbar {
-    display: none;
-  }
   .hud-speed-pills {
-    overflow-x: auto;
     flex-wrap: nowrap;
   }
   .hud-speed-btn {
     font-size: 0.64rem;
-    padding: 0.25rem 0.45rem;
+    min-width: 40px;
+    min-height: 36px;
+    padding: 0.25rem 0.35rem;
     flex-shrink: 0;
   }
   .analytics-card-wide {
