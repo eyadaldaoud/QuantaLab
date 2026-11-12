@@ -6,6 +6,19 @@ import * as THREE from "three";
 import "@/app/labs.css";
 import { quantumAudio } from "@/app/quantum-audio";
 import { wavelengthToColor } from "@/app/quantum-physics";
+import Navbar from "@/app/components/Navbar";
+import Footer from "@/app/components/Footer";
+import {
+  IconBack,
+  IconCollapse,
+  IconExpand,
+  IconPause,
+  IconPhoton,
+  IconPlay,
+  IconPolarizer,
+  IconReset,
+  IconWave,
+} from "@/app/components/lab-icons";
 import {
   computeFringeSpacing,
   computeVisibility,
@@ -190,15 +203,17 @@ export default function QuantumEraserLab() {
 
   return (
     <div className="quantum-studio-root eraser-studio">
-      {/* Topbar Header */}
+      <Navbar />
+
+      {/* Bench header — same paper-and-ink language as the landing chrome */}
       <header className="studio-topbar">
         <div className="topbar-left">
           <Link href="/" className="back-hub-btn" title="Back to QuantaLab Experiments Catalog">
-            <span className="back-arrow">←</span>
+            <IconBack className="icon-svg" />
             <span>{STRINGS.experiment.breadcrumbCatalog}</span>
           </Link>
           <div className="topbar-divider-v" />
-          <div className="studio-logo" aria-hidden="true">🪞</div>
+          <IconPolarizer className="bench-glyph" />
           <div className="topbar-branding">
             <div className="topbar-title-row">
               <h1 className="studio-title">{STRINGS.experiment.title}</h1>
@@ -215,7 +230,7 @@ export default function QuantumEraserLab() {
         <div className="topbar-actions">
           <button
             onClick={() => setShowWalkthrough(true)}
-            className="topbar-btn video-guide-btn"
+            className="topbar-btn"
             title="Open the step-by-step guided discovery walkthrough"
           >
             <span>GUIDED WALKTHROUGH</span>
@@ -223,7 +238,7 @@ export default function QuantumEraserLab() {
 
           <button
             onClick={() => setShowTheoryModal(true)}
-            className="topbar-btn theory-btn"
+            className="topbar-btn"
             title="Read physical explanation of which-path tagging and state erasure"
           >
             <span>THEORY &amp; MATH</span>
@@ -268,7 +283,7 @@ export default function QuantumEraserLab() {
                     title={STRINGS.modes.plain.description}
                     aria-pressed={mode === "plain"}
                   >
-                    <span className="hud-mode-icon">🌊</span>
+                    <IconWave className="hud-mode-icon" />
                     <div className="hud-mode-content">
                       <span className="hud-mode-title">PLAIN</span>
                       <span className="hud-mode-status">WAVE INTERFERENCE</span>
@@ -303,7 +318,7 @@ export default function QuantumEraserLab() {
                     title={STRINGS.modes.analyzer.description}
                     aria-pressed={mode === "analyzer"}
                   >
-                    <span className="hud-mode-icon">🪞</span>
+                    <IconPolarizer className="hud-mode-icon" />
                     <div className="hud-mode-content">
                       <span className="hud-mode-title">ANALYZER ({thetaDeg}°)</span>
                       <span className="hud-mode-status">POLARIZER θ = {thetaDeg}°</span>
@@ -319,7 +334,7 @@ export default function QuantumEraserLab() {
             {/* Center: Camera Presets */}
             <div className="hud-section hud-center-section">
               <div className="hud-camera-toolbar" role="toolbar" aria-label="Camera Presets">
-                <span className="hud-deck-label">📷 CAMERA:</span>
+                <span className="hud-deck-label">CAMERA:</span>
                 <div className="hud-cam-btn-group">
                   {CAMERA_PRESETS.map((preset) => (
                     <button
@@ -362,7 +377,8 @@ export default function QuantumEraserLab() {
                   className="hud-tool-btn clear-btn"
                   title="Clear accumulated hits on detector screen"
                 >
-                  <span>↺ CLEAR</span>
+                  <IconReset className="icon-svg" />
+                  <span>CLEAR</span>
                 </button>
 
                 <button
@@ -370,7 +386,8 @@ export default function QuantumEraserLab() {
                   className={`hud-tool-btn ${isMaximized ? "tool-active" : ""}`}
                   title={isMaximized ? "Exit theater view (Esc)" : "Expand to theater view"}
                 >
-                  <span>{isMaximized ? "❐ EXIT" : "⛶ EXPAND"}</span>
+                  {isMaximized ? <IconCollapse className="icon-svg" /> : <IconExpand className="icon-svg" />}
+                  <span>{isMaximized ? "EXIT" : "EXPAND"}</span>
                 </button>
               </div>
             </div>
@@ -392,12 +409,12 @@ export default function QuantumEraserLab() {
                 </div>
                 <div className="hud-metric-divider" />
                 <div className="hud-metric">
-                  <span className="hud-metric-kicker">CHANNEL A (●)</span>
+                  <span className="hud-metric-kicker">CHANNEL A · DOTS</span>
                   <span className="hud-metric-val val-cyan">{String(countA).padStart(5, "0")}</span>
                 </div>
                 <div className="hud-metric-divider" />
                 <div className="hud-metric">
-                  <span className="hud-metric-kicker">CHANNEL B (▲)</span>
+                  <span className="hud-metric-kicker">CHANNEL B · TRIANGLES</span>
                   <span className="hud-metric-val val-amber">{String(countB).padStart(5, "0")}</span>
                 </div>
                 <div className="hud-metric-divider" />
@@ -423,7 +440,8 @@ export default function QuantumEraserLab() {
                   className={`hud-stream-btn ${isRunning ? "stream-pause" : "stream-play"}`}
                   title={isRunning ? "Pause continuous photon stream" : "Resume photon stream"}
                 >
-                  {isRunning ? "❚❚ PAUSE" : "▶ RESUME"}
+                  {isRunning ? <IconPause className="icon-svg" /> : <IconPlay className="icon-svg" />}
+                  <span>{isRunning ? "PAUSE" : "RESUME"}</span>
                 </button>
 
                 <button
@@ -431,7 +449,8 @@ export default function QuantumEraserLab() {
                   className="hud-single-btn"
                   title="Fire exactly 1 photon in slow motion"
                 >
-                  ⚡ FIRE 1 PHOTON
+                  <IconPhoton className="icon-svg" />
+                  <span>FIRE 1 PHOTON</span>
                 </button>
               </div>
             </div>
@@ -441,7 +460,7 @@ export default function QuantumEraserLab() {
             {/* Speed Pills */}
             <div className="hud-section hud-right-section">
               <div className="hud-speed-cluster" role="radiogroup" aria-label="Simulation Speed">
-                <span className="hud-deck-label">⏱ SPEED:</span>
+                <span className="hud-deck-label">SPEED:</span>
                 <div className="hud-speed-pills">
                   {[
                     { value: 0.1, label: "0.1x" },
@@ -486,7 +505,7 @@ export default function QuantumEraserLab() {
           <div className={`control-card ${mode !== "analyzer" ? "card-dimmed" : ""}`}>
             <div className="card-header">
               <div>
-                <span className="card-tag">MODULE 01 // POLARIZATION ANALYZER</span>
+                <span className="card-tag">FIG. 01 · POLARIZATION ANALYZER</span>
                 <h4 className="card-subheading">{STRINGS.controls.analyzerAngle}</h4>
               </div>
               <span className="wl-spec-badge" style={{ color: "#5f3dc4", borderColor: "rgba(95, 61, 196, 0.4)", backgroundColor: "rgba(95, 61, 196, 0.08)" }}>
@@ -550,7 +569,7 @@ export default function QuantumEraserLab() {
           <div className="control-card">
             <div className="card-header">
               <div>
-                <span className="card-tag">MODULE 02 // COHERENT LIGHT SOURCE</span>
+                <span className="card-tag">FIG. 02 · COHERENT LIGHT SOURCE</span>
                 <h4 className="card-subheading">{STRINGS.controls.wavelength}</h4>
               </div>
               <span className="wl-spec-badge" style={{ color: currentColor.hex, borderColor: `${currentColor.hex}44`, backgroundColor: `${currentColor.hex}15` }}>
@@ -589,7 +608,7 @@ export default function QuantumEraserLab() {
           <div className="control-card">
             <div className="card-header">
               <div>
-                <span className="card-tag">MODULE 03 // APERTURE CALIBRATION</span>
+                <span className="card-tag">FIG. 03 · APERTURE CALIBRATION</span>
                 <h4 className="card-subheading">Aperture Spacing (d) &amp; Slit Width (a)</h4>
               </div>
               <span className="card-dim-spec">
@@ -644,7 +663,7 @@ export default function QuantumEraserLab() {
           <div className="control-card">
             <div className="card-header">
               <div>
-                <span className="card-tag">MODULE 04 // EMISSION RATE</span>
+                <span className="card-tag">FIG. 04 · EMISSION RATE</span>
                 <h4 className="card-subheading">{STRINGS.controls.particleRate}</h4>
               </div>
               <span className="rate-readout-pill">{emissionRate} photons / sec</span>
@@ -805,6 +824,8 @@ export default function QuantumEraserLab() {
           </div>
         </div>
       )}
+
+      <Footer />
     </div>
   );
 }
@@ -1889,7 +1910,7 @@ function EraserDistributionPlot({
     <div className="analytics-card-wide">
       <div className="analytics-header">
         <div>
-          <span className="section-kicker">MODULE 01 // DETECTOR SCREEN HISTOGRAM</span>
+          <span className="section-kicker">FIG. 01 · DETECTOR SCREEN HISTOGRAM</span>
           <h3 className="analytics-title">Probability Density P(x) &amp; Channel Sorting</h3>
         </div>
         <div className="analytics-tag-group">
@@ -1911,8 +1932,8 @@ function EraserDistributionPlot({
           {(
             [
               { id: "ALL", label: "All Hits (A + B)", dot: wavelengthColor },
-              { id: "A", label: "Channel A (●)", dot: "#8f7ae8" },
-              { id: "B", label: "Channel B (▲)", dot: "#c89a4e" },
+              { id: "A", label: "Channel A · Dots", dot: "#8f7ae8" },
+              { id: "B", label: "Channel B · Triangles", dot: "#c89a4e" },
               { id: "OVERLAY", label: "Overlaid (A & B)", dot: "#8f7ae8" },
             ] as const
           ).map((v) => (

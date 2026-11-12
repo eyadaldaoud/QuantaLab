@@ -5,6 +5,21 @@ import Link from "next/link";
 import * as THREE from "three";
 import "./labs.css";
 import { quantumAudio } from "./quantum-audio";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import {
+  IconBack,
+  IconCollapse,
+  IconExpand,
+  IconEye,
+  IconPause,
+  IconPhoton,
+  IconPlay,
+  IconReset,
+  IconSlitPlate,
+  IconVideo,
+  IconWave,
+} from "./components/lab-icons";
 import {
   computeFringeSpacing,
   computeIntensity,
@@ -1242,7 +1257,7 @@ function LiveDistributionPlot({
     <div className="analytics-card-wide">
       <div className="analytics-header">
         <div>
-          <span className="section-kicker">MODULE 01 // DETECTOR DIAGNOSTICS</span>
+          <span className="section-kicker">FIG. 01 · DETECTOR DIAGNOSTICS</span>
           <h3 className="analytics-title">Phosphor Screen Intensity &amp; Density Function P(z)</h3>
         </div>
         <span className="analytics-tag" style={{ color: color.hex, borderColor: `${color.hex}55`, backgroundColor: `${color.hex}14` }}>
@@ -1440,24 +1455,28 @@ export default function DoubleSlitLab() {
 
   return (
     <div className="quantum-studio-root">
-      {/* Sleek Studio Header */}
+      <Navbar />
+
+      {/* Bench header — same paper-and-ink language as the landing chrome */}
       <header className="studio-topbar">
         <div className="topbar-left">
           <Link href="/" className="back-hub-btn" title="Back to QuantaLab Experiments Catalog">
-            <span className="back-arrow">←</span>
+            <IconBack className="icon-svg" />
             <span>CATALOG</span>
           </Link>
           <div className="topbar-divider-v" />
-          <div className="studio-logo" aria-hidden="true">Ψ</div>
+          <IconSlitPlate className="bench-glyph" />
           <div className="topbar-branding">
             <div className="topbar-title-row">
-              <h1 className="studio-title">QUANTUM OPTICS LAB</h1>
+              <h1 className="studio-title">The Double-Slit Experiment</h1>
               <span className="studio-status-pill">
                 <span className="status-dot-live" />
                 SIMULATION ACTIVE
               </span>
             </div>
-            <span className="studio-subtitle">THE DOUBLE-SLIT EXPERIMENT &amp; WAVE-PARTICLE DUALITY</span>
+            <span className="studio-subtitle">
+              BENCH 01 · WAVE-PARTICLE DUALITY &amp; THE OBSERVER EFFECT · HE-NE 632.8 NM
+            </span>
           </div>
         </div>
 
@@ -1468,16 +1487,16 @@ export default function DoubleSlitLab() {
               setVideoStartTime(0);
               setShowVideoModal(true);
             }}
-            className="topbar-btn video-guide-btn"
+            className="topbar-btn"
             title="Watch YouTube video explaining the double-slit experiment & observer effect"
           >
-            <span className="yt-badge">▶</span>
+            <IconVideo className="icon-svg" />
             <span>VIDEO GUIDE</span>
           </button>
 
           <button
             onClick={() => setShowTheoryModal(true)}
-            className="topbar-btn theory-btn"
+            className="topbar-btn"
             title="Read physical explanation of wave-particle duality"
           >
             <span>THEORY &amp; MATH</span>
@@ -1520,7 +1539,7 @@ export default function DoubleSlitLab() {
                     title="No observer: photon travels in wave superposition through both slits, producing 5+ interference fringes"
                     aria-pressed={!whichPath}
                   >
-                    <span className="hud-mode-icon">🌊</span>
+                    <IconWave className="hud-mode-icon" />
                     <div className="hud-mode-content">
                       <span className="hud-mode-title">NO OBSERVER</span>
                       <span className="hud-mode-status">WAVE SUPERPOSITION</span>
@@ -1540,7 +1559,7 @@ export default function DoubleSlitLab() {
                     title="Observer active: detectors at slits measure which slit each photon enters, collapsing superposition into 2 classical bands"
                     aria-pressed={whichPath}
                   >
-                    <span className="hud-mode-icon">👁️</span>
+                    <IconEye className="hud-mode-icon" />
                     <div className="hud-mode-content">
                       <span className="hud-mode-title">OBSERVER ACTIVE</span>
                       <span className="hud-mode-status">PARTICLE COLLAPSE</span>
@@ -1556,7 +1575,7 @@ export default function DoubleSlitLab() {
             {/* Center: Camera Angles Toolbar */}
             <div className="hud-section hud-center-section">
               <div className="hud-camera-toolbar" role="toolbar" aria-label="Camera Presets">
-                <span className="hud-deck-label">📷 CAMERA:</span>
+                <span className="hud-deck-label">CAMERA:</span>
                 <div className="hud-cam-btn-group">
                   {CAMERA_PRESETS.map((preset) => (
                     <button
@@ -1591,7 +1610,7 @@ export default function DoubleSlitLab() {
                   className={`hud-tool-btn ${showWaveOverlay ? "tool-active" : ""}`}
                   title="Overlay continuous theoretical wave fringes on phosphor detector screen"
                 >
-                  <span>≋ {showWaveOverlay ? "WAVE ON" : "WAVE"}</span>
+                  <span>{showWaveOverlay ? "WAVE ON" : "WAVE"}</span>
                 </button>
                 <button
                   onClick={() => setShowLabels((v) => !v)}
@@ -1607,7 +1626,8 @@ export default function DoubleSlitLab() {
                   className="hud-tool-btn clear-btn"
                   title="Clear accumulated hits on detector screen"
                 >
-                  <span>↺ CLEAR</span>
+                  <IconReset className="icon-svg" />
+                  <span>CLEAR</span>
                 </button>
 
                 <button
@@ -1615,7 +1635,8 @@ export default function DoubleSlitLab() {
                   className={`hud-tool-btn ${isMaximized ? "tool-active" : ""}`}
                   title={isMaximized ? "Exit Fullscreen Theater View (Esc)" : "Expand to Fullscreen Theater View"}
                 >
-                  <span>{isMaximized ? "❐ EXIT" : "⛶ EXPAND"}</span>
+                  {isMaximized ? <IconCollapse className="icon-svg" /> : <IconExpand className="icon-svg" />}
+                  <span>{isMaximized ? "EXIT" : "EXPAND"}</span>
                 </button>
               </div>
             </div>
@@ -1662,7 +1683,8 @@ export default function DoubleSlitLab() {
                   className={`hud-stream-btn ${isRunning ? "stream-pause" : "stream-play"}`}
                   title={isRunning ? "Pause continuous photon stream" : "Resume continuous photon stream"}
                 >
-                  {isRunning ? "❚❚ PAUSE STREAM" : "▶ RESUME STREAM"}
+                  {isRunning ? <IconPause className="icon-svg" /> : <IconPlay className="icon-svg" />}
+                  <span>{isRunning ? "PAUSE STREAM" : "RESUME STREAM"}</span>
                 </button>
 
                 <button
@@ -1670,7 +1692,8 @@ export default function DoubleSlitLab() {
                   className="hud-single-btn"
                   title="Fire exactly one single photon in slow motion"
                 >
-                  ⚡ FIRE 1 PHOTON
+                  <IconPhoton className="icon-svg" />
+                  <span>FIRE 1 PHOTON</span>
                 </button>
               </div>
             </div>
@@ -1680,7 +1703,7 @@ export default function DoubleSlitLab() {
             {/* Right: Simulation Speed Pills */}
             <div className="hud-section hud-right-section">
               <div className="hud-speed-cluster" role="radiogroup" aria-label="Simulation Speed">
-                <span className="hud-deck-label">⏱ SPEED:</span>
+                <span className="hud-deck-label">SPEED:</span>
                 <div className="hud-speed-pills">
                   {[
                     { value: 0.1, label: "0.1x", title: "Ultra Slow-Motion (10x slower) — Inspect single wavepacket splitting" },
@@ -1716,7 +1739,8 @@ export default function DoubleSlitLab() {
             className={`hud-stream-btn ${isRunning ? "stream-pause" : "stream-play"}`}
             title={isRunning ? "Pause continuous photon stream" : "Resume continuous photon stream"}
           >
-            {isRunning ? "❚❚ PAUSE STREAM" : "▶ RESUME STREAM"}
+            {isRunning ? <IconPause className="icon-svg" /> : <IconPlay className="icon-svg" />}
+            <span>{isRunning ? "PAUSE STREAM" : "RESUME STREAM"}</span>
           </button>
           <button
             type="button"
@@ -1724,7 +1748,8 @@ export default function DoubleSlitLab() {
             className="hud-single-btn"
             title="Fire exactly one single photon in slow motion"
           >
-            ⚡ FIRE 1 PHOTON
+            <IconPhoton className="icon-svg" />
+            <span>FIRE 1 PHOTON</span>
           </button>
         </div>
         <div className="mobile-speed-control">
@@ -1767,7 +1792,7 @@ export default function DoubleSlitLab() {
           <div className="control-card">
             <div className="card-header">
               <div>
-                <span className="card-tag">MODULE 02 // SOURCE CALIBRATION</span>
+                <span className="card-tag">FIG. 02 · SOURCE CALIBRATION</span>
                 <h4 className="card-subheading">Monochromatic Laser Wavelength (λ)</h4>
               </div>
               <span className="wl-spec-badge" style={{ color: currentColor.hex, borderColor: `${currentColor.hex}44`, backgroundColor: `${currentColor.hex}15` }}>
@@ -1851,7 +1876,7 @@ export default function DoubleSlitLab() {
           <div className="control-card">
             <div className="card-header">
               <div>
-                <span className="card-tag">MODULE 03 // INVESTIGATION SCENARIOS</span>
+                <span className="card-tag">FIG. 03 · INVESTIGATION SCENARIOS</span>
                 <h4 className="card-subheading">Interactive Quantum Phenomenon Tour</h4>
               </div>
               <span className="step-indicator">STEP {guideStep + 1} OF 4</span>
@@ -1871,7 +1896,7 @@ export default function DoubleSlitLab() {
                 >
                   <div className="tour-card-header">
                     <span className="tour-card-title">{step.label}</span>
-                    <span className="tour-card-arrow">↗</span>
+                    <span className="tour-card-arrow">→</span>
                   </div>
                   <span className="tour-card-sub">{step.sub}</span>
                 </button>
@@ -1882,9 +1907,9 @@ export default function DoubleSlitLab() {
           {/* Card 3: Theory & Video Guide Companion */}
           <div className="control-card media-companion-card">
             <div className="media-companion-header">
-              <div className="media-badge-icon">Ψ</div>
+              <div className="media-badge-icon"><IconWave size={16} /></div>
               <div>
-                <span className="card-tag">MODULE 04 // PHENOMENON &amp; MEDIA</span>
+                <span className="card-tag">FIG. 04 · PHENOMENON &amp; MEDIA</span>
                 <h4 className="media-companion-title">Wave-Particle Duality &amp; Measurement Theory</h4>
                 <p className="media-companion-desc">
                   Explore how single photons interfere with themselves as probability wavepackets, and why physical detection at the slits destroys phase coherence.
@@ -1902,7 +1927,7 @@ export default function DoubleSlitLab() {
                 className="companion-btn companion-video-btn"
                 title="Watch Dr. Quantum's animated double slit video"
               >
-                <span className="yt-badge">▶</span>
+                <span className="yt-badge"><IconPlay size={8} /></span>
                 <span>Watch Video Guide (Dr. Quantum Animation)</span>
               </button>
 
@@ -1965,7 +1990,7 @@ export default function DoubleSlitLab() {
                   }}
                   className="modal-video-cta-btn"
                 >
-                  <span className="yt-badge">▶</span>
+                  <span className="yt-badge"><IconPlay size={8} /></span>
                   <span>WATCH VIDEO EXPLANATION</span>
                 </button>
               </div>
@@ -1980,7 +2005,7 @@ export default function DoubleSlitLab() {
           <div className="modal-content video-modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <div className="video-modal-title-group">
-                <span className="yt-badge">▶ YOUTUBE</span>
+                <span className="yt-badge"><IconPlay size={8} /><span>YOUTUBE</span></span>
                 <h3>The Double-Slit Experiment &amp; The Observer Effect</h3>
               </div>
               <button
@@ -2031,12 +2056,14 @@ export default function DoubleSlitLab() {
                 rel="noopener noreferrer"
                 className="open-yt-btn"
               >
-                Open on YouTube ↗
+                Open on YouTube →
               </a>
             </div>
           </div>
         </div>
       )}
+
+      <Footer />
     </div>
   );
 }
