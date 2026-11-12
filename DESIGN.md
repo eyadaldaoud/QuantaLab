@@ -28,6 +28,13 @@ The labs are the same paper bench, not a separate theme:
 
 - Console chrome (topbar, control cards, analytics cards, modals) is paper:
   `#fbfaf7`/white panels, hairlines, ink text — identical language to the landing.
+- Every experiment page is wrapped in the shared site chrome (Navbar + Footer);
+  the bench header underneath is a paper plate: back-to-catalog pill, bench glyph,
+  Archivo title, mono-caps subtitle, and a quiet green tick status tag.
+- Figure tags read as quiet micro-cap plaques — `FIG. 02 · SOURCE CALIBRATION` —
+  in `--qb-ink-3`, never in an accent color. HUD icons are inline 1.5px-stroke
+  SVG geometry (`app/components/lab-icons.tsx`), never emoji or unicode glyphs.
+- Viewport HUD decks are solid stage surfaces (no backdrop blur, no inset highlights).
 - The 3D viewport is the one dark plate: `.grand-viewport-section` re-scopes the
   token set to stage values (`--stage-*`), so the WebGL scene, HUD decks, orbit
   hints, and speed pills stay a dark instrument while the page stays paper.

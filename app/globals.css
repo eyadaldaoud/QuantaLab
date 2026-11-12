@@ -2096,3 +2096,150 @@ a { color: inherit; }
   .modal-backdrop { padding: 12px; align-items: flex-start; }
   .modal-header, .modal-body, .modal-footer { padding-left: 20px; padding-right: 20px; }
 }
+
+/* ---- Hover intent bridges (the gap between trigger and menu) ---------------- */
+
+/* The dropdowns hang below their trigger with a deliberate visual offset.
+   The bridge makes that gap hoverable, so travelling to the menu never
+   leaves the wrapper's hit area; Navbar also keeps a 180 ms close delay. */
+.nav-mega-dropdown::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -17px;
+  height: 17px;
+}
+
+.launch-dropdown-menu::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -8px;
+  height: 8px;
+}
+
+/* ---- Menu entrance ----------------------------------------------------------- */
+
+.nav-mega-dropdown { animation: mega-drop 0.18s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+.launch-dropdown-menu,
+.command-palette-modal { animation: menu-drop 0.16s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+.modal-content { animation: modal-rise 0.2s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+@keyframes mega-drop {
+  from { opacity: 0; transform: translateX(-50%) translateY(-6px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+@keyframes menu-drop {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes modal-rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---- Carets & affordance motion ------------------------------------------------ */
+
+.nav-caret-svg,
+.launch-caret-svg {
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nav-caret-svg.is-open,
+.launch-caret-svg.is-open {
+  transform: rotate(180deg);
+}
+
+.nav-link {
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.btn-launch-header,
+.btn-launch,
+.btn-launch-exp,
+.btn-card-launch,
+.spotlight-tab-btn,
+.filter-pill {
+  transition: background 0.18s ease, transform 0.18s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.18s ease, color 0.18s ease;
+}
+
+.btn-launch-header:hover,
+.btn-launch:hover,
+.btn-launch-exp:hover,
+.btn-card-launch:hover {
+  transform: translateY(-1px);
+}
+
+/* The beam tick slides along on hover — the bench "fires up". */
+.btn-launch .launch-tick {
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-launch:hover .launch-tick {
+  transform: translateX(3px);
+}
+
+/* Catalog card: title gets the underline sweep, the rest stays quiet. */
+.card-title {
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1.5px;
+  transition: text-decoration-color 0.2s ease;
+}
+
+.exp-card:hover .card-title {
+  text-decoration-color: var(--qb-rule);
+}
+
+.exp-card:hover .card-lam-tick {
+  transform: translateX(2px);
+}
+
+.card-lam-tick {
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Register rows: the λ bar extends toward the row on hover. */
+.register-lam {
+  transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.register-item:hover .register-lam {
+  width: 44px;
+}
+
+/* Mega menu bench rows: same beam-extend cue. */
+.mega-exp-lam::before {
+  transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mega-exp-card:hover .mega-exp-lam::before {
+  width: 34px;
+}
+
+/* Launch menu: the arrow nudges forward. */
+.launch-item-launch-arrow {
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.launch-exp-item:hover .launch-item-launch-arrow {
+  transform: translateX(3px);
+}
+
+/* Spotlight tabs: nudge the λ tick. */
+.spotlight-tab-lam {
+  transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.spotlight-tab-btn:hover .spotlight-tab-lam,
+.spotlight-tab-btn.is-selected .spotlight-tab-lam {
+  width: 26px;
+}

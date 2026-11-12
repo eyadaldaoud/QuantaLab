@@ -44,6 +44,37 @@ export default function Navbar({ currentExperimentSlug }: NavbarProps) {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchListRef = useRef<HTMLDivElement>(null);
 
+  // Hover intent: both dropdowns sit a few px below their triggers and close on
+  // wrapper mouseleave. Delay the close so the pointer can cross the gap — and
+  // re-entering the wrapper (its menus are children) cancels the pending close.
+  const closeTimerRef = useRef<number>(null);
+
+  const cancelPendingClose = () => {
+    if (closeTimerRef.current !== null) {
+      window.clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
+  };
+
+  const openDropdown = (menu: "experiments" | "launch") => {
+    cancelPendingClose();
+    setActiveDropdown(menu);
+  };
+
+  const scheduleClose = () => {
+    cancelPendingClose();
+    closeTimerRef.current = window.setTimeout(() => {
+      closeTimerRef.current = null;
+      setActiveDropdown(null);
+    }, 180);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (closeTimerRef.current !== null) window.clearTimeout(closeTimerRef.current);
+    };
+  }, []);
+
   const detectedSlug = currentExperimentSlug || (
     pathname?.startsWith("/experiments/double-slit")
       ? "double-slit"
@@ -277,8 +308,8 @@ export default function Navbar({ currentExperimentSlug }: NavbarProps) {
 
             <div
               className="nav-dropdown-wrapper"
-              onMouseEnter={() => setActiveDropdown("experiments")}
-              onMouseLeave={() => setActiveDropdown(null)}
+              onMouseEnter={() => openDropdown("experiments")}
+              onMouseLeave={scheduleClose}
             >
               <button
                 type="button"
@@ -466,8 +497,8 @@ export default function Navbar({ currentExperimentSlug }: NavbarProps) {
 
             <div
               className="nav-launch-wrapper"
-              onMouseEnter={() => setActiveDropdown("launch")}
-              onMouseLeave={() => setActiveDropdown(null)}
+              onMouseEnter={() => openDropdown("launch")}
+              onMouseLeave={scheduleClose}
             >
               <button
                 type="button"
