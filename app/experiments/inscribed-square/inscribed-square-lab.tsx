@@ -18,6 +18,55 @@ import {
 
 type SolverMode = "square" | "rectangle";
 
+/* Preset curve glyphs — drawn geometry, one consistent 1.5px stroke. */
+const PRESET_GLYPHS: Record<string, React.ReactNode> = {
+  ellipse: <ellipse cx="12" cy="12" rx="8.5" ry="6" />,
+  clover: (
+    <g>
+      <ellipse cx="12" cy="7.5" rx="3.4" ry="4.2" />
+      <ellipse cx="8.2" cy="14.5" rx="3.4" ry="4.2" transform="rotate(60 8.2 14.5)" />
+      <ellipse cx="15.8" cy="14.5" rx="3.4" ry="4.2" transform="rotate(-60 15.8 14.5)" />
+    </g>
+  ),
+  limacon: (
+    <path d="M12 4.5 C 16.5 4.5, 19.5 8.5, 19.5 12.5 C 19.5 16.5, 15.5 19.5, 12 19.5 C 8.5 19.5, 5 16.5, 5.5 12 C 6 8, 9 4.5, 12 4.5 C 13.5 9, 12.5 14.5, 12 17" fill="none" />
+  ),
+  astroid: (
+    <path d="M12 3.5 Q 14.6 9.4 20.5 12 Q 14.6 14.6 12 20.5 Q 9.4 14.6 3.5 12 Q 9.4 9.4 12 3.5" fill="none" />
+  ),
+  wobble: (
+    <path d="M12 3.8 C 14 6.4, 18.6 6.2, 19.4 9.2 C 20.2 12, 17 14.6, 18 17.6 C 16 20.4, 11.8 19.4, 9.4 19.4 C 6.4 19.4, 4.6 16, 6 13 C 7.4 10, 4.2 7.6, 5.6 5.6 C 7.4 3.4, 10.6 5.2, 12 3.8" fill="none" />
+  ),
+  circle: <circle cx="12" cy="12" r="8.5" />,
+};
+
+function PresetGlyph({ id }: { id: string }) {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      className="shrink-0"
+      aria-hidden="true"
+    >
+      {PRESET_GLYPHS[id] ?? PRESET_GLYPHS.circle}
+    </svg>
+  );
+}
+
+/* The bench signature: a square inscribed in a circle. */
+function BenchMarkGlyph() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="M6.3 8.6 L17.7 8.6 L17.7 15.4 L6.3 15.4 Z" />
+    </svg>
+  );
+}
+
 export default function InscribedSquareLab() {
   // Solver mode: Toeplitz Square (1:1) vs Greene-Lobb Rectangle (r:1)
   const [solverMode, setSolverMode] = useState<SolverMode>("square");
@@ -234,7 +283,7 @@ export default function InscribedSquareLab() {
 
     // 1. Euclidean Coordinate Grid
     if (showGrid) {
-      ctx.strokeStyle = "rgba(30, 58, 88, 0.35)";
+      ctx.strokeStyle = "rgba(61, 65, 71, 0.35)";
       ctx.lineWidth = 1;
       const gridSize = 40;
       for (let x = 0; x <= width; x += gridSize) {
@@ -253,7 +302,7 @@ export default function InscribedSquareLab() {
       // Origin Axes
       const cx = width / 2;
       const cy = height / 2;
-      ctx.strokeStyle = "rgba(56, 225, 255, 0.16)";
+      ctx.strokeStyle = "rgba(200, 154, 78, 0.16)";
       ctx.lineWidth = 1.5;
       ctx.beginPath();
       ctx.moveTo(cx, 0);
@@ -265,11 +314,11 @@ export default function InscribedSquareLab() {
 
     // 2. Active Freehand Drawing in progress
     if (isDrawing && drawingBufferRef.current.length > 1) {
-      ctx.strokeStyle = "#38e1ff";
+      ctx.strokeStyle = "#c89a4e";
       ctx.lineWidth = 3.5;
       ctx.lineCap = "round";
       ctx.lineJoin = "round";
-      ctx.shadowColor = "#38e1ff";
+      ctx.shadowColor = "#c89a4e";
       ctx.shadowBlur = 14;
 
       ctx.beginPath();
@@ -287,7 +336,7 @@ export default function InscribedSquareLab() {
     // 3. Render Closed Jordan Curve γ(t)
     if (curvePoints.length > 2) {
       // Glow underlay
-      ctx.strokeStyle = "rgba(56, 225, 255, 0.35)";
+      ctx.strokeStyle = "rgba(200, 154, 78, 0.35)";
       ctx.lineWidth = 6;
       ctx.beginPath();
       ctx.moveTo(curvePoints[0].x, curvePoints[0].y);
@@ -298,9 +347,9 @@ export default function InscribedSquareLab() {
       ctx.stroke();
 
       // Sharp cyan edge
-      ctx.strokeStyle = "#38e1ff";
+      ctx.strokeStyle = "#c89a4e";
       ctx.lineWidth = 3;
-      ctx.shadowColor = "rgba(56, 225, 255, 0.85)";
+      ctx.shadowColor = "rgba(200, 154, 78, 0.85)";
       ctx.shadowBlur = 12;
 
       ctx.beginPath();
@@ -314,7 +363,7 @@ export default function InscribedSquareLab() {
     }
 
     // Helper: 90° angle marker
-    const drawRightAngleMarker = (pCorner: Point2D, p1: Point2D, p2: Point2D, color = "#50e39c") => {
+    const drawRightAngleMarker = (pCorner: Point2D, p1: Point2D, p2: Point2D, color = "#4fae6e") => {
       const d1 = distance(p1, pCorner);
       const d2 = distance(p2, pCorner);
       if (d1 === 0 || d2 === 0) return;
@@ -334,7 +383,7 @@ export default function InscribedSquareLab() {
     };
 
     // Helper: Equal edge tick mark
-    const drawEdgeTick = (p1: Point2D, p2: Point2D, color = "#f59e0b") => {
+    const drawEdgeTick = (p1: Point2D, p2: Point2D, color = "#c89a4e") => {
       const midX = (p1.x + p2.x) / 2;
       const midY = (p1.y + p2.y) / 2;
       const dx = p2.x - p1.x;
@@ -358,7 +407,7 @@ export default function InscribedSquareLab() {
       const { a, b, c, d, center, sideLength } = activeSquare;
 
       // Interior fill
-      ctx.fillStyle = "rgba(245, 158, 11, 0.12)";
+      ctx.fillStyle = "rgba(200, 154, 78, 0.12)";
       ctx.beginPath();
       ctx.moveTo(a.x, a.y);
       ctx.lineTo(b.x, b.y);
@@ -368,16 +417,16 @@ export default function InscribedSquareLab() {
       ctx.fill();
 
       // Golden perimeter
-      ctx.strokeStyle = "#f59e0b";
+      ctx.strokeStyle = "#c89a4e";
       ctx.lineWidth = 3;
-      ctx.shadowColor = "#f59e0b";
+      ctx.shadowColor = "#c89a4e";
       ctx.shadowBlur = 16;
       ctx.stroke();
       ctx.shadowBlur = 0;
 
       // Diagonals AC and BD
       if (showDiagonals) {
-        ctx.strokeStyle = "rgba(245, 158, 11, 0.65)";
+        ctx.strokeStyle = "rgba(200, 154, 78, 0.65)";
         ctx.lineWidth = 1.8;
         ctx.setLineDash([5, 5]);
 
@@ -395,14 +444,14 @@ export default function InscribedSquareLab() {
 
         // Midpoint Center M
         ctx.fillStyle = "#ffffff";
-        ctx.shadowColor = "#f59e0b";
+        ctx.shadowColor = "#c89a4e";
         ctx.shadowBlur = 8;
         ctx.beginPath();
         ctx.arc(center.x, center.y, 4.5, 0, Math.PI * 2);
         ctx.fill();
         ctx.shadowBlur = 0;
 
-        ctx.fillStyle = "#f59e0b";
+        ctx.fillStyle = "#c89a4e";
         ctx.font = "bold 11px monospace";
         ctx.fillText("M (Center)", center.x + 8, center.y - 6);
       }
@@ -438,26 +487,26 @@ export default function InscribedSquareLab() {
       ];
 
       vertices.forEach(({ p, label }) => {
-        ctx.fillStyle = "rgba(245, 158, 11, 0.35)";
+        ctx.fillStyle = "rgba(200, 154, 78, 0.35)";
         ctx.beginPath();
         ctx.arc(p.x, p.y, 11, 0, Math.PI * 2);
         ctx.fill();
 
         ctx.fillStyle = "#ffffff";
-        ctx.strokeStyle = "#f59e0b";
+        ctx.strokeStyle = "#c89a4e";
         ctx.lineWidth = 2.5;
         ctx.beginPath();
         ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
         ctx.fill();
         ctx.stroke();
 
-        ctx.fillStyle = "rgba(10, 25, 45, 0.88)";
-        ctx.strokeStyle = "rgba(245, 158, 11, 0.6)";
+        ctx.fillStyle = "rgba(24, 26, 29, 0.88)";
+        ctx.strokeStyle = "rgba(200, 154, 78, 0.6)";
         ctx.lineWidth = 1;
         ctx.fillRect(p.x + 8, p.y - 18, 20, 16);
         ctx.strokeRect(p.x + 8, p.y - 18, 20, 16);
 
-        ctx.fillStyle = "#f59e0b";
+        ctx.fillStyle = "#c89a4e";
         ctx.font = "bold 11px monospace";
         ctx.fillText(label, p.x + 13, p.y - 6);
       });
@@ -467,7 +516,7 @@ export default function InscribedSquareLab() {
     if (solverMode === "rectangle" && activeRectangle) {
       const { a, b, c, d, center, width: rw, height: rh, aspectRatio } = activeRectangle;
 
-      ctx.fillStyle = "rgba(168, 85, 247, 0.12)";
+      ctx.fillStyle = "rgba(143, 122, 232, 0.12)";
       ctx.beginPath();
       ctx.moveTo(a.x, a.y);
       ctx.lineTo(b.x, b.y);
@@ -476,15 +525,15 @@ export default function InscribedSquareLab() {
       ctx.closePath();
       ctx.fill();
 
-      ctx.strokeStyle = "#c084fc";
+      ctx.strokeStyle = "#8f7ae8";
       ctx.lineWidth = 3;
-      ctx.shadowColor = "#c084fc";
+      ctx.shadowColor = "#8f7ae8";
       ctx.shadowBlur = 16;
       ctx.stroke();
       ctx.shadowBlur = 0;
 
       if (showDiagonals) {
-        ctx.strokeStyle = "rgba(192, 132, 252, 0.65)";
+        ctx.strokeStyle = "rgba(143, 122, 232, 0.65)";
         ctx.lineWidth = 1.8;
         ctx.setLineDash([5, 5]);
 
@@ -505,16 +554,16 @@ export default function InscribedSquareLab() {
         ctx.arc(center.x, center.y, 4.5, 0, Math.PI * 2);
         ctx.fill();
 
-        ctx.fillStyle = "#c084fc";
+        ctx.fillStyle = "#8f7ae8";
         ctx.font = "bold 11px monospace";
         ctx.fillText("M (Center)", center.x + 8, center.y - 6);
       }
 
       if (showAngles) {
-        drawRightAngleMarker(b, a, c, "#a855f7");
-        drawRightAngleMarker(c, b, d, "#a855f7");
-        drawRightAngleMarker(d, c, a, "#a855f7");
-        drawRightAngleMarker(a, d, b, "#a855f7");
+        drawRightAngleMarker(b, a, c, "#8f7ae8");
+        drawRightAngleMarker(c, b, d, "#8f7ae8");
+        drawRightAngleMarker(d, c, a, "#8f7ae8");
+        drawRightAngleMarker(a, d, b, "#8f7ae8");
       }
 
       const midTopX = (a.x + b.x) / 2;
@@ -535,20 +584,20 @@ export default function InscribedSquareLab() {
       ];
 
       vertices.forEach(({ p, label }) => {
-        ctx.fillStyle = "rgba(192, 132, 252, 0.35)";
+        ctx.fillStyle = "rgba(143, 122, 232, 0.35)";
         ctx.beginPath();
         ctx.arc(p.x, p.y, 11, 0, Math.PI * 2);
         ctx.fill();
 
         ctx.fillStyle = "#ffffff";
-        ctx.strokeStyle = "#c084fc";
+        ctx.strokeStyle = "#8f7ae8";
         ctx.lineWidth = 2.5;
         ctx.beginPath();
         ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
         ctx.fill();
         ctx.stroke();
 
-        ctx.fillStyle = "#c084fc";
+        ctx.fillStyle = "#8f7ae8";
         ctx.font = "bold 11px monospace";
         ctx.fillText(label, p.x + 10, p.y - 6);
       });
@@ -588,36 +637,36 @@ export default function InscribedSquareLab() {
     : "1.000";
 
   return (
-    <div className="max-w-[1720px] min-h-screen mx-auto px-4 md:px-6 pt-4 pb-14 flex flex-col gap-5 text-slate-100 font-sans">
+    <div className="max-w-[1720px] min-h-screen mx-auto px-4 md:px-6 pt-4 pb-14 flex flex-col gap-5 text-[#101214] font-sans bg-[#f5f4f0]">
       {/* 1. STUDIO TOPBAR */}
-      <header className="flex items-center justify-between border-b border-slate-800/80 pb-3 px-1 flex-wrap gap-3">
+      <header className="flex items-center justify-between border-b border-[#b8bec2]/80 pb-3 px-1 flex-wrap gap-3">
         <div className="flex items-center gap-3.5">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-700/60 bg-slate-900/60 text-slate-300 hover:text-white hover:border-cyan-400/50 hover:bg-slate-800 transition text-xs font-mono font-bold tracking-wider"
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded border border-[#b8bec2]/60 bg-white/70 text-[#454c52] hover:text-[#101214] hover:border-[#5f3dc4]/50 hover:bg-[#b8bec2] transition text-xs font-mono font-bold tracking-wider"
             title="Back to QuantaLab Experiments Catalog"
           >
             <span>←</span>
             <span>CATALOG</span>
           </Link>
 
-          <div className="w-[1px] h-7 bg-slate-800" />
+          <div className="w-[1px] h-7 bg-[#b8bec2]" />
 
-          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-slate-800 to-slate-950 border border-slate-700/80 flex items-center justify-center text-xl text-cyan-400 shadow-[0_0_16px_rgba(56,225,255,0.2)]">
-            ⏹️
+          <div className="w-10 h-10 rounded border border-[#b8bec2]/80 bg-[#fbfaf7] flex items-center justify-center text-[#8f7ae8]">
+            <BenchMarkGlyph />
           </div>
 
           <div className="flex flex-col">
             <div className="flex items-center gap-2.5 flex-wrap">
-              <h1 className="text-base font-bold text-white tracking-wide">
+              <h1 className="text-base font-bold text-[#101214] tracking-wide">
                 INSCRIBED SQUARE LABORATORY
               </h1>
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-semibold bg-emerald-950/60 border border-emerald-500/40 text-emerald-400">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#50e39c]" />
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-semibold bg-[#e3efe6]/70 border border-[#2e7d46]/40 text-[#2e7d46]">
+                <span className="w-2 h-2 rounded-full bg-[#4fae6e] animate-pulse" />
                 TOPOLOGY ENGINE ACTIVE
               </span>
             </div>
-            <span className="text-xs text-slate-400 font-mono">
+            <span className="text-xs text-[#6c737a] font-mono">
               Toeplitz Conjecture (1911) &bull; Greene-Lobb Symplectic Theorem (2020) &bull; Möbius Strip Invariants
             </span>
           </div>
@@ -626,7 +675,7 @@ export default function InscribedSquareLab() {
         <div className="flex items-center gap-3">
           <button
             type="button"
-            className="px-3.5 py-2 rounded-lg bg-gradient-to-r from-cyan-950/40 to-slate-900 border border-cyan-500/40 text-cyan-300 hover:text-white hover:border-cyan-400 hover:shadow-[0_0_16px_rgba(56,225,255,0.3)] transition text-xs font-mono font-bold flex items-center gap-2"
+            className="px-3.5 py-2 rounded border border-[#5f3dc4]/40 text-[#5f3dc4] hover:text-[#101214] hover:border-[#5f3dc4] hover:shadow-[0_0_16px_rgba(200,154,78,0.3)] transition text-xs font-mono font-bold flex items-center gap-2"
             onClick={() => setIsTheoryOpen(true)}
             title="Read mathematical formulation and topological proofs"
           >
@@ -636,19 +685,19 @@ export default function InscribedSquareLab() {
       </header>
 
       {/* 2. GRAND VIEWPORT SECTION */}
-      <section className="relative w-full h-[540px] md:h-[620px] rounded-xl border border-slate-800/80 bg-[#02070e] overflow-hidden shadow-2xl shadow-black">
+      <section className="relative w-full h-[540px] md:h-[620px] rounded border border-[#26292d]/80 bg-[#0f1113] overflow-hidden">
         {/* Canvas / Möbius wrapper */}
         <div className="absolute inset-0">
           {!showMobiusView ? (
-            <div className="absolute inset-0 flex items-center justify-center bg-[radial-gradient(circle_at_50%_50%,#061525_0%,#02070e_95%)] overflow-hidden">
+            <div className="absolute inset-0 flex items-center justify-center bg-[radial-gradient(circle_at_50%_50%,#141618_0%,#02070e_95%)] overflow-hidden">
               {/* Canvas Overlay Controls */}
-              <div className="absolute top-16 right-2 sm:right-4 z-10 flex items-center gap-1 sm:gap-1.5 p-1 bg-slate-950/80 backdrop-blur-md border border-cyan-500/20 rounded-full shadow-lg">
+              <div className="absolute top-16 right-2 sm:right-4 z-10 flex items-center gap-1 sm:gap-1.5 p-1 bg-[#141618]/80 backdrop-blur-md border border-[#7a63e0]/20 rounded-full">
                 <button
                   type="button"
                   className={`px-2 sm:px-2.5 py-1 rounded-full text-[10px] sm:text-[11px] font-mono font-bold transition ${
                     showGrid
-                      ? "bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 shadow-[0_0_8px_rgba(56,225,255,0.25)]"
-                      : "text-slate-400 hover:text-white"
+                      ? "bg-[#7a63e0]/20 text-[#b3a4f0] border border-[#8f7ae8]/40"
+                      : "text-[#a3a49b] hover:text-[#edeae2]"
                   }`}
                   onClick={() => setShowGrid(!showGrid)}
                   title="Toggle Euclidean Grid"
@@ -660,8 +709,8 @@ export default function InscribedSquareLab() {
                   type="button"
                   className={`px-2 sm:px-2.5 py-1 rounded-full text-[10px] sm:text-[11px] font-mono font-bold transition ${
                     showDiagonals
-                      ? "bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 shadow-[0_0_8px_rgba(56,225,255,0.25)]"
-                      : "text-slate-400 hover:text-white"
+                      ? "bg-[#7a63e0]/20 text-[#b3a4f0] border border-[#8f7ae8]/40"
+                      : "text-[#a3a49b] hover:text-[#edeae2]"
                   }`}
                   onClick={() => setShowDiagonals(!showDiagonals)}
                   title="Toggle Perpendicular Diagonals"
@@ -672,8 +721,8 @@ export default function InscribedSquareLab() {
                   type="button"
                   className={`px-2 sm:px-2.5 py-1 rounded-full text-[10px] sm:text-[11px] font-mono font-bold transition ${
                     showAngles
-                      ? "bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 shadow-[0_0_8px_rgba(56,225,255,0.25)]"
-                      : "text-slate-400 hover:text-white"
+                      ? "bg-[#7a63e0]/20 text-[#b3a4f0] border border-[#8f7ae8]/40"
+                      : "text-[#a3a49b] hover:text-[#edeae2]"
                   }`}
                   onClick={() => setShowAngles(!showAngles)}
                   title="Toggle 90° Right Angle Markers"
@@ -684,8 +733,8 @@ export default function InscribedSquareLab() {
                   type="button"
                   className={`px-2 sm:px-2.5 py-1 rounded-full text-[10px] sm:text-[11px] font-mono font-bold transition ${
                     showSideLengths
-                      ? "bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 shadow-[0_0_8px_rgba(56,225,255,0.25)]"
-                      : "text-slate-400 hover:text-white"
+                      ? "bg-[#7a63e0]/20 text-[#b3a4f0] border border-[#8f7ae8]/40"
+                      : "text-[#a3a49b] hover:text-[#edeae2]"
                   }`}
                   onClick={() => setShowSideLengths(!showSideLengths)}
                   title="Toggle Side Dimensions"
@@ -714,20 +763,20 @@ export default function InscribedSquareLab() {
                 onTouchEnd={handlePointerUp}
               />
 
-              <div className="hidden sm:block absolute bottom-16 left-1/2 -translate-x-1/2 z-10 px-4 py-1.5 rounded-full bg-slate-950/85 backdrop-blur-md border border-cyan-500/30 text-xs font-mono text-slate-300 whitespace-nowrap shadow-lg">
-                <span>✏️ Click &amp; drag anywhere to sketch your custom loop &bull; or select presets below</span>
+              <div className="hidden sm:block absolute bottom-16 left-1/2 -translate-x-1/2 z-10 px-4 py-1.5 rounded-full bg-[#141618]/85 backdrop-blur-md border border-[#7a63e0]/30 text-xs font-mono text-[#c9c8c0] whitespace-nowrap">
+                <span>Click &amp; drag anywhere to sketch your custom loop &bull; or select presets below</span>
               </div>
             </div>
           ) : (
             /* 3D Möbius View */
-            <div className="absolute inset-0 px-6 py-20 flex flex-col justify-center items-center bg-[radial-gradient(circle_at_50%_50%,#071728_0%,#02070e_95%)] overflow-y-auto gap-4">
-              <div className="max-w-2xl w-full p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-start gap-3.5">
+            <div className="absolute inset-0 px-6 py-20 flex flex-col justify-center items-center bg-[radial-gradient(circle_at_50%_50%,#141618_0%,#02070e_95%)] overflow-y-auto gap-4">
+              <div className="max-w-2xl w-full p-4 rounded bg-[#c89a4e]/10 border border-[#c89a4e]/30 flex items-start gap-3.5">
                 <span className="text-3xl leading-none">➰</span>
                 <div className="flex flex-col gap-1">
-                  <h3 className="text-sm font-bold text-white">
+                  <h3 className="text-sm font-bold text-[#edeae2]">
                     Möbius Strip Configuration Space (3Blue1Brown Topology)
                   </h3>
-                  <p className="text-xs text-slate-300 leading-relaxed">
+                  <p className="text-xs text-[#c9c8c0] leading-relaxed">
                     Every unordered pair of points (x, y) on a closed loop &gamma;(t) maps to a point on a
                     non-orientable surface with boundary homeomorphic to a <strong>Möbius strip</strong>. Because
                     a Möbius strip cannot be embedded into 3D space without self-intersecting, pairs with
@@ -746,10 +795,10 @@ export default function InscribedSquareLab() {
                   <button
                     key={s.stage}
                     type="button"
-                    className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition ${
+                    className={`px-3 py-1.5 rounded text-xs font-mono font-bold transition ${
                       mobiusStage === s.stage
-                        ? "bg-amber-500/20 text-amber-300 border border-amber-500 shadow-[0_0_12px_rgba(245,158,11,0.25)]"
-                        : "bg-slate-900/60 text-slate-400 border border-slate-800 hover:text-white"
+                        ? "bg-[#c89a4e]/20 text-[#e3c990] border border-[#c89a4e]"
+                        : "bg-[#181b1e]/60 text-[#a3a49b] border border-[#26292d] hover:text-[#edeae2]"
                     }`}
                     onClick={() => setMobiusStage(s.stage as 1 | 2 | 3)}
                   >
@@ -762,16 +811,16 @@ export default function InscribedSquareLab() {
               <svg className="w-full max-w-2xl max-h-[240px]" viewBox="0 0 680 260">
                 <defs>
                   <linearGradient id="mobiusGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.9" />
-                    <stop offset="45%" stopColor="#38e1ff" stopOpacity="0.85" />
-                    <stop offset="80%" stopColor="#a855f7" stopOpacity="0.9" />
-                    <stop offset="100%" stopColor="#f59e0b" stopOpacity="0.9" />
+                    <stop offset="0%" stopColor="#c89a4e" stopOpacity="0.9" />
+                    <stop offset="45%" stopColor="#c89a4e" stopOpacity="0.85" />
+                    <stop offset="80%" stopColor="#8f7ae8" stopOpacity="0.9" />
+                    <stop offset="100%" stopColor="#c89a4e" stopOpacity="0.9" />
                   </linearGradient>
 
                   <radialGradient id="nodeGlow" cx="50%" cy="50%" r="50%">
-                    <stop offset="0%" stopColor="#f59e0b" stopOpacity="1" />
-                    <stop offset="40%" stopColor="#f59e0b" stopOpacity="0.4" />
-                    <stop offset="100%" stopColor="#f59e0b" stopOpacity="0" />
+                    <stop offset="0%" stopColor="#c89a4e" stopOpacity="1" />
+                    <stop offset="40%" stopColor="#c89a4e" stopOpacity="0.4" />
+                    <stop offset="100%" stopColor="#c89a4e" stopOpacity="0" />
                   </radialGradient>
                 </defs>
 
@@ -788,26 +837,26 @@ export default function InscribedSquareLab() {
 
                 <line x1="200" y1="85" x2="220" y2="175" stroke="rgba(255,255,255,0.25)" strokeWidth="1.5" />
                 <line x1="270" y1="90" x2="280" y2="170" stroke="rgba(255,255,255,0.25)" strokeWidth="1.5" />
-                <line x1="340" y1="95" x2="340" y2="165" stroke="#f59e0b" strokeWidth="2.5" />
+                <line x1="340" y1="95" x2="340" y2="165" stroke="#c89a4e" strokeWidth="2.5" />
                 <line x1="410" y1="90" x2="400" y2="170" stroke="rgba(255,255,255,0.25)" strokeWidth="1.5" />
                 <line x1="480" y1="85" x2="460" y2="175" stroke="rgba(255,255,255,0.25)" strokeWidth="1.5" />
 
                 <circle cx="340" cy="130" r="22" fill="url(#nodeGlow)" />
-                <circle cx="340" cy="130" r="6" fill="#f59e0b" />
+                <circle cx="340" cy="130" r="6" fill="#c89a4e" />
                 <circle cx="340" cy="130" r="3" fill="#ffffff" />
 
                 <g transform="translate(360, 115)">
-                  <rect x="0" y="0" width="220" height="32" rx="6" fill="rgba(10, 25, 45, 0.9)" stroke="#f59e0b" strokeWidth="1" />
-                  <text x="12" y="15" fill="#f59e0b" fontSize="10.5" fontFamily="monospace" fontWeight="bold">
+                  <rect x="0" y="0" width="220" height="32" rx="6" fill="rgba(24, 26, 29, 0.9)" stroke="#c89a4e" strokeWidth="1" />
+                  <text x="12" y="15" fill="#c89a4e" fontSize="10.5" fontFamily="monospace" fontWeight="bold">
                     Möbius Self-Intersection
                   </text>
-                  <text x="12" y="26" fill="#94a3b8" fontSize="9" fontFamily="monospace">
+                  <text x="12" y="26" fill="#a3a49b" fontSize="9" fontFamily="monospace">
                     f(A, C) = f(B, D) &rArr; Square
                   </text>
                 </g>
 
-                <circle cx="120" cy="130" r="5" fill="#38e1ff" />
-                <text x="75" y="134" fill="#38e1ff" fontSize="10.5" fontFamily="monospace">
+                <circle cx="120" cy="130" r="5" fill="#c89a4e" />
+                <text x="75" y="134" fill="#c89a4e" fontSize="10.5" fontFamily="monospace">
                   &part;M (x = y)
                 </text>
               </svg>
@@ -815,9 +864,9 @@ export default function InscribedSquareLab() {
           )}
 
           {/* TOP VIEWPORT HUD DECK */}
-          <div className="absolute top-3 inset-x-3 z-20 flex items-center justify-between gap-2 px-2 sm:px-3 py-2 bg-slate-950/90 backdrop-blur-xl border border-slate-700/70 rounded-xl shadow-xl max-w-full overflow-x-auto">
+          <div className="absolute top-3 inset-x-3 z-20 flex items-center justify-between gap-2 px-2 sm:px-3 py-2 bg-[#141618]/90 backdrop-blur-xl border border-[#3d4147]/70 rounded max-w-full overflow-x-auto">
             {/* Solver Switcher */}
-            <div className="flex items-center gap-1 sm:gap-1.5 bg-slate-900/90 p-1 rounded-lg border border-slate-800 flex-shrink-0">
+            <div className="flex items-center gap-1 sm:gap-1.5 bg-[#181b1e]/90 p-1 rounded border border-[#26292d] flex-shrink-0">
               <button
                 type="button"
                 onClick={() => {
@@ -826,12 +875,12 @@ export default function InscribedSquareLab() {
                 }}
                 className={`px-2 sm:px-3 py-1.5 rounded-md flex items-center gap-1 sm:gap-2 text-xs font-mono font-bold transition ${
                   solverMode === "square"
-                    ? "bg-cyan-500/20 text-cyan-300 border border-cyan-400/50 shadow-[0_0_12px_rgba(56,225,255,0.25)]"
-                    : "text-slate-400 hover:text-white"
+                    ? "bg-[#7a63e0]/20 text-[#b3a4f0] border border-[#8f7ae8]/50"
+                    : "text-[#a3a49b] hover:text-[#edeae2]"
                 }`}
                 title="Toeplitz Square Conjecture (1:1 Aspect Ratio)"
               >
-                <span>⏹️</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><rect x="5" y="5" width="14" height="14" /></svg>
                 <span className="hidden sm:inline">TOEPLITZ SQUARE (1:1)</span>
                 <span className="sm:hidden">SQUARE</span>
               </button>
@@ -844,8 +893,8 @@ export default function InscribedSquareLab() {
                 }}
                 className={`px-2 sm:px-3 py-1.5 rounded-md flex items-center gap-1 sm:gap-2 text-xs font-mono font-bold transition ${
                   solverMode === "rectangle"
-                    ? "bg-purple-500/20 text-purple-300 border border-purple-400/50 shadow-[0_0_12px_rgba(192,132,252,0.25)]"
-                    : "text-slate-400 hover:text-white"
+                    ? "bg-[#7a63e0]/20 text-[#b3a4f0] border border-[#8f7ae8]/50"
+                    : "text-[#a3a49b] hover:text-[#edeae2]"
                 }`}
                 title="Greene-Lobb Symplectic Theorem (Inscribed Rectangle)"
               >
@@ -856,39 +905,39 @@ export default function InscribedSquareLab() {
             </div>
 
             {/* Center: Live Telemetry */}
-            <div className="hidden md:flex items-center gap-4 px-3 py-1 bg-slate-900/60 border border-slate-800/80 rounded-lg text-xs font-mono">
+            <div className="hidden md:flex items-center gap-4 px-3 py-1 bg-[#181b1e]/60 border border-[#26292d]/80 rounded text-xs font-mono">
               <div className="flex items-center gap-1.5">
-                <span className="text-slate-500 text-[10px]">CURVE:</span>
-                <span className="text-cyan-400 font-bold">{selectedPreset.toUpperCase()}</span>
+                <span className="text-[#8b8c83] text-[10px]">CURVE:</span>
+                <span className="text-[#8f7ae8] font-bold">{selectedPreset.toUpperCase()}</span>
               </div>
-              <div className="w-[1px] h-3 bg-slate-700" />
+              <div className="w-[1px] h-3 bg-[#3d4147]" />
               <div className="flex items-center gap-1.5">
-                <span className="text-slate-500 text-[10px]">SOLUTIONS:</span>
+                <span className="text-[#8b8c83] text-[10px]">SOLUTIONS:</span>
                 <span
                   className={`font-bold ${
-                    solutionsCount > 0 ? "text-emerald-400" : "text-amber-400"
+                    solutionsCount > 0 ? "text-[#4fae6e]" : "text-[#d3ad68]"
                   }`}
                 >
                   {solutionsCount > 0 ? `${solutionsCount} DETECTED` : "SEARCHING..."}
                 </span>
               </div>
-              <div className="w-[1px] h-3 bg-slate-700" />
+              <div className="w-[1px] h-3 bg-[#3d4147]" />
               <div className="flex items-center gap-1.5">
-                <span className="text-slate-500 text-[10px]">ISOPERIMETRIC:</span>
-                <span className="text-purple-300 font-bold">
+                <span className="text-[#8b8c83] text-[10px]">ISOPERIMETRIC:</span>
+                <span className="text-[#b3a4f0] font-bold">
                   Q = {telemetry.isoperimetricQuotient.toFixed(3)}
                 </span>
               </div>
             </div>
 
             {/* Right: View Toggle */}
-            <div className="flex items-center gap-1 bg-slate-900/80 p-1 rounded-lg border border-slate-800 flex-shrink-0">
+            <div className="flex items-center gap-1 bg-[#181b1e]/80 p-1 rounded border border-[#26292d] flex-shrink-0">
               <button
                 type="button"
                 className={`px-3 py-1 rounded-md text-xs font-mono font-bold transition ${
                   !showMobiusView
-                    ? "bg-cyan-500/20 text-cyan-300 border border-cyan-400/50"
-                    : "text-slate-400 hover:text-white"
+                    ? "bg-[#7a63e0]/20 text-[#b3a4f0] border border-[#8f7ae8]/50"
+                    : "text-[#a3a49b] hover:text-[#edeae2]"
                 }`}
                 onClick={() => setShowMobiusView(false)}
               >
@@ -898,8 +947,8 @@ export default function InscribedSquareLab() {
                 type="button"
                 className={`px-3 py-1 rounded-md text-xs font-mono font-bold transition ${
                   showMobiusView
-                    ? "bg-amber-500/20 text-amber-300 border border-amber-400/50"
-                    : "text-slate-400 hover:text-white"
+                    ? "bg-[#c89a4e]/20 text-[#e3c990] border border-[#d3ad68]/50"
+                    : "text-[#a3a49b] hover:text-[#edeae2]"
                 }`}
                 onClick={() => setShowMobiusView(true)}
               >
@@ -909,45 +958,45 @@ export default function InscribedSquareLab() {
           </div>
 
           {/* BOTTOM VIEWPORT HUD DECK */}
-          <div className="absolute bottom-3 inset-x-3 z-20 flex items-center justify-between gap-3 px-3 sm:px-3.5 py-2 bg-slate-950/90 backdrop-blur-xl border border-slate-700/70 rounded-xl shadow-xl overflow-x-auto">
+          <div className="absolute bottom-3 inset-x-3 z-20 flex items-center justify-between gap-3 px-3 sm:px-3.5 py-2 bg-[#141618]/90 backdrop-blur-xl border border-[#3d4147]/70 rounded overflow-x-auto">
             <div className="hidden sm:flex items-center gap-5 text-xs font-mono">
               <div className="flex flex-col">
-                <span className="text-[10px] text-slate-500 font-semibold tracking-wider">
+                <span className="text-[10px] text-[#8b8c83] font-semibold tracking-wider">
                   DIMENSIONS
                 </span>
-                <span className="text-amber-400 font-bold">{dimensionReadout}</span>
+                <span className="text-[#d3ad68] font-bold">{dimensionReadout}</span>
               </div>
-              <div className="w-[1px] h-6 bg-slate-800" />
+              <div className="w-[1px] h-6 bg-[#26292d]" />
               <div className="flex flex-col">
-                <span className="text-[10px] text-slate-500 font-semibold tracking-wider">
+                <span className="text-[10px] text-[#8b8c83] font-semibold tracking-wider">
                   CORNER ANGLES
                 </span>
-                <span className="text-emerald-400 font-bold">{cornerAngleReadout}</span>
+                <span className="text-[#4fae6e] font-bold">{cornerAngleReadout}</span>
               </div>
-              <div className="w-[1px] h-6 bg-slate-800" />
+              <div className="w-[1px] h-6 bg-[#26292d]" />
               <div className="flex flex-col">
-                <span className="text-[10px] text-slate-500 font-semibold tracking-wider">
+                <span className="text-[10px] text-[#8b8c83] font-semibold tracking-wider">
                   DIAGONAL RATIO
                 </span>
-                <span className="text-cyan-400 font-bold">{diagonalRatioReadout}</span>
+                <span className="text-[#8f7ae8] font-bold">{diagonalRatioReadout}</span>
               </div>
-              <div className="w-[1px] h-6 bg-slate-800" />
+              <div className="w-[1px] h-6 bg-[#26292d]" />
               <div className="flex flex-col">
-                <span className="text-[10px] text-slate-500 font-semibold tracking-wider">
+                <span className="text-[10px] text-[#8b8c83] font-semibold tracking-wider">
                   ORTHOGONALITY
                 </span>
-                <span className="text-emerald-400 font-bold">&Delta;&theta; = 0.00&deg; (&perp;)</span>
+                <span className="text-[#4fae6e] font-bold">&Delta;&theta; = 0.00&deg; (&perp;)</span>
               </div>
             </div>
             {/* Mobile: show just one key metric */}
             <div className="flex sm:hidden items-center gap-2 text-xs font-mono">
-              <span className="text-slate-500 text-[10px] font-semibold">DIM:</span>
-              <span className="text-amber-400 font-bold">{dimensionReadout}</span>
+              <span className="text-[#8b8c83] text-[10px] font-semibold">DIM:</span>
+              <span className="text-[#d3ad68] font-bold">{dimensionReadout}</span>
             </div>
 
             <button
               type="button"
-              className="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700 hover:border-cyan-400 text-slate-300 hover:text-white text-xs font-mono font-bold transition flex items-center gap-1.5 flex-shrink-0"
+              className="px-3 py-1.5 rounded bg-[#181b1e] border border-[#3d4147] hover:border-[#8f7ae8] text-[#c9c8c0] hover:text-[#edeae2] text-xs font-mono font-bold transition flex items-center gap-1.5 flex-shrink-0"
               onClick={() => {
                 setSelectedPreset("custom");
                 setCurvePoints([]);
@@ -967,54 +1016,54 @@ export default function InscribedSquareLab() {
         {/* Left Column: Diagnostics & Geometry Algebraic Proof */}
         <div className="flex flex-col gap-5">
           {/* Module 01: Green's Theorem Analysis */}
-          <div className="bg-slate-900/50 backdrop-blur-md border border-slate-800 rounded-xl p-5 flex flex-col gap-4 shadow-xl hover:border-slate-700/80 transition">
-            <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
+          <div className="bg-white backdrop-blur-md border border-[#b8bec2] rounded p-5 flex flex-col gap-4 hover:border-[#b8bec2]/80 transition">
+            <div className="flex items-center justify-between border-b border-[#b8bec2]/80 pb-3">
               <div>
-                <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-cyan-400">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#8f7ae8]">
                   MODULE 01 // TOPOLOGY DIAGNOSTICS
                 </span>
-                <h4 className="text-sm font-semibold text-slate-100">
+                <h4 className="text-sm font-semibold text-[#101214]">
                   Green&apos;s Theorem Loop Integral Analysis
                 </h4>
               </div>
-              <span className="px-2.5 py-0.5 rounded text-[11px] font-mono font-bold bg-cyan-950/60 border border-cyan-500/40 text-cyan-300">
+              <span className="px-2.5 py-0.5 rounded text-[11px] font-mono font-bold bg-[#efedf6] border border-[#5f3dc4]/40 text-[#5f3dc4]">
                 JORDAN CURVE
               </span>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-              <div className="p-3 rounded-lg bg-slate-950/60 border border-slate-800/80 flex flex-col gap-1">
-                <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">
+              <div className="p-3 rounded bg-[#f6f5f1] border border-[#b8bec2]/80 flex flex-col gap-1">
+                <span className="text-[10px] font-mono text-[#6c737a] uppercase tracking-wider">
                   PERIMETER &oint; ds
                 </span>
-                <span className="text-sm font-mono font-bold text-white">
+                <span className="text-sm font-mono font-bold text-[#101214]">
                   {telemetry.perimeter.toFixed(1)} px
                 </span>
               </div>
 
-              <div className="p-3 rounded-lg bg-slate-950/60 border border-slate-800/80 flex flex-col gap-1">
-                <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">
+              <div className="p-3 rounded bg-[#f6f5f1] border border-[#b8bec2]/80 flex flex-col gap-1">
+                <span className="text-[10px] font-mono text-[#6c737a] uppercase tracking-wider">
                   ENCLOSED AREA &iint; dx dy
                 </span>
-                <span className="text-sm font-mono font-bold text-white">
+                <span className="text-sm font-mono font-bold text-[#101214]">
                   {telemetry.area.toFixed(0)} px&sup2;
                 </span>
               </div>
 
-              <div className="p-3 rounded-lg bg-slate-950/60 border border-slate-800/80 flex flex-col gap-1">
-                <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">
+              <div className="p-3 rounded bg-[#f6f5f1] border border-[#b8bec2]/80 flex flex-col gap-1">
+                <span className="text-[10px] font-mono text-[#6c737a] uppercase tracking-wider">
                   ISOPERIMETRIC EFFICIENCY Q
                 </span>
-                <span className="text-sm font-mono font-bold text-cyan-400">
+                <span className="text-sm font-mono font-bold text-[#8f7ae8]">
                   {telemetry.isoperimetricQuotient.toFixed(3)}
                 </span>
               </div>
 
-              <div className="p-3 rounded-lg bg-slate-950/60 border border-slate-800/80 flex flex-col gap-1">
-                <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">
+              <div className="p-3 rounded bg-[#f6f5f1] border border-[#b8bec2]/80 flex flex-col gap-1">
+                <span className="text-[10px] font-mono text-[#6c737a] uppercase tracking-wider">
                   SMOOTHNESS CLASS
                 </span>
-                <span className="text-sm font-mono font-bold text-emerald-400">
+                <span className="text-sm font-mono font-bold text-[#2e7d46]">
                   C&infin; Smooth
                 </span>
               </div>
@@ -1023,17 +1072,17 @@ export default function InscribedSquareLab() {
 
           {/* Module 02: Square Coordinates & Algebraic Verification */}
           {activeSquare && solverMode === "square" && (
-            <div className="bg-slate-900/50 backdrop-blur-md border border-slate-800 rounded-xl p-5 flex flex-col gap-4 shadow-xl hover:border-slate-700/80 transition">
-              <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
+            <div className="bg-white backdrop-blur-md border border-[#b8bec2] rounded p-5 flex flex-col gap-4 hover:border-[#b8bec2]/80 transition">
+              <div className="flex items-center justify-between border-b border-[#b8bec2]/80 pb-3">
                 <div>
-                  <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-emerald-400">
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#2e7d46]">
                     MODULE 02 // ALGEBRAIC PROOF
                   </span>
-                  <h4 className="text-sm font-semibold text-slate-100">
+                  <h4 className="text-sm font-semibold text-[#101214]">
                     Square Coordinates on Curve &gamma;(t)
                   </h4>
                 </div>
-                <span className="px-2.5 py-0.5 rounded text-[11px] font-mono font-bold bg-emerald-950/60 border border-emerald-500/40 text-emerald-300">
+                <span className="px-2.5 py-0.5 rounded text-[11px] font-mono font-bold bg-[#e3efe6]/70 border border-[#2e7d46]/40 text-[#2e7d46]">
                   VERIFIED
                 </span>
               </div>
@@ -1047,10 +1096,10 @@ export default function InscribedSquareLab() {
                 ].map((v) => (
                   <div
                     key={v.tag}
-                    className="flex items-center justify-between p-2.5 rounded-lg bg-slate-950/60 border border-slate-800/80"
+                    className="flex items-center justify-between p-2.5 rounded bg-[#f6f5f1] border border-[#b8bec2]/80"
                   >
-                    <span className="text-amber-400 font-bold">{v.tag}:</span>
-                    <code className="text-slate-300">
+                    <span className="text-[#8a6a2f] font-bold">{v.tag}:</span>
+                    <code className="text-[#454c52]">
                       ({v.pt.x.toFixed(1)}, {v.pt.y.toFixed(1)})
                     </code>
                   </div>
@@ -1061,21 +1110,21 @@ export default function InscribedSquareLab() {
 
           {/* Module 03: Multi-Square Solutions Picker */}
           {solverMode === "square" && detectedSquares.length > 1 && (
-            <div className="bg-slate-900/50 backdrop-blur-md border border-slate-800 rounded-xl p-5 flex flex-col gap-4 shadow-xl hover:border-slate-700/80 transition">
-              <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
+            <div className="bg-white backdrop-blur-md border border-[#b8bec2] rounded p-5 flex flex-col gap-4 hover:border-[#b8bec2]/80 transition">
+              <div className="flex items-center justify-between border-b border-[#b8bec2]/80 pb-3">
                 <div>
-                  <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-amber-400">
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#8a6a2f]">
                     MODULE 03 // MULTI-SOLUTIONS
                   </span>
-                  <h4 className="text-sm font-semibold text-slate-100">
+                  <h4 className="text-sm font-semibold text-[#101214]">
                     Multiple Inscribed Squares Detected
                   </h4>
                 </div>
-                <span className="px-2.5 py-0.5 rounded text-[11px] font-mono font-bold bg-amber-950/60 border border-amber-500/40 text-amber-300">
+                <span className="px-2.5 py-0.5 rounded text-[11px] font-mono font-bold bg-[#2a2416]/60 border border-[#8a6a2f]/40 text-[#8a6a2f]">
                   {detectedSquares.length} SOLUTIONS
                 </span>
               </div>
-              <p className="text-xs text-slate-400 leading-relaxed">
+              <p className="text-xs text-[#6c737a] leading-relaxed">
                 This loop supports multiple distinct inscribed squares! Click to inspect each:
               </p>
               <div className="flex items-center gap-2 flex-wrap">
@@ -1083,10 +1132,10 @@ export default function InscribedSquareLab() {
                   <button
                     key={idx}
                     type="button"
-                    className={`px-3 py-2 rounded-lg text-xs font-mono font-bold transition flex items-center gap-2 ${
+                    className={`px-3 py-2 rounded text-xs font-mono font-bold transition flex items-center gap-2 ${
                       activeSolutionIndex === idx
-                        ? "bg-amber-500/20 text-amber-300 border border-amber-500 shadow-[0_0_12px_rgba(245,158,11,0.25)]"
-                        : "bg-slate-950/60 text-slate-400 border border-slate-800 hover:text-white"
+                        ? "bg-[#8a6a2f]/10 text-[#8a6a2f] border border-[#8a6a2f]"
+                        : "bg-[#f6f5f1] text-[#6c737a] border border-[#b8bec2] hover:text-[#101214]"
                     }`}
                     onClick={() => setActiveSolutionIndex(idx)}
                   >
@@ -1102,46 +1151,46 @@ export default function InscribedSquareLab() {
         {/* Right Column: Complete Interactive Control Deck */}
         <div className="flex flex-col gap-5">
           {/* Control 01: Geometric Presets & Freehand */}
-          <div className="bg-slate-900/50 backdrop-blur-md border border-slate-800 rounded-xl p-5 flex flex-col gap-4 shadow-xl hover:border-slate-700/80 transition">
-            <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
+          <div className="bg-white backdrop-blur-md border border-[#b8bec2] rounded p-5 flex flex-col gap-4 hover:border-[#b8bec2]/80 transition">
+            <div className="flex items-center justify-between border-b border-[#b8bec2]/80 pb-3">
               <div>
-                <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-cyan-400">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#8f7ae8]">
                   CONTROL 01 // GEOMETRY
                 </span>
-                <h4 className="text-sm font-semibold text-slate-100">
+                <h4 className="text-sm font-semibold text-[#101214]">
                   Curve Presets &amp; Freehand Sketch
                 </h4>
               </div>
-              <span className="px-2.5 py-0.5 rounded text-[11px] font-mono font-bold bg-cyan-950/60 border border-cyan-500/40 text-cyan-300">
+              <span className="px-2.5 py-0.5 rounded text-[11px] font-mono font-bold bg-[#efedf6] border border-[#5f3dc4]/40 text-[#5f3dc4]">
                 SELECT
               </span>
             </div>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <p className="text-xs text-[#6c737a] leading-relaxed">
               Select a mathematical loop geometry or draw your own closed curve.
             </p>
             <div className="grid grid-cols-2 gap-2.5">
               {[
-                { id: "ellipse", label: "Ellipse", icon: "⬭" },
-                { id: "clover", label: "Clover (3-Fold)", icon: "☘️" },
-                { id: "limacon", label: "Teardrop Limacon", icon: "💧" },
-                { id: "astroid", label: "Astroid Star", icon: "⭐" },
-                { id: "wobble", label: "Perturbed Wobble", icon: "〰️" },
-                { id: "circle", label: "Circle (Infinite)", icon: "⚪" },
+                { id: "ellipse", label: "Ellipse" },
+                { id: "clover", label: "Clover (3-Fold)" },
+                { id: "limacon", label: "Teardrop Limacon" },
+                { id: "astroid", label: "Astroid Star" },
+                { id: "wobble", label: "Perturbed Wobble" },
+                { id: "circle", label: "Circle (Infinite)" },
               ].map((p) => (
                 <button
                   key={p.id}
                   type="button"
-                  className={`p-3 rounded-lg border text-xs font-semibold flex items-center gap-2.5 transition ${
+                  className={`p-3 rounded border text-xs font-semibold flex items-center gap-2.5 transition ${
                     selectedPreset === p.id
-                      ? "bg-amber-500/15 border-amber-500 text-white shadow-[0_0_14px_rgba(245,158,11,0.25)]"
-                      : "bg-slate-950/60 border-slate-800 text-slate-400 hover:text-white hover:border-cyan-500/40"
+                      ? "bg-[#8a6a2f]/10 border-[#8a6a2f] text-[#101214]"
+                      : "bg-[#f6f5f1] border-[#b8bec2] text-[#6c737a] hover:text-[#101214] hover:border-[#5f3dc4]/40"
                   }`}
                   onClick={() => {
                     setSelectedPreset(p.id);
                     setIsAutoMorphing(false);
                   }}
                 >
-                  <span className="text-base">{p.icon}</span>
+                  <PresetGlyph id={p.id} />
                   <span>{p.label}</span>
                 </button>
               ))}
@@ -1149,10 +1198,10 @@ export default function InscribedSquareLab() {
 
             <button
               type="button"
-              className={`w-full py-2.5 px-4 rounded-lg font-mono text-xs font-bold transition flex items-center justify-center gap-2 shadow-lg ${
+              className={`w-full py-2.5 px-4 rounded font-mono text-xs font-bold transition flex items-center justify-center gap-2 ${
                 selectedPreset === "custom"
-                  ? "bg-amber-500/20 border border-amber-500 text-amber-400"
-                  : "bg-gradient-to-r from-cyan-950/40 to-slate-900 border border-cyan-500/40 text-cyan-300 hover:text-white hover:border-cyan-400 shadow-[0_0_14px_rgba(56,225,255,0.2)]"
+                  ? "bg-[#8a6a2f]/10 border border-[#8a6a2f] text-[#8a6a2f]"
+                  : "border border-[#5f3dc4]/40 text-[#5f3dc4] hover:text-[#101214] hover:border-[#5f3dc4]"
               }`}
               onClick={() => {
                 setSelectedPreset("custom");
@@ -1160,34 +1209,34 @@ export default function InscribedSquareLab() {
                 setIsAutoMorphing(false);
               }}
             >
-              <span>✏️ Clear &amp; Draw Custom Loop</span>
+              <span>Clear &amp; Draw Custom Loop</span>
             </button>
           </div>
 
           {/* Control 02: Interactive Deformation & Auto-Morph */}
           {selectedPreset !== "custom" && (
-            <div className="bg-slate-900/50 backdrop-blur-md border border-slate-800 rounded-xl p-5 flex flex-col gap-4 shadow-xl hover:border-slate-700/80 transition">
-              <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
+            <div className="bg-white backdrop-blur-md border border-[#b8bec2] rounded p-5 flex flex-col gap-4 hover:border-[#b8bec2]/80 transition">
+              <div className="flex items-center justify-between border-b border-[#b8bec2]/80 pb-3">
                 <div>
-                  <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-emerald-400">
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#2e7d46]">
                     CONTROL 02 // DYNAMICS
                   </span>
-                  <h4 className="text-sm font-semibold text-slate-100">
+                  <h4 className="text-sm font-semibold text-[#101214]">
                     Curve Deformation &amp; Continuous Morph
                   </h4>
                 </div>
-                <span className="px-2.5 py-0.5 rounded text-[11px] font-mono font-bold bg-emerald-950/60 border border-emerald-500/40 text-emerald-300">
+                <span className="px-2.5 py-0.5 rounded text-[11px] font-mono font-bold bg-[#e3efe6]/70 border border-[#2e7d46]/40 text-[#2e7d46]">
                   &lambda; = {deformation.toFixed(2)}
                 </span>
               </div>
-              <p className="text-xs text-slate-400 leading-relaxed">
+              <p className="text-xs text-[#6c737a] leading-relaxed">
                 Continuously deform the loop and watch the inscribed square adapt in real time.
               </p>
 
               <div className="flex flex-col gap-2">
-                <div className="flex justify-between items-center text-xs text-slate-400 font-mono">
+                <div className="flex justify-between items-center text-xs text-[#6c737a] font-mono">
                   <span>Eccentricity &amp; Perturbation</span>
-                  <span className="text-cyan-400 font-bold">&lambda; = {deformation.toFixed(2)}</span>
+                  <span className="text-[#8f7ae8] font-bold">&lambda; = {deformation.toFixed(2)}</span>
                 </div>
                 <input
                   type="range"
@@ -1199,17 +1248,17 @@ export default function InscribedSquareLab() {
                     setIsAutoMorphing(false);
                     setDeformation(parseFloat(e.target.value));
                   }}
-                  className="w-full accent-cyan-400 cursor-pointer"
+                  className="w-full accent-[#8f7ae8] cursor-pointer"
                 />
               </div>
 
               <div className="flex items-center gap-3 pt-2">
                 <button
                   type="button"
-                  className={`flex-1 py-2 px-3 rounded-lg font-mono text-xs font-bold transition flex items-center justify-center gap-2 ${
+                  className={`flex-1 py-2 px-3 rounded font-mono text-xs font-bold transition flex items-center justify-center gap-2 ${
                     isAutoMorphing
-                      ? "bg-emerald-500/20 border border-emerald-500 text-emerald-300 shadow-[0_0_14px_rgba(80,227,156,0.3)]"
-                      : "bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 hover:text-white hover:border-cyan-400"
+                      ? "bg-[#2e7d46]/12 border border-[#2e7d46] text-[#2e7d46]"
+                      : "bg-[#7a63e0]/10 border border-[#5f3dc4]/30 text-[#5f3dc4] hover:text-[#101214] hover:border-[#5f3dc4]"
                   }`}
                   onClick={() => setIsAutoMorphing(!isAutoMorphing)}
                 >
@@ -1218,7 +1267,7 @@ export default function InscribedSquareLab() {
 
                 <button
                   type="button"
-                  className="py-2 px-3 rounded-lg font-mono text-xs font-bold bg-slate-950/60 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 transition"
+                  className="py-2 px-3 rounded font-mono text-xs font-bold bg-[#f6f5f1] border border-[#b8bec2] text-[#6c737a] hover:text-[#101214] hover:border-[#8d9196] transition"
                   onClick={() => {
                     setIsAutoMorphing(false);
                     setDeformation(1.0);
@@ -1233,28 +1282,28 @@ export default function InscribedSquareLab() {
 
           {/* Control 03: Greene-Lobb Aspect Ratio Control */}
           {solverMode === "rectangle" && (
-            <div className="bg-slate-900/50 backdrop-blur-md border border-slate-800 rounded-xl p-5 flex flex-col gap-4 shadow-xl hover:border-slate-700/80 transition">
-              <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
+            <div className="bg-white backdrop-blur-md border border-[#b8bec2] rounded p-5 flex flex-col gap-4 hover:border-[#b8bec2]/80 transition">
+              <div className="flex items-center justify-between border-b border-[#b8bec2]/80 pb-3">
                 <div>
-                  <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-purple-400">
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#8f7ae8]">
                     CONTROL 03 // SYMPLECTIC
                   </span>
-                  <h4 className="text-sm font-semibold text-slate-100">
+                  <h4 className="text-sm font-semibold text-[#101214]">
                     Greene-Lobb Target Aspect Ratio
                   </h4>
                 </div>
-                <span className="px-2.5 py-0.5 rounded text-[11px] font-mono font-bold bg-purple-950/60 border border-purple-500/40 text-purple-300">
+                <span className="px-2.5 py-0.5 rounded text-[11px] font-mono font-bold bg-[#efedf6] border border-[#5f3dc4]/40 text-[#5f3dc4]">
                   r = {targetAspectRatio.toFixed(3)}
                 </span>
               </div>
-              <p className="text-xs text-slate-400 leading-relaxed">
+              <p className="text-xs text-[#6c737a] leading-relaxed">
                 Select target aspect ratio $r = W/H$. Greene &amp; Lobb proved a solution exists for every $r \ge 1$.
               </p>
 
               <div className="flex flex-col gap-2">
-                <div className="flex justify-between items-center text-xs text-slate-400 font-mono">
+                <div className="flex justify-between items-center text-xs text-[#6c737a] font-mono">
                   <span>Target Ratio (Width / Height)</span>
-                  <span className="text-purple-400 font-bold">r = {targetAspectRatio.toFixed(3)}</span>
+                  <span className="text-[#8f7ae8] font-bold">r = {targetAspectRatio.toFixed(3)}</span>
                 </div>
                 <input
                   type="range"
@@ -1263,7 +1312,7 @@ export default function InscribedSquareLab() {
                   step="0.01"
                   value={targetAspectRatio}
                   onChange={(e) => setTargetAspectRatio(parseFloat(e.target.value))}
-                  className="w-full accent-purple-400 cursor-pointer"
+                  className="w-full accent-[#8f7ae8] cursor-pointer"
                 />
               </div>
 
@@ -1277,10 +1326,10 @@ export default function InscribedSquareLab() {
                   <button
                     key={item.label}
                     type="button"
-                    className={`py-2 px-2.5 rounded-lg text-[11px] font-mono font-semibold transition text-center ${
+                    className={`py-2 px-2.5 rounded text-[11px] font-mono font-semibold transition text-center ${
                       Math.abs(targetAspectRatio - item.val) < 0.01
-                        ? "bg-purple-500/20 border border-purple-400 text-purple-300 font-bold shadow-[0_0_10px_rgba(168,85,247,0.25)]"
-                        : "bg-slate-950/60 border border-slate-800 text-slate-400 hover:text-white"
+                        ? "bg-[#5f3dc4]/10 border border-[#5f3dc4] text-[#5f3dc4] font-bold"
+                        : "bg-[#f6f5f1] border border-[#b8bec2] text-[#6c737a] hover:text-[#101214]"
                     }`}
                     onClick={() => setTargetAspectRatio(item.val)}
                   >
@@ -1300,30 +1349,30 @@ export default function InscribedSquareLab() {
           onClick={() => setIsTheoryOpen(false)}
         >
           <div
-            className="relative w-full max-w-2xl bg-slate-950 border border-slate-800 rounded-2xl shadow-2xl p-6 flex flex-col gap-5 max-h-[90vh] overflow-y-auto"
+            className="relative w-full max-w-2xl bg-[#fbfaf7] border border-[#b8bec2] rounded shadow-2xl p-6 flex flex-col gap-5 max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
-              <h2 className="text-base font-bold text-white">
+            <div className="flex items-center justify-between border-b border-[#b8bec2]/80 pb-3">
+              <h2 className="text-base font-bold text-[#101214]">
                 Mathematical Foundations: The Inscribed Square Problem
               </h2>
               <button
                 type="button"
-                className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition"
+                className="p-1.5 rounded text-[#6c737a] hover:text-[#101214] hover:bg-[#b8bec2] transition"
                 onClick={() => setIsTheoryOpen(false)}
               >
                 ✕
               </button>
             </div>
 
-            <div className="flex flex-col gap-5 text-xs text-slate-300 leading-relaxed">
+            <div className="flex flex-col gap-5 text-xs text-[#454c52] leading-relaxed">
               <section className="flex flex-col gap-2">
-                <h3 className="text-sm font-bold text-cyan-400">1. Otto Toeplitz&apos;s 1911 Conjecture</h3>
+                <h3 className="text-sm font-bold text-[#8f7ae8]">1. Otto Toeplitz&apos;s 1911 Conjecture</h3>
                 <p>
                   German mathematician <strong>Otto Toeplitz</strong> posed the famous question in 1911:
                   <em> Does every simple closed curve in the Euclidean plane contain four points that form the vertices of a square?</em>
                 </p>
-                <div className="p-3 rounded-xl bg-slate-900 border border-cyan-500/20 text-cyan-300 font-mono text-xs overflow-x-auto">
+                <div className="p-3 rounded bg-[#181b1e] border border-[#5f3dc4]/20 text-[#5f3dc4] font-mono text-xs overflow-x-auto">
                   <code>{"\\forall \\gamma \\subset \\mathbb{R}^2 \\text{ (Jordan curve)}, \\quad \\exists A, B, C, D \\in \\gamma \\text{ forming a square.}"}</code>
                 </div>
                 <p>
@@ -1333,7 +1382,7 @@ export default function InscribedSquareLab() {
               </section>
 
               <section className="flex flex-col gap-2">
-                <h3 className="text-sm font-bold text-amber-400">
+                <h3 className="text-sm font-bold text-[#8a6a2f]">
                   2. The Möbius Strip Proof (Šnirel&apos;man 1929 &amp; 3Blue1Brown)
                 </h3>
                 <p>
@@ -1351,23 +1400,23 @@ export default function InscribedSquareLab() {
               </section>
 
               <section className="flex flex-col gap-2">
-                <h3 className="text-sm font-bold text-purple-400">
+                <h3 className="text-sm font-bold text-[#8f7ae8]">
                   3. Breakthrough: The Greene-Lobb Symplectic Theorem (2020)
                 </h3>
                 <p>
                   In May 2020, mathematicians <strong>Joshua Greene</strong> (Bowdoin College) and <strong>Andrew Lobb</strong> (Durham University)
                   proved using modern symplectic geometry and Floer homology that <strong>every smooth Jordan curve contains an inscribed rectangle of every possible aspect ratio</strong>.
                 </p>
-                <div className="p-3 rounded-xl bg-slate-900 border border-purple-500/20 text-purple-300 font-mono text-xs overflow-x-auto">
+                <div className="p-3 rounded bg-[#181b1e] border border-[#5f3dc4]/20 text-[#5f3dc4] font-mono text-xs overflow-x-auto">
                   <code>{"\\forall r \\ge 1, \\quad \\exists A, B, C, D \\in \\gamma \\text{ forming a rectangle with } \\text{Aspect Ratio } = r"}</code>
                 </div>
               </section>
             </div>
 
-            <div className="pt-3 border-t border-slate-800/80 flex justify-end">
+            <div className="pt-3 border-t border-[#b8bec2]/80 flex justify-end">
               <button
                 type="button"
-                className="px-4 py-2 rounded-lg bg-cyan-500/20 border border-cyan-400/50 text-cyan-300 hover:text-white hover:bg-cyan-500/30 font-mono text-xs font-bold transition shadow-lg"
+                className="px-4 py-2 rounded bg-[#5f3dc4]/10 border border-[#5f3dc4]/50 text-[#5f3dc4] hover:text-[#101214] hover:bg-[#7a63e0]/30 font-mono text-xs font-bold transition"
                 onClick={() => setIsTheoryOpen(false)}
               >
                 Got It &bull; Return to Lab

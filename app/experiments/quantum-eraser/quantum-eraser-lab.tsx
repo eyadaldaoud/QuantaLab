@@ -3,6 +3,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import * as THREE from "three";
+import "@/app/labs.css";
 import { quantumAudio } from "@/app/quantum-audio";
 import { wavelengthToColor } from "@/app/quantum-physics";
 import {
@@ -188,7 +189,7 @@ export default function QuantumEraserLab() {
   };
 
   return (
-    <div className="quantum-studio-root">
+    <div className="quantum-studio-root eraser-studio">
       {/* Topbar Header */}
       <header className="studio-topbar">
         <div className="topbar-left">
@@ -217,7 +218,7 @@ export default function QuantumEraserLab() {
             className="topbar-btn video-guide-btn"
             title="Open the step-by-step guided discovery walkthrough"
           >
-            <span>🧭 GUIDED WALKTHROUGH</span>
+            <span>GUIDED WALKTHROUGH</span>
           </button>
 
           <button
@@ -225,7 +226,7 @@ export default function QuantumEraserLab() {
             className="topbar-btn theory-btn"
             title="Read physical explanation of which-path tagging and state erasure"
           >
-            <span>📖 THEORY &amp; MATH</span>
+            <span>THEORY &amp; MATH</span>
           </button>
         </div>
       </header>
@@ -285,7 +286,6 @@ export default function QuantumEraserLab() {
                     title={STRINGS.modes.tagged.description}
                     aria-pressed={mode === "tagged"}
                   >
-                    <span className="hud-mode-icon">🏷️</span>
                     <div className="hud-mode-content">
                       <span className="hud-mode-title">TAGGED (H/V)</span>
                       <span className="hud-mode-status">WHICH-PATH (H/V)</span>
@@ -346,14 +346,14 @@ export default function QuantumEraserLab() {
                   title={soundEnabled ? "Audio chimes active" : "Audio muted"}
                   aria-pressed={soundEnabled}
                 >
-                  <span>{soundEnabled ? "🔊 AUDIO" : "🔇 MUTED"}</span>
+                  <span>{soundEnabled ? "AUDIO ON" : "MUTED"}</span>
                 </button>
                 <button
                   onClick={() => setShowLabels((v) => !v)}
                   className={`hud-tool-btn ${showLabels ? "tool-active" : ""}`}
                   title="Toggle 3D object identity callouts & component labels"
                 >
-                  <span>🏷️ {showLabels ? "LABELS ON" : "LABELS"}</span>
+                  <span>{showLabels ? "LABELS ON" : "LABELS"}</span>
                 </button>
 
 
@@ -489,7 +489,7 @@ export default function QuantumEraserLab() {
                 <span className="card-tag">MODULE 01 // POLARIZATION ANALYZER</span>
                 <h4 className="card-subheading">{STRINGS.controls.analyzerAngle}</h4>
               </div>
-              <span className="wl-spec-badge" style={{ color: "#00d4ff", borderColor: "rgba(0, 212, 255, 0.4)", backgroundColor: "rgba(0, 212, 255, 0.1)" }}>
+              <span className="wl-spec-badge" style={{ color: "#5f3dc4", borderColor: "rgba(95, 61, 196, 0.4)", backgroundColor: "rgba(95, 61, 196, 0.08)" }}>
                 θ = {thetaDeg}° · V = {(visibility * 100).toFixed(1)}%
               </span>
             </div>
@@ -513,7 +513,7 @@ export default function QuantumEraserLab() {
                 aria-label="Analyzer orientation angle theta in degrees"
                 style={
                   {
-                    "--slider-color": "#00d4ff",
+                    "--slider-color": "#8f7ae8",
                     "--slider-percent": `${(thetaDeg / 90) * 100}%`,
                   } as React.CSSProperties
                 }
@@ -563,7 +563,7 @@ export default function QuantumEraserLab() {
                 className="swatch-indicator"
                 style={{
                   backgroundColor: currentColor.hex,
-                  boxShadow: `0 0 16px ${currentColor.hex}`,
+                  boxShadow: "inset 0 0 0 1px rgba(16, 18, 20, 0.25)",
                 }}
               />
               <input
@@ -814,7 +814,7 @@ export default function QuantumEraserLab() {
 // ============================================================================
 
 
-function createLabelSprite(text: string, subtitle?: string, accentColor = "#a855f7"): THREE.Sprite {
+function createLabelSprite(text: string, subtitle?: string, accentColor = "#8f7ae8"): THREE.Sprite {
   const canvas = document.createElement("canvas");
   canvas.width = 512;
   canvas.height = 160;
@@ -986,8 +986,8 @@ function QuantumEraserScene({
 
     // --- Scene, Camera, Renderer ---
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color("#05080e");
-    scene.fog = new THREE.FogExp2(0x05080e, 0.02);
+    scene.background = new THREE.Color("#0f1113");
+    scene.fog = new THREE.FogExp2(0x0f1113, 0.02);
 
     const camera = new THREE.PerspectiveCamera(40, host.clientWidth / host.clientHeight, 0.1, 100);
     camera.position.copy(targetCamPos.current);
@@ -1222,7 +1222,7 @@ function QuantumEraserScene({
 
     // Quarter-Wave Plate (QWP) at Slit 1: converts to H linear polarization
     const tagHMat = new THREE.MeshPhysicalMaterial({
-      color: 0x00d4ff, metalness: 0.0, roughness: 0.04,
+      color: 0x8f7ae8, metalness: 0.0, roughness: 0.04,
       transmission: 0.6, thickness: 0.04, transparent: true, opacity: 0.75,
       emissive: 0x004466, emissiveIntensity: 0.55,
     });
@@ -1242,7 +1242,7 @@ function QuantumEraserScene({
 
     // Quarter-Wave Plate (QWP) at Slit 2: converts to V linear polarization
     const tagVMat = new THREE.MeshPhysicalMaterial({
-      color: 0xffaa3b, metalness: 0.0, roughness: 0.04,
+      color: 0xc89a4e, metalness: 0.0, roughness: 0.04,
       transmission: 0.6, thickness: 0.04, transparent: true, opacity: 0.75,
       emissive: 0x442200, emissiveIntensity: 0.55,
     });
@@ -1295,14 +1295,14 @@ function QuantumEraserScene({
     analyzerGroup.add(bsFilm);
 
     // Polarization angle indicator needle (rotates with the whole PBS mount)
-    const needleMat = new THREE.MeshBasicMaterial({ color: 0x00d4ff });
+    const needleMat = new THREE.MeshBasicMaterial({ color: 0x8f7ae8 });
     const needleMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.022, 0.72, 16), needleMat);
     needleMesh.position.set(0.30, 0.36, 0);
     analyzerGroup.add(needleMesh);
 
     // Channel A transmitted output beam (straight to main detector screen)
     const chanAMat = new THREE.MeshBasicMaterial({
-      color: 0x00d4ff, transparent: true, opacity: 0.10,
+      color: 0x8f7ae8, transparent: true, opacity: 0.10,
       blending: THREE.AdditiveBlending, depthWrite: false,
     });
     const chanAArm = new THREE.Mesh(new THREE.CylinderGeometry(0.036, 0.036, 3.38, 10), chanAMat);
@@ -1312,7 +1312,7 @@ function QuantumEraserScene({
 
     // Channel B reflected output beam (perpendicular, exits toward z+)
     const chanBMat = new THREE.MeshBasicMaterial({
-      color: 0xff8800, transparent: true, opacity: 0.10,
+      color: 0xc89a4e, transparent: true, opacity: 0.10,
       blending: THREE.AdditiveBlending, depthWrite: false,
     });
     const chanBArm = new THREE.Mesh(new THREE.CylinderGeometry(0.036, 0.036, 1.55, 10), chanBMat);
@@ -1334,7 +1334,7 @@ function QuantumEraserScene({
     // Channel B detector face glow plate
     const detBFace = new THREE.Mesh(
       new THREE.PlaneGeometry(0.55, 0.55),
-      new THREE.MeshBasicMaterial({ color: 0xff8800, transparent: true, opacity: 0.42 })
+      new THREE.MeshBasicMaterial({ color: 0xc89a4e, transparent: true, opacity: 0.42 })
     );
     detBFace.rotation.x = -Math.PI / 2;
     detBFace.position.set(1.8, 0.47, 2.12);
@@ -1348,7 +1348,7 @@ function QuantumEraserScene({
     pcanvas.width = 1024;
     pcanvas.height = 768;
     const pctx = pcanvas.getContext("2d")!;
-    pctx.fillStyle = "#03080e";
+    pctx.fillStyle = "#131518";
     pctx.fillRect(0, 0, 1024, 768);
 
     const phosphorTexture = new THREE.CanvasTexture(pcanvas);
@@ -1375,43 +1375,43 @@ function QuantumEraserScene({
     scene.add(labelsGroup);
 
     // Laser pump
-    const labelPump = createLabelSprite("PUMP LASER", "Coherent UV Source", "#6600ff");
+    const labelPump = createLabelSprite("PUMP LASER", "Coherent UV Source", "#8f7ae8");
     labelPump.position.set(-5.8, 1.45, 0);
     labelsGroup.add(labelPump);
 
     // SPDC Crystal
-    const labelSpdc = createLabelSprite("SPDC BBO CRYSTAL", "Type-I Entangled Pair Generator", "#a855f7");
+    const labelSpdc = createLabelSprite("SPDC BBO CRYSTAL", "Type-I Entangled Pair Generator", "#8f7ae8");
     labelSpdc.position.set(-2.6, 1.45, 0);
     labelsGroup.add(labelSpdc);
 
     // Dual-Slit Barrier
-    const labelSlits = createLabelSprite("DUAL SLITS & QWP", "d = 0.20mm · Orthogonal H/V Tags", "#00d4ff");
+    const labelSlits = createLabelSprite("DUAL SLITS & QWP", "d = 0.20mm · Orthogonal H/V Tags", "#8f7ae8");
     labelSlits.position.set(-1.2, 1.75, 0);
     labelsGroup.add(labelSlits);
 
     // Individual Slit 1 / Slit 2 markers
-    const labelSlitH = createLabelSprite("SLIT 1 (H)", "Horizontal Linear QWP Tag", "#00d4ff");
+    const labelSlitH = createLabelSprite("SLIT 1 (H)", "Horizontal Linear QWP Tag", "#8f7ae8");
     labelSlitH.scale.set(1.4, 0.45, 1);
     labelSlitH.position.set(-1.2, 0.95, -0.95);
     labelsGroup.add(labelSlitH);
 
-    const labelSlitV = createLabelSprite("SLIT 2 (V)", "Vertical Linear QWP Tag", "#ffaa3b");
+    const labelSlitV = createLabelSprite("SLIT 2 (V)", "Vertical Linear QWP Tag", "#c89a4e");
     labelSlitV.scale.set(1.4, 0.45, 1);
     labelSlitV.position.set(-1.2, 0.95, 0.95);
     labelsGroup.add(labelSlitV);
 
     // Analyzer PBS Cube
-    const labelPbs = createLabelSprite("POLARIZING BEAM SPLITTER", "Rotatable Analyzer Angle θ", "#00d4ff");
+    const labelPbs = createLabelSprite("POLARIZING BEAM SPLITTER", "Rotatable Analyzer Angle θ", "#8f7ae8");
     labelPbs.position.set(1.8, 1.65, 0);
     labelsGroup.add(labelPbs);
 
     // Channel B Secondary Detector
-    const labelDetB = createLabelSprite("CHANNEL B DETECTOR", "Reflected Orthogonal Subset (▲)", "#ff8800");
+    const labelDetB = createLabelSprite("CHANNEL B DETECTOR", "Reflected Orthogonal Subset (▲)", "#c89a4e");
     labelDetB.position.set(1.8, 1.35, 2.3);
     labelsGroup.add(labelDetB);
 
     // Channel A Main Detector
-    const labelDetA = createLabelSprite("CHANNEL A DETECTOR SCREEN", "Transmitted Fringe Sub-Ensemble (●)", "#00d4ff");
+    const labelDetA = createLabelSprite("CHANNEL A DETECTOR SCREEN", "Transmitted Fringe Sub-Ensemble (●)", "#8f7ae8");
     labelDetA.position.set(5.18, 2.15, 0);
     labelsGroup.add(labelDetA);
 
@@ -1443,7 +1443,7 @@ function QuantumEraserScene({
     const tempColor = new THREE.Color();
 
     function redrawCanvasHits(hitsList: RecordedEraserHit[], view: string, wlColor: string) {
-      pctx.fillStyle = "#03080e";
+      pctx.fillStyle = "#131518";
       pctx.fillRect(0, 0, 1024, 768);
 
       // Grid coordinate markers
@@ -1468,8 +1468,8 @@ function QuantumEraserScene({
         const cy = 384 - (h.y / 0.015) * 320;
 
         let dotColor = wlColor;
-        if (isChanA) dotColor = "#00d4ff"; // Sky Blue
-        if (isChanB) dotColor = "#ff8800"; // Warm Orange
+        if (isChanA) dotColor = "#8f7ae8"; // Sky Blue
+        if (isChanB) dotColor = "#c89a4e"; // Warm Orange
 
         pctx.fillStyle = dotColor;
         pctx.beginPath();
@@ -1500,8 +1500,8 @@ function QuantumEraserScene({
       const cy = 384 - (h.y / 0.015) * 320;
 
       let dotColor = wlColor;
-      if (isChanA) dotColor = "#00d4ff";
-      if (isChanB) dotColor = "#ff8800";
+      if (isChanA) dotColor = "#8f7ae8";
+      if (isChanB) dotColor = "#c89a4e";
 
       pctx.fillStyle = dotColor;
       pctx.beginPath();
@@ -1717,9 +1717,9 @@ function QuantumEraserScene({
         // If tagged and after slits: tint Slit 1 / Slit 2
         // Only after analyzer / detection are Channel A/B colors assigned
         if (isTagged && progress >= 0.38 && progress < 0.70) {
-          tempColor.set(f.slitTag === "H" ? 0x00d4ff : 0xffaa3b);
+          tempColor.set(f.slitTag === "H" ? 0x8f7ae8 : 0xc89a4e);
         } else if (progress >= 0.70 && curMode === "analyzer") {
-          tempColor.set(f.channel === "A" ? 0x00d4ff : 0xff8800);
+          tempColor.set(f.channel === "A" ? 0x8f7ae8 : 0xc89a4e);
         } else {
           tempColor.set(col.rgbNum);
         }
@@ -1895,7 +1895,7 @@ function EraserDistributionPlot({
         <div className="analytics-tag-group">
           <span
             className="analytics-tag"
-            style={{ color: "#00d4ff", borderColor: "rgba(0, 212, 255, 0.4)", backgroundColor: "rgba(0, 212, 255, 0.1)" }}
+            style={{ color: "#5f3dc4", borderColor: "rgba(95, 61, 196, 0.4)", backgroundColor: "rgba(95, 61, 196, 0.08)" }}
           >
             {mode === "plain" && "MODE 1: PLAIN (INTERFERENCE FRINGES)"}
             {mode === "tagged" && "MODE 2: TAGGED (FLAT DIFFRACTION ENVELOPE)"}
@@ -1911,9 +1911,9 @@ function EraserDistributionPlot({
           {(
             [
               { id: "ALL", label: "All Hits (A + B)", dot: wavelengthColor },
-              { id: "A", label: "Channel A (●)", dot: "#00d4ff" },
-              { id: "B", label: "Channel B (▲)", dot: "#ff8800" },
-              { id: "OVERLAY", label: "Overlaid (A & B)", dot: "#a855f7" },
+              { id: "A", label: "Channel A (●)", dot: "#8f7ae8" },
+              { id: "B", label: "Channel B (▲)", dot: "#c89a4e" },
+              { id: "OVERLAY", label: "Overlaid (A & B)", dot: "#8f7ae8" },
             ] as const
           ).map((v) => (
             <button
@@ -1933,8 +1933,8 @@ function EraserDistributionPlot({
 
       <div className="plot-canvas-large">
         <svg viewBox="0 0 440 135" preserveAspectRatio="none" className="distribution-svg">
-          <line x1="0" y1="120" x2="440" y2="120" stroke="#1d2e3e" strokeWidth="1" strokeDasharray="3 3" />
-          <line x1="220" y1="10" x2="220" y2="120" stroke="#1d2e3e" strokeWidth="1" strokeDasharray="2 4" />
+          <line x1="0" y1="120" x2="440" y2="120" stroke="#26292d" strokeWidth="1" strokeDasharray="3 3" />
+          <line x1="220" y1="10" x2="220" y2="120" stroke="#26292d" strokeWidth="1" strokeDasharray="2 4" />
 
           {/* Histogram Bars */}
           {activeView === "ALL" &&
@@ -1970,7 +1970,7 @@ function EraserDistributionPlot({
                   y={barY}
                   width={Math.max(1, barW - 1)}
                   height={barH}
-                  fill="#00d4ff"
+                  fill="#8f7ae8"
                   opacity={0.4 + val * 0.55}
                   rx="1"
                 />
@@ -1990,7 +1990,7 @@ function EraserDistributionPlot({
                   y={barY}
                   width={Math.max(1, barW - 1)}
                   height={barH}
-                  fill="#ff8800"
+                  fill="#c89a4e"
                   opacity={0.4 + val * 0.55}
                   rx="1"
                 />
@@ -2007,8 +2007,8 @@ function EraserDistributionPlot({
               const barX = idx * barW;
               return (
                 <g key={idx}>
-                  <rect x={barX + 0.5} y={120 - barHA} width={halfW} height={barHA} fill="#00d4ff" opacity={0.65} rx="1" />
-                  <rect x={barX + 0.5 + halfW} y={120 - barHB} width={halfW} height={barHB} fill="#ff8800" opacity={0.65} rx="1" />
+                  <rect x={barX + 0.5} y={120 - barHA} width={halfW} height={barHA} fill="#8f7ae8" opacity={0.65} rx="1" />
+                  <rect x={barX + 0.5 + halfW} y={120 - barHB} width={halfW} height={barHB} fill="#c89a4e" opacity={0.65} rx="1" />
                 </g>
               );
             })}
@@ -2019,11 +2019,11 @@ function EraserDistributionPlot({
           )}
 
           {(activeView === "A" || activeView === "OVERLAY") && (
-            <path d={pathA} fill="none" stroke="#00d4ff" strokeWidth="2.2" vectorEffect="non-scaling-stroke" />
+            <path d={pathA} fill="none" stroke="#8f7ae8" strokeWidth="2.2" vectorEffect="non-scaling-stroke" />
           )}
 
           {(activeView === "B" || activeView === "OVERLAY") && (
-            <path d={pathB} fill="none" stroke="#ff8800" strokeWidth="2.2" strokeDasharray="4 2" vectorEffect="non-scaling-stroke" />
+            <path d={pathB} fill="none" stroke="#c89a4e" strokeWidth="2.2" strokeDasharray="4 2" vectorEffect="non-scaling-stroke" />
           )}
         </svg>
 
@@ -2036,11 +2036,11 @@ function EraserDistributionPlot({
 
       <div className="plot-legend-row">
         <div className="legend-item">
-          <span className="legend-shape shape-circle" style={{ backgroundColor: "#00d4ff" }} />
+          <span className="legend-shape shape-circle" style={{ backgroundColor: "#5f3dc4" }} />
           <span>Channel A (θ = {thetaDeg}°)</span>
         </div>
         <div className="legend-item">
-          <span className="legend-shape shape-triangle" style={{ borderColor: "#ff8800" }} />
+          <span className="legend-shape shape-triangle" style={{ borderColor: "#8a6a2f" }} />
           <span>Channel B (Anti-fringe, θ + 90°)</span>
         </div>
         <div className="legend-item">

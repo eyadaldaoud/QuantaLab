@@ -27,16 +27,10 @@ export default function ExperimentModal({ experiment, onClose }: ExperimentModal
         <div className="modal-header">
           <div className="exp-modal-title-group">
             <div className="exp-modal-badge-row">
-              <span className="exp-modal-icon">{experiment.icon}</span>
               <span
-                className="exp-modal-status-badge"
-                style={{
-                  color: experiment.status === "active" ? "#38e1ff" : "#ffaa3b",
-                  borderColor: experiment.status === "active" ? "rgba(56, 225, 255, 0.4)" : "rgba(255, 170, 59, 0.4)",
-                  backgroundColor: experiment.status === "active" ? "rgba(56, 225, 255, 0.1)" : "rgba(255, 170, 59, 0.1)",
-                }}
+                className={`exp-modal-status-badge ${experiment.status === "active" ? "" : "inactive"}`}
               >
-                {experiment.status === "active" ? "● LIVE SIMULATION AVAILABLE" : "🚧 IN ROADMAP / DEVELOPMENT"}
+                {experiment.status === "active" ? "LIVE 3D BENCH" : "IN ROADMAP"}
               </span>
               <span className="exp-modal-category-badge">{experiment.category}</span>
               <span className="exp-modal-diff-badge">{experiment.difficulty}</span>
@@ -119,12 +113,12 @@ export default function ExperimentModal({ experiment, onClose }: ExperimentModal
 
           {experiment.status === "active" ? (
             <Link href={experiment.route} className="btn-primary-action">
-              <span>Launch 3D Simulation Now</span>
+              <span>Launch the bench</span>
               <span>→</span>
             </Link>
           ) : (
             <div className="roadmap-notice">
-              <span>Under construction for upcoming release</span>
+              <span>In development for an upcoming release</span>
             </div>
           )}
         </div>

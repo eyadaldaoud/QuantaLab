@@ -12,12 +12,112 @@ import {
   ExperimentMetadata,
 } from "@/lib/experiments";
 
+/** Elevation drawing of the double-slit bench. Numbers are the real parameters. */
+function BenchElevation() {
+  return (
+    <svg
+      className="bench-elevation-svg"
+      viewBox="0 0 720 560"
+      role="img"
+      aria-label="Elevation drawing of the double-slit optical bench: laser, slit plate, screen, and the interference intensity curve"
+    >
+      {/* Upper left: intensity curve inset */}
+      <g>
+        <rect x="56" y="48" width="248" height="152" fill="none" stroke="#b8bec2" strokeWidth="1" />
+        {/* axes */}
+        <line x1="82" y1="172" x2="282" y2="172" stroke="#b8bec2" strokeWidth="1" />
+        <line x1="82" y1="64" x2="82" y2="172" stroke="#b8bec2" strokeWidth="1" />
+        {/* sinc² · cos² path (lobes) */}
+        <path
+          d="M82 164
+             C 112 164, 128 72, 180 72
+             C 232 72, 246 164, 282 166
+             M112 162 C 128 162, 136 108, 156 108 M156 108 C 176 108, 184 163, 200 163
+             M180 166 C 194 166, 204 120, 220 120 M220 120 C 234 120, 244 164, 256 163"
+          fill="none"
+          stroke="#101214"
+          strokeWidth="1.75"
+        />
+        <text x="88" y="60" fill="#6c737a" fontSize="9" fontFamily="var(--qb-mono)">I(θ)</text>
+        <text x="272" y="184" fill="#6c737a" fontSize="9" fontFamily="var(--qb-mono)">θ</text>
+        <text x="88" y="192" fill="#6c737a" fontSize="8.5" fontFamily="var(--qb-mono)">
+          I(θ) = I₀ · s²(β) · cos²(α)
+        </text>
+      </g>
+
+      {/* Dimension line: L */}
+      <line x1="330" y1="512" x2="560" y2="512" stroke="#6c737a" strokeWidth="1" />
+      <line x1="330" y1="506" x2="330" y2="518" stroke="#6c737a" strokeWidth="1" />
+      <line x1="560" y1="506" x2="560" y2="518" stroke="#6c737a" strokeWidth="1" />
+      <text x="428" y="530" fill="#6c737a" fontSize="9.5" fontFamily="var(--qb-mono)">L = 1.00 m</text>
+
+      {/* 1. Laser */}
+      <g>
+        <rect x="66" y="380" width="74" height="52" fill="none" stroke="#101214" strokeWidth="2" />
+        <line x1="80" y1="388" x2="80" y2="424" stroke="#101214" strokeWidth="2" />
+        <line x1="92" y1="388" x2="92" y2="424" stroke="#101214" strokeWidth="2" />
+        <line x1="104" y1="388" x2="104" y2="424" stroke="#101214" strokeWidth="2" />
+        <rect x="138" y="398" width="10" height="16" fill="#cf3b2e" />
+        <text x="66" y="450" fill="#101214" fontSize="10" fontFamily="var(--qb-mono)">1 · He-Ne laser · 632.8 nm</text>
+      </g>
+
+      {/* Beam, attenuated to the single-photon regime */}
+      <line x1="148" y1="406" x2="330" y2="406" stroke="#cf3b2e" strokeWidth="2.5" />
+
+      {/* 2. Slit plate */}
+      <g>
+        <rect x="330" y="256" width="10" height="214" fill="#101214" />
+        <rect x="330" y="384" width="10" height="14" fill="#f8f7f4" />
+        <rect x="330" y="416" width="10" height="14" fill="#f8f7f4" />
+        <text x="238" y="250" fill="#101214" fontSize="10" fontFamily="var(--qb-mono)">2 · slit plate · a, d</text>
+        <text x="348" y="394" fill="#6c737a" fontSize="9.5" fontFamily="var(--qb-mono)">s₁</text>
+        <text x="348" y="426" fill="#6c737a" fontSize="9.5" fontFamily="var(--qb-mono)">s₂</text>
+      </g>
+
+      {/* Huygens wavelets from the two slits */}
+      <g stroke="#cf3b2e" fill="none" strokeWidth="1.2">
+        <path d="M340 388 A 30 30 0 0 1 362 370" strokeOpacity="0.75" />
+        <path d="M340 388 A 62 62 0 0 1 386 348" strokeOpacity="0.6" />
+        <path d="M340 388 A 100 100 0 0 1 420 330" strokeOpacity="0.45" />
+        <path d="M340 388 A 144 144 0 0 1 462 316" strokeOpacity="0.3" />
+        <path d="M340 424 A 30 30 0 0 0 362 442" strokeOpacity="0.75" />
+        <path d="M340 424 A 62 62 0 0 0 386 464" strokeOpacity="0.6" />
+        <path d="M340 424 A 100 100 0 0 0 420 482" strokeOpacity="0.45" />
+        <path d="M340 424 A 144 144 0 0 0 462 496" strokeOpacity="0.3" />
+      </g>
+
+      {/* 3. Screen with fringes */}
+      <g>
+        <rect x="560" y="236" width="16" height="234" fill="#101214" />
+        <g fill="#cf3b2e">
+          <rect x="576" y="300" width="6" height="60" opacity="0.95" />
+          <rect x="576" y="270" width="4" height="20" opacity="0.5" />
+          <rect x="576" y="370" width="4" height="20" opacity="0.5" />
+        </g>
+        <text x="590" y="228" fill="#101214" fontSize="10" fontFamily="var(--qb-mono)">3 · screen</text>
+      </g>
+
+      {/* Optical rail */}
+      <line x1="40" y1="486" x2="680" y2="486" stroke="#101214" strokeWidth="3" />
+      <line x1="40" y1="492" x2="680" y2="492" stroke="#b8bec2" strokeWidth="1" />
+      <g stroke="#b8bec2" strokeWidth="1">
+        <line x1="40" y1="492" x2="40" y2="499" />
+        <line x1="190" y1="492" x2="190" y2="499" />
+        <line x1="330" y1="492" x2="330" y2="499" />
+        <line x1="445" y1="492" x2="445" y2="499" />
+        <line x1="560" y1="492" x2="560" y2="499" />
+        <line x1="680" y1="492" x2="680" y2="499" />
+      </g>
+      <text x="612" y="530" fill="#6c737a" fontSize="9.5" fontFamily="var(--qb-mono)">z, bench axis</text>
+    </svg>
+  );
+}
+
 export default function HomePage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [selectedSpotlightSlug, setSelectedSpotlightSlug] = useState<string>("double-slit");
   const [activeModalExp, setActiveModalExp] = useState<ExperimentMetadata | null>(null);
 
-  // Active experiment for dynamic spotlight
   const featuredExperiment = useMemo(
     () => EXPERIMENTS.find((e) => e.slug === selectedSpotlightSlug) || EXPERIMENTS[0],
     [selectedSpotlightSlug]
@@ -28,7 +128,6 @@ export default function HomePage() {
     []
   );
 
-  // Filtered experiments for catalog
   const filteredExperiments = useMemo(() => {
     return EXPERIMENTS.filter((exp) => {
       const matchCategory =
@@ -46,334 +145,229 @@ export default function HomePage() {
 
   return (
     <div className="platform-page-root">
-      {/* Top Global Navigation Bar */}
       <Navbar />
 
       <main className="platform-main-content">
-        {/* =========================================================================
-            1. HERO SECTION
-           ========================================================================= */}
-        <section className="platform-hero-section">
-          <div className="hero-glow-orb hero-glow-1" aria-hidden="true" />
-          <div className="hero-glow-orb hero-glow-2" aria-hidden="true" />
-
-          <div className="hero-container">
-            <div className="hero-badge">
-              <span className="badge-pulse-dot" />
-              <span>VIRTUAL QUANTUM PHYSICS LABORATORY</span>
+        {/* =====================================================================
+            1. HERO — the bench elevation
+           ===================================================================== */}
+        <section className="bench-hero">
+          <div className="bench-hero-inner">
+            <div className="bench-hero-figure">
+              <div className="plate-cap" style={{ marginBottom: 18 }}>
+                <span><b>Plate I</b> — the double-slit bench</span>
+                <span>fig. 1 — drawn to scale</span>
+              </div>
+              <BenchElevation />
             </div>
 
-            <h1 className="hero-headline">
-              Explore the Quantum Realm <br />
-              <span className="hero-gradient-text">Through Interactive 3D Simulations</span>
-            </h1>
+            <div className="bench-hero-info">
+              <div className="hero-plate-key">
+                <span>EXPERIMENT 01</span>
+                <span>3D · LIVE</span>
+              </div>
 
-            <p className="hero-subtitle">
-              A public, open-source educational laboratory platform. Manipulate single-photon
-              wavepackets in real time, probe wave-particle duality, trigger observer decoherence,
-              and investigate fundamental quantum mechanics directly in your browser.
-            </p>
+              <h1>
+                Run the double-slit photon by photon.{" "}
+                <span className="hero-wavelength">λ = 632.8 nm</span>
+              </h1>
 
-            {/* Dynamic Multi-Lab Hero Actions Group */}
-            <div className="hero-actions-group">
-              <Link
-                href="/experiments/double-slit"
-                className="btn-hero-primary"
-                title="Launch the 3D Double-Slit Experiment apparatus"
-              >
-                <span className="btn-icon">⚡</span>
-                <span>LAUNCH DOUBLE-SLIT BENCH</span>
-                <span className="btn-arrow">→</span>
-              </Link>
+              <p className="hero-lede">
+                QuantaLab turns the browser into a quantum optics bench. Fire single
+                photons and count them onto the screen, or let the wave through and
+                watch fringes build. Switch on the which-path detector and the
+                interference pattern stops being one.
+              </p>
 
-              <Link
-                href="/experiments/quantum-eraser"
-                className="btn-hero-secondary btn-hero-eraser"
-                title="Launch the 3D Quantum Eraser apparatus"
-              >
-                <span className="btn-icon">🪞</span>
-                <span>LAUNCH QUANTUM ERASER</span>
-                <span className="btn-arrow">→</span>
-              </Link>
+              <div className="experiment-register" style={{ marginTop: 30 }}>
+                {EXPERIMENTS.map((exp, i) => (
+                  <Link
+                    key={exp.id}
+                    href={exp.status === "active" ? exp.route : "#experiments"}
+                    className={`register-item ${exp.slug === "double-slit" ? "is-current" : ""}`}
+                    style={{ "--lam": exp.accentColor } as React.CSSProperties}
+                    aria-label={`Open ${exp.title}`}
+                  >
+                    <span className="register-no">{String(i + 1).padStart(2, "0")}</span>
+                    <span className="register-name">{exp.title}</span>
+                    <span className="register-lam" />
+                  </Link>
+                ))}
+              </div>
 
-              <a
-                href="https://github.com/eyadaldaoud/QuantaLab"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-hero-github"
-                title="View Source Code & Physics on GitHub"
-              >
-                <svg
-                  className="hero-github-icon"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  width="18"
-                  height="18"
-                  aria-hidden="true"
+              <div className="hero-cta-row">
+                <Link
+                  href="/experiments/double-slit"
+                  className="btn-launch"
+                  title="Launch the 3D double-slit bench"
                 >
-                  <path
-                    fillRule="evenodd"
-                    clipRule="evenodd"
-                    d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
-                  />
-                </svg>
-                <span>GitHub Repo</span>
-              </a>
-            </div>
-
-            {/* Platform Metrics Strip */}
-            <div className="hero-metrics-strip">
-              <div className="metric-pill">
-                <span className="metric-num">3D</span>
-                <span className="metric-label">Interactive Optical Benches</span>
-              </div>
-              <div className="metric-divider" />
-              <div className="metric-pill">
-                <span className="metric-num">100%</span>
-                <span className="metric-label">Analytical Quantum Physics</span>
-              </div>
-              <div className="metric-divider" />
-              <div className="metric-pill">
-                <span className="metric-num">Real-Time</span>
-                <span className="metric-label">Monte Carlo Sampler</span>
-              </div>
-              <div className="metric-divider" />
-              <div className="metric-pill">
-                <span className="metric-num">MIT</span>
-                <span className="metric-label">Open Source Foundation</span>
+                  <span className="launch-tick" />
+                  <span>Launch the bench</span>
+                </Link>
+                <a href="#about" className="btn-secondary-link">
+                  How the physics works
+                </a>
               </div>
             </div>
           </div>
         </section>
 
-        {/* =========================================================================
-            2. DYNAMIC FEATURED EXPERIMENT SPOTLIGHT
-           ========================================================================= */}
+        {/* Provenance line */}
+        <div className="provenance-line" aria-hidden="false">
+          <div className="provenance-inner">
+            <span className="prov-datum">Intensities — <b>analytical s²·cos²</b></span>
+            <span className="prov-datum">Photons — <b>Monte Carlo, Born |ψ|²</b></span>
+            <span className="prov-datum">{activeExperiments.length} benches live</span>
+            <span className="prov-datum">MIT licensed · source on GitHub</span>
+          </div>
+        </div>
+
+        {/* =====================================================================
+            2. FEATURED BENCH IN OPERATION
+           ===================================================================== */}
         {featuredExperiment && (
-          <section className="featured-spotlight-section">
+          <section className="spotlight-section">
             <div className="section-container">
-              {/* Dynamic Experiment Switcher Tabs */}
-              <div className="spotlight-tabs-bar" role="tablist" aria-label="Select Featured Apparatus">
-                {activeExperiments.map((exp) => {
-                  const isSelected = selectedSpotlightSlug === exp.slug;
-                  return (
-                    <button
-                      key={exp.id}
-                      type="button"
-                      role="tab"
-                      aria-selected={isSelected}
-                      className={`spotlight-tab-btn ${isSelected ? "is-selected" : ""}`}
-                      onClick={() => setSelectedSpotlightSlug(exp.slug)}
-                    >
-                      <span className="spotlight-tab-icon">{exp.icon}</span>
-                      <span className="spotlight-tab-title">{exp.title}</span>
-                      <span
-                        className="spotlight-tab-badge"
-                        style={{
-                          borderColor: exp.accentColor,
-                          color: exp.accentColor,
-                        }}
+              <div className="spotlight-heading">
+                <h2>Featured bench in operation</h2>
+                <div className="spotlight-tabs-bar" role="tablist" aria-label="Select featured apparatus">
+                  {activeExperiments.map((exp) => {
+                    const isSelected = selectedSpotlightSlug === exp.slug;
+                    return (
+                      <button
+                        key={exp.id}
+                        type="button"
+                        role="tab"
+                        aria-selected={isSelected}
+                        className={`spotlight-tab-btn ${isSelected ? "is-selected" : ""}`}
+                        onClick={() => setSelectedSpotlightSlug(exp.slug)}
+                        style={{ "--lam": exp.accentColor } as React.CSSProperties}
                       >
-                        LIVE 3D
-                      </span>
-                    </button>
-                  );
-                })}
+                        <span className="spotlight-tab-lam" />
+                        <span>{exp.title.replace(/^The /, "")}</span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
               <div className="spotlight-card">
-                <div className="spotlight-badge-row">
-                  <span className="spotlight-badge-live">
-                    <span className="live-dot" /> LIVE 3D APPARATUS
-                  </span>
-                  <span className="spotlight-category-tag">
-                    {featuredExperiment.category.toUpperCase()} • {featuredExperiment.difficulty.toUpperCase()}
-                  </span>
+                <div className="spotlight-info">
+                  <div className="spotlight-badge-row">
+                    <span className="spotlight-badge-live">
+                      <span className="live-dot" /> LIVE 3D BENCH
+                    </span>
+                    <span>
+                      {featuredExperiment.category.toUpperCase()} ·{" "}
+                      {featuredExperiment.difficulty.toUpperCase()}
+                    </span>
+                  </div>
+
+                  <h3 className="spotlight-title">{featuredExperiment.title}</h3>
+                  <p className="spotlight-subtitle">{featuredExperiment.subtitle}</p>
+                  <p className="spotlight-desc">{featuredExperiment.summary}</p>
+
+                  <div className="spotlight-highlights-list">
+                    {featuredExperiment.features.slice(0, 3).map((feat, i) => (
+                      <div key={i} className="spotlight-hl-item">
+                        <span className="hl-key">{String(i + 1).padStart(2, "0")}</span>
+                        <span>{feat}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="spotlight-cta-row">
+                    <Link href={featuredExperiment.route} className="btn-launch">
+                      <span className="launch-tick" />
+                      <span>Launch {featuredExperiment.title.replace(/^The /, "")}</span>
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={() => setActiveModalExp(featuredExperiment)}
+                      className="btn-secondary-link"
+                    >
+                      Equations &amp; math
+                    </button>
+                  </div>
                 </div>
 
-                <div className="spotlight-grid">
-                  <div className="spotlight-info">
-                    <h2 className="spotlight-title">{featuredExperiment.title}</h2>
-                    <p className="spotlight-subtitle">{featuredExperiment.subtitle}</p>
-                    <p className="spotlight-desc">{featuredExperiment.summary}</p>
-
-                    {/* Dynamic Highlights List tailored to the selected experiment */}
-                    <div className="spotlight-highlights-list">
-                      {featuredExperiment.slug === "double-slit" ? (
-                        <>
-                          <div className="spotlight-hl-item">
-                            <span className="hl-icon">🌊</span>
-                            <div>
-                              <strong>Wave Superposition Mode:</strong> Photons traverse both slits simultaneously as continuous probability wavelets, producing alternating interference fringes.
-                            </div>
-                          </div>
-                          <div className="spotlight-hl-item">
-                            <span className="hl-icon">👁️</span>
-                            <div>
-                              <strong>Physical Observer Collapse:</strong> Engaging slit detectors reveals &ldquo;which-path&rdquo; information, collapsing superposition into two classical particle bands.
-                            </div>
-                          </div>
-                          <div className="spotlight-hl-item">
-                            <span className="hl-icon">🎛️</span>
-                            <div>
-                              <strong>Analytical Distribution &amp; Audio:</strong> Real-time Poisson/Monte Carlo photon arrivals with live histogram and Web Audio synthesis chimes.
-                            </div>
-                          </div>
-                        </>
-                      ) : featuredExperiment.slug === "inscribed-square" ? (
-                        <>
-                          <div className="spotlight-hl-item">
-                            <span className="hl-icon">✏️</span>
-                            <div>
-                              <strong>Freehand Loop &amp; Presets:</strong> Draw any continuous closed loop with mouse or touch, or choose mathematical presets (Ellipse, Clover, Teardrop, Astroid, Wobble).
-                            </div>
-                          </div>
-                          <div className="spotlight-hl-item">
-                            <span className="hl-icon">📐</span>
-                            <div>
-                              <strong>Real-Time Square Optimizer:</strong> Scans diagonal pairs to locate four points lying strictly on the loop that satisfy orthogonal bisecting diagonals.
-                            </div>
-                          </div>
-                          <div className="spotlight-hl-item">
-                            <span className="hl-icon">➰</span>
-                            <div>
-                              <strong>3D Möbius Configuration Space:</strong> Explore 3Blue1Brown-style topological surface projections where self-intersections guarantee inscribed squares and rectangles.
-                            </div>
-                          </div>
-                        </>
-                      ) : (
-                        <>
-                          <div className="spotlight-hl-item">
-                            <span className="hl-icon">🔀</span>
-                            <div>
-                              <strong>Which-Path Polarization Tagging:</strong> Orthogonal |H⟩ and |V⟩ polarizers tag slit paths into physical polarization states, destroying wave interference.
-                            </div>
-                          </div>
-                          <div className="spotlight-hl-item">
-                            <span className="hl-icon">🪞</span>
-                            <div>
-                              <strong>Continuous Analyzer Angle θ:</strong> Rotate the diagonal analyzer basis to dynamically vary fringe visibility from V = 0.00 (which-path preserved) to V = 1.00 (erasure).
-                            </div>
-                          </div>
-                          <div className="spotlight-hl-item">
-                            <span className="hl-icon">🔬</span>
-                            <div>
-                              <strong>Sorted Complementary Subsets:</strong> Polarizing beam splitter sorts photons into Channels A and B, producing complementary anti-fringes whose sum is strictly flat.
-                            </div>
-                          </div>
-                        </>
-                      )}
-                    </div>
-
-                    <div className="spotlight-cta-row">
-                      <Link
-                        href={featuredExperiment.route}
-                        className="btn-spotlight-launch"
-                      >
-                        <span>Launch {featuredExperiment.title}</span>
-                        <span>→</span>
-                      </Link>
-                      <button
-                        type="button"
-                        onClick={() => setActiveModalExp(featuredExperiment)}
-                        className="btn-spotlight-specs"
-                      >
-                        View Physics Equations &amp; Math
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Refined Dynamic SVG Apparatus Optical Bench Drawing */}
-                  <div className="spotlight-preview-panel">
-                    <ApparatusPreview
-                      experiment={featuredExperiment}
-                      onOpenSpecs={() => setActiveModalExp(featuredExperiment)}
-                    />
-                  </div>
+                <div className="spotlight-preview-panel">
+                  <ApparatusPreview
+                    experiment={featuredExperiment}
+                    onOpenSpecs={() => setActiveModalExp(featuredExperiment)}
+                  />
                 </div>
               </div>
             </div>
           </section>
         )}
 
-        {/* =========================================================================
-            3. ALL EXPERIMENTS CATALOG SECTION
-           ========================================================================= */}
+        {/* =====================================================================
+            3. EXPERIMENTS CATALOG
+           ===================================================================== */}
         <section id="experiments" className="catalog-section">
           <div className="section-container">
-            <div className="section-header-block">
-              <span className="section-kicker">EXPERIMENTS DIRECTORY</span>
-              <h2 className="section-heading">Quantum &amp; Modern Physics Catalog</h2>
-              <p className="section-subtext">
-                Browse our interactive simulations. Launch active 3D experiments
-                or explore our extensible architecture for adding new physics modules.
-              </p>
+            <div className="catalog-header-row">
+              <h2>Experiments catalog</h2>
+              <span className="section-note">
+                PLATES 01–{String(EXPERIMENTS.length).padStart(2, "0")} · EXTENSIBLE REGISTRY
+              </span>
             </div>
 
-            {/* Filter Controls Bar */}
             <div className="catalog-filters-bar">
-              <div className="filter-group">
-                <span className="filter-label">CATEGORY:</span>
-                <div className="filter-pills" role="radiogroup" aria-label="Filter by physics category">
-                  {categories.map((cat) => (
-                    <button
-                      key={cat}
-                      type="button"
-                      onClick={() => setSelectedCategory(cat)}
-                      className={`filter-pill ${selectedCategory === cat ? "active" : ""}`}
-                    >
-                      {cat}
-                    </button>
-                  ))}
-                </div>
+              <span className="filter-label">Category</span>
+              <div className="filter-pills" role="radiogroup" aria-label="Filter by physics category">
+                {categories.map((cat) => (
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={() => setSelectedCategory(cat)}
+                    className={`filter-pill ${selectedCategory === cat ? "active" : ""}`}
+                  >
+                    {cat}
+                  </button>
+                ))}
               </div>
             </div>
 
-            {/* Experiments Cards Grid */}
             <div className="experiments-grid">
-              {filteredExperiments.map((exp) => (
+              {filteredExperiments.map((exp, i) => (
                 <ExperimentCard
                   key={exp.id}
                   experiment={exp}
+                  plateNo={String(i + 1).padStart(2, "0")}
                   onSelect={(e) => setActiveModalExp(e)}
                 />
               ))}
 
-              {/* Modular Placeholder for Future Experiments */}
+              {/* Future experiments register */}
               <article className="exp-card card-upcoming">
                 <div className="card-top-row">
-                  <div className="card-category-cluster">
-                    <span className="card-icon">✨</span>
-                    <span className="card-category-label">FUTURE ADDITION</span>
-                  </div>
+                  <span className="card-plate-no">
+                    PLATE {String(EXPERIMENTS.length + 1).padStart(2, "0")}
+                  </span>
                   <div className="card-status-cluster">
-                    <span className="status-pill pill-upcoming">
-                      <span className="status-dot" />
-                      MODULAR ARCHITECTURE
-                    </span>
+                    <span className="status-pill pill-upcoming">ROADMAP</span>
                   </div>
                 </div>
 
-                <div className="card-headline">
-                  <h3 className="card-title">More Experiments Planned</h3>
-                  <p className="card-subtitle">Ready for Future Modules</p>
-                </div>
+                <h3 className="card-title">More benches planned</h3>
+                <p className="card-subtitle">OPEN REGISTRY ARCHITECTURE</p>
 
                 <p className="card-summary">
-                  QuantaLab is architected from the ground up to support multiple physics simulations.
-                  When you are ready to build the next experiment, simply register its configuration
-                  in the registry and create its 3D route.
+                  QuantaLab is built as a registry of independent benches. New
+                  experiments register their metadata and physics, and appear here
+                  with a route of their own.
                 </p>
 
                 <div className="card-formula-preview">
-                  <span className="formula-tag">EXTENSIBLE PLATFORM</span>
+                  <span className="formula-tag">Registry</span>
                   <code className="formula-inline">lib/experiments.ts → app/experiments/[slug]</code>
                 </div>
 
                 <div className="card-actions-row">
-                  <a href="#docs" className="btn-card-launch upcoming-btn">
-                    <span>How to Add Experiments</span>
-                    <span>📖</span>
+                  <a href="#docs" className="btn-card-launch" style={{ "--lam": "transparent" } as React.CSSProperties}>
+                    <span>Add an experiment</span>
                   </a>
                 </div>
               </article>
@@ -381,146 +375,125 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* =========================================================================
-            4. PLATFORM SCIENTIFIC ENGINE & PILLARS
-           ========================================================================= */}
-        <section id="about" className="platform-pillars-section">
+        {/* =====================================================================
+            4. THE LEDGER — scientific method of the platform
+           ===================================================================== */}
+        <section id="about" className="pillars-section">
           <div className="section-container">
-            <div className="section-header-block">
-              <span className="section-kicker">SCIENTIFIC ACCURACY</span>
-              <h2 className="section-heading">How QuantaLab Simulations Work</h2>
-              <p className="section-subtext">
-                Every simulation is grounded in rigorous mathematical physics, combining
-                first-principles wave mechanics with real-time browser rendering.
-              </p>
+            <div className="ledger-header">
+              <h2>How the simulations work</h2>
+              <span className="ledger-count">AS READ ON THE BENCH</span>
             </div>
 
-            <div className="pillars-grid">
-              <div className="pillar-card">
-                <div className="pillar-icon-box">📐</div>
-                <h3 className="pillar-title">Analytical Physics Engine</h3>
+            <div className="pillars-ledger">
+              <div className="pillar-row">
+                <span className="pillar-ref">§ 1</span>
+                <h3 className="pillar-title">Analytical physics engine</h3>
                 <p className="pillar-desc">
-                  Simulations compute the closed-form physical wave intensity functions,
-                  diffraction envelopes (sinc²), and interference fringes (cos²) directly from
-                  calibrated wavelengths, aperture dimensions, and distances.
+                  Intensities are computed in closed form — diffraction envelopes
+                  (sinc²) and interference factors (cos²) evaluated directly from the
+                  calibrated wavelength, aperture dimensions, and propagation distance.
+                  No approximations enter through rendering.
                 </p>
               </div>
 
-              <div className="pillar-card">
-                <div className="pillar-icon-box">🎲</div>
-                <h3 className="pillar-title">Monte Carlo Stochastic Sampling</h3>
+              <div className="pillar-row">
+                <span className="pillar-ref">§ 2</span>
+                <h3 className="pillar-title">Monte Carlo stochastic sampling</h3>
                 <p className="pillar-desc">
-                  Individual photons are sampled stochastically using inverse-CDF
-                  Monte Carlo sampling based on the Born probability density |ψ(x)|², faithfully
-                  capturing quantum indeterminacy.
+                  Individual photons are sampled by rejection against the Born
+                  probability density |ψ(x)|², so detections land where the physics
+                  says they must, one event at a time.
                 </p>
               </div>
 
-              <div className="pillar-card">
-                <div className="pillar-icon-box">🎮</div>
-                <h3 className="pillar-title">Hardware-Accelerated 3D</h3>
+              <div className="pillar-row">
+                <span className="pillar-ref">§ 3</span>
+                <h3 className="pillar-title">Hardware-accelerated 3D</h3>
                 <p className="pillar-desc">
-                  Built on Three.js and WebGL shaders with orbit cameras, instanced mesh phosphor
-                  screen rendering, dynamic optical bench mounts, and real-time slow-motion wavepacket
-                  visualizers.
+                  Benches render in real time on Three.js and WebGL — orbit cameras,
+                  instanced phosphor-screen meshes, optical carriers and thumbscrews
+                  modeled as actual hardware.
                 </p>
               </div>
 
-              <div className="pillar-card">
-                <div className="pillar-icon-box">🔊</div>
-                <h3 className="pillar-title">Web Audio Sonification</h3>
+              <div className="pillar-row">
+                <span className="pillar-ref">§ 4</span>
+                <h3 className="pillar-title">Sonic detection</h3>
                 <p className="pillar-desc">
-                  Quantum events trigger dynamic synthesizer chimes via the browser Web Audio API,
-                  modulating pitch by photon energy (E = hν) so you can hear quantum detections.
+                  Detections are audible: a Web Audio synthesizer marks each photon
+                  arrival, pitched by photon energy E = hν, so the histogram grows a
+                  soundtrack.
                 </p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* =========================================================================
-            5. ARCHITECTURE & EXTENSIBILITY SECTION
-           ========================================================================= */}
-        <section id="docs" className="platform-extensibility-section">
+        {/* =====================================================================
+            5. EXTENSIBILITY
+           ===================================================================== */}
+        <section id="docs" className="extensibility-section">
           <div className="section-container">
-            <div className="extensibility-card">
-              <div className="extensibility-header">
-                <span className="card-kicker">EXTENSIBLE PLATFORM ARCHITECTURE</span>
-                <h2 className="extensibility-title">Designed for Expansion &amp; Public Contribution</h2>
-                <p className="extensibility-desc">
-                  QuantaLab is intentionally designed with a modular architecture so new experiments
-                  can be introduced cleanly whenever you are ready.
+            <div className="extensibility-header">
+              <h2>Built for new benches</h2>
+              <p>
+                The platform is deliberately modular: a new experiment is metadata, a
+                route, and a physics solver. The catalog above is the registry read out.
+              </p>
+            </div>
+
+            <div className="steps-row">
+              <div className="step-card">
+                <div className="step-number">01 — REGISTER</div>
+                <h4 className="step-title">Register metadata</h4>
+                <p className="step-desc">
+                  Title, category, key formulas, difficulty, and route — declared in{" "}
+                  <code className="inline-code">lib/experiments.ts</code>.
                 </p>
               </div>
 
-              <div className="steps-row">
-                <div className="step-card">
-                  <div className="step-number">01</div>
-                  <h4 className="step-title">Register Metadata</h4>
-                  <p className="step-desc">
-                    Define the experiment title, category, key formulas, difficulty, and route in{" "}
-                    <code className="inline-code">lib/experiments.ts</code>.
-                  </p>
-                </div>
-
-                <div className="step-card">
-                  <div className="step-number">02</div>
-                  <h4 className="step-title">Build Simulation Route</h4>
-                  <p className="step-desc">
-                    Create your 3D or 2D simulation apparatus component inside{" "}
-                    <code className="inline-code">app/experiments/[slug]/page.tsx</code> using Three.js.
-                  </p>
-                </div>
-
-                <div className="step-card">
-                  <div className="step-number">03</div>
-                  <h4 className="step-title">Connect Physics Model</h4>
-                  <p className="step-desc">
-                    Implement the mathematical solver function for state evolution or
-                    probability density, and hook up live telemetry.
-                  </p>
-                </div>
+              <div className="step-card">
+                <div className="step-number">02 — BUILD</div>
+                <h4 className="step-title">Build the apparatus route</h4>
+                <p className="step-desc">
+                  Create the 3D or 2D bench component under{" "}
+                  <code className="inline-code">app/experiments/[slug]</code> with Three.js.
+                </p>
               </div>
 
-              <div className="extensibility-cta-box">
-                <div className="cta-text">
-                  <strong>Ready to add an experiment or learn more?</strong>
-                  <span>Check out our step-by-step developer guide in the project repository.</span>
-                </div>
-                <a
-                  href="https://github.com/eyadaldaoud/QuantaLab/blob/master/docs/ADDING_AN_EXPERIMENT.md"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-launch-exp"
-                  title="View Developer Guide on GitHub"
-                >
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    width="18"
-                    height="18"
-                    aria-hidden="true"
-                    style={{ flexShrink: 0 }}
-                  >
-                    <path
-                      fillRule="evenodd"
-                      clipRule="evenodd"
-                      d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
-                    />
-                  </svg>
-                  <span>View Guide on GitHub</span>
-                  <span>→</span>
-                </a>
+              <div className="step-card">
+                <div className="step-number">03 — SOLVE</div>
+                <h4 className="step-title">Connect the physics model</h4>
+                <p className="step-desc">
+                  Implement the solver for state evolution or probability density and
+                  wire up the live telemetry.
+                </p>
               </div>
+            </div>
+
+            <div className="extensibility-cta-box">
+              <div className="cta-text">
+                <strong>Ready to add an experiment?</strong>
+                <span>The step-by-step developer guide lives in the repository.</span>
+              </div>
+              <a
+                href="https://github.com/eyadaldaoud/QuantaLab/blob/master/docs/ADDING_AN_EXPERIMENT.md"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-launch-exp"
+                title="View developer guide on GitHub"
+              >
+                <span>Developer guide</span>
+                <span>→</span>
+              </a>
             </div>
           </div>
         </section>
       </main>
 
-      {/* Global Platform Footer */}
       <Footer />
 
-      {/* Experiment Details Modal */}
       <ExperimentModal
         experiment={activeModalExp}
         onClose={() => setActiveModalExp(null)}

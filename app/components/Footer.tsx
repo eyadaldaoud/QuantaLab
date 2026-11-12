@@ -10,8 +10,9 @@ export default function Footer() {
           {/* Col 1: Platform Brand & Mission */}
           <div className="footer-col brand-col">
             <div className="footer-brand">
-              <span className="footer-brand-icon">⚛</span>
-              <span className="footer-brand-title">QUANTALAB</span>
+              <span className="footer-brand-title">
+                QUANTA<span className="footer-brand-title-accent">LAB</span>
+              </span>
             </div>
             <p className="footer-description">
               An open-source, interactive 3D laboratory platform designed for students, researchers,
@@ -34,12 +35,12 @@ export default function Footer() {
               {EXPERIMENTS.map((exp) => (
                 <li key={exp.id}>
                   {exp.status === "active" ? (
-                    <Link href={exp.route} className="footer-link active-link">
-                      <span className="bullet-active">●</span> {exp.title}
+                    <Link href={exp.route} className="footer-link">
+                      <span className="footer-bullet on">▍</span> {exp.title}
                     </Link>
                   ) : (
-                    <span className="footer-link planned-link">
-                      <span className="bullet-planned">○</span> {exp.title}
+                    <span className="footer-link">
+                      <span className="footer-bullet off">▍</span> {exp.title}
                       <span className="footer-tag-soon">Soon</span>
                     </span>
                   )}

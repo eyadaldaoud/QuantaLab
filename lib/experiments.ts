@@ -26,6 +26,10 @@ export interface ExperimentMetadata {
   difficulty: ExperimentDifficulty;
   route: string;
   icon: string;
+  /** Primary source wavelength in nm, when the bench is an optical one. */
+  wavelengthNm?: number;
+  /** Short label for the register line when there is no single wavelength. */
+  benchNote?: string;
   accentColor: string;
   accentGlow: string;
   summary: string;
@@ -52,8 +56,9 @@ export const EXPERIMENTS: ExperimentMetadata[] = [
     difficulty: "Beginner",
     route: "/experiments/double-slit",
     icon: "🌊",
-    accentColor: "#38e1ff",
-    accentGlow: "rgba(56, 225, 255, 0.25)",
+    wavelengthNm: 632.8,
+    accentColor: "#b3301f",
+    accentGlow: "rgba(179, 48, 31, 0.14)",
     summary:
       "Witness photons travel as wave superpositions through dual apertures to produce interference fringes, and watch the wave collapse into classical particle bands when an observer detector is engaged.",
     historicalContext: {
@@ -113,8 +118,9 @@ export const EXPERIMENTS: ExperimentMetadata[] = [
     difficulty: "Intermediate",
     route: "/experiments/quantum-eraser",
     icon: "🪞",
-    accentColor: "#a855f7",
-    accentGlow: "rgba(168, 85, 247, 0.25)",
+    wavelengthNm: 351,
+    accentColor: "#5f3dc4",
+    accentGlow: "rgba(95, 61, 196, 0.14)",
     summary:
       "Tag slit paths with orthogonal linear polarizations to destroy interference, then sort photons through an analyzer at angle θ to reveal complementary fringe patterns in sorted subsets.",
     historicalContext: {
@@ -171,8 +177,9 @@ export const EXPERIMENTS: ExperimentMetadata[] = [
     difficulty: "Intermediate",
     route: "/experiments/inscribed-square",
     icon: "⏹️",
-    accentColor: "#f59e0b",
-    accentGlow: "rgba(245, 158, 11, 0.25)",
+    benchNote: "Topology bench",
+    accentColor: "#2e7d46",
+    accentGlow: "rgba(46, 125, 70, 0.14)",
     summary:
       "Draw any closed loop or explore topological presets. Watch the real-time geometric solver identify four points on your loop that form a perfect inscribed square, and explore the 3D Möbius configuration space proving the theorem for smooth curves.",
     historicalContext: {

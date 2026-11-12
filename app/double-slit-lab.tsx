@@ -3,6 +3,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import * as THREE from "three";
+import "./labs.css";
 import { quantumAudio } from "./quantum-audio";
 import {
   computeFringeSpacing,
@@ -95,7 +96,7 @@ function createGlowSpriteTexture(colorHex: string, size = 128): THREE.CanvasText
 }
 
 
-function createLabelSprite(text: string, subtitle?: string, accentColor = "#38e1ff"): THREE.Sprite {
+function createLabelSprite(text: string, subtitle?: string, accentColor = "#e25a45"): THREE.Sprite {
   const canvas = document.createElement("canvas");
   canvas.width = 512;
   canvas.height = 160;
@@ -234,8 +235,8 @@ function DoubleSlitScene({
 
     // --- Scene Setup ---
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color("#05080e");
-    scene.fog = new THREE.FogExp2(0x05080e, 0.02);
+    scene.background = new THREE.Color("#0f1113");
+    scene.fog = new THREE.FogExp2(0x0f1113, 0.02);
 
     const camera = new THREE.PerspectiveCamera(40, host.clientWidth / host.clientHeight, 0.1, 100);
     camera.position.copy(targetCamPos.current);
@@ -598,7 +599,7 @@ function DoubleSlitScene({
     const pctx = phosphorCanvas.getContext("2d")!;
 
     function initPhosphorScreen() {
-      pctx.fillStyle = "#070e17";
+      pctx.fillStyle = "#131518";
       pctx.fillRect(0, 0, 1024, 768);
 
       pctx.strokeStyle = "rgba(40, 75, 105, 0.35)";
@@ -660,38 +661,38 @@ function DoubleSlitScene({
     scene.add(labelsGroup);
 
     // Emitter label
-    const labelEmitter = createLabelSprite("COHERENT LASER", "λ = 390 - 700nm Source", "#38e1ff");
+    const labelEmitter = createLabelSprite("COHERENT LASER", "λ = 390 - 700nm Source", "#e25a45");
     labelEmitter.position.set(-5.8, 1.45, 0);
     labelsGroup.add(labelEmitter);
 
     // Optical rail bench label
-    const labelRail = createLabelSprite("OPTICAL RAIL BENCH", "Heavy Vibration-Isolated Track", "#75bdf4");
+    const labelRail = createLabelSprite("OPTICAL RAIL BENCH", "Heavy Vibration-Isolated Track", "#a3a49b");
     labelRail.position.set(-3.2, -1.2, 1.3);
     labelsGroup.add(labelRail);
 
     // Dual-Slit Barrier label
-    const labelSlits = createLabelSprite("DUAL-SLIT APERTURE", "d = 1.10m · a = 0.36m", "#38e1ff");
+    const labelSlits = createLabelSprite("DUAL-SLIT APERTURE", "d = 1.10m · a = 0.36m", "#e25a45");
     labelSlits.position.set(-0.5, 1.65, 0);
     labelsGroup.add(labelSlits);
 
     // Slit A & Slit B individual markers
-    const labelSlitA = createLabelSprite("SLIT A", "Aperture 1 (Z = -0.55m)", "#00d4ff");
+    const labelSlitA = createLabelSprite("SLIT A", "Aperture 1 (Z = -0.55m)", "#e25a45");
     labelSlitA.scale.set(1.4, 0.45, 1);
     labelSlitA.position.set(-0.5, 0.95, -0.95);
     labelsGroup.add(labelSlitA);
 
-    const labelSlitB = createLabelSprite("SLIT B", "Aperture 2 (Z = +0.55m)", "#00d4ff");
+    const labelSlitB = createLabelSprite("SLIT B", "Aperture 2 (Z = +0.55m)", "#e25a45");
     labelSlitB.scale.set(1.4, 0.45, 1);
     labelSlitB.position.set(-0.5, 0.95, 0.95);
     labelsGroup.add(labelSlitB);
 
     // Which-Path Observer Detector label
-    const labelObserver = createLabelSprite("WHICH-PATH DETECTORS", "Decoherence Collapse Monitors", "#ffaa3b");
+    const labelObserver = createLabelSprite("WHICH-PATH DETECTORS", "Decoherence Collapse Monitors", "#c89a4e");
     labelObserver.position.set(0.1, 1.55, 0);
     labelsGroup.add(labelObserver);
 
     // Phosphor Screen Detector label
-    const labelDetector = createLabelSprite("DETECTOR SCREEN", "High-Resolution Phosphor Plane", "#56e39f");
+    const labelDetector = createLabelSprite("DETECTOR SCREEN", "High-Resolution Phosphor Plane", "#4fae6e");
     labelDetector.position.set(5.2, 2.35, 0);
     labelsGroup.add(labelDetector);
 
@@ -1258,12 +1259,12 @@ function LiveDistributionPlot({
             </linearGradient>
           </defs>
 
-          <line x1="0" y1="120" x2="440" y2="120" stroke="#1d2e3e" strokeWidth="1" strokeDasharray="3 3" />
-          <line x1="220" y1="10" x2="220" y2="120" stroke="#1d2e3e" strokeWidth="1" strokeDasharray="2 4" />
+          <line x1="0" y1="120" x2="440" y2="120" stroke="#26292d" strokeWidth="1" strokeDasharray="3 3" />
+          <line x1="220" y1="10" x2="220" y2="120" stroke="#26292d" strokeWidth="1" strokeDasharray="2 4" />
 
           {/* Slit center projection markers at z = -0.55m and z = +0.55m */}
-          <line x1="156" y1="18" x2="156" y2="120" stroke="#ffaa33" strokeWidth="1" strokeDasharray="1 3" opacity="0.4" />
-          <line x1="284" y1="18" x2="284" y2="120" stroke="#ffaa33" strokeWidth="1" strokeDasharray="1 3" opacity="0.4" />
+          <line x1="156" y1="18" x2="156" y2="120" stroke="#c89a4e" strokeWidth="1" strokeDasharray="1 3" opacity="0.4" />
+          <line x1="284" y1="18" x2="284" y2="120" stroke="#c89a4e" strokeWidth="1" strokeDasharray="1 3" opacity="0.4" />
 
           {histogram.map((val, idx) => {
             const barW = 440 / binsCount;
@@ -1479,7 +1480,7 @@ export default function DoubleSlitLab() {
             className="topbar-btn theory-btn"
             title="Read physical explanation of wave-particle duality"
           >
-            <span>📖 THEORY &amp; MATH</span>
+            <span>THEORY &amp; MATH</span>
           </button>
         </div>
       </header>
@@ -1582,7 +1583,7 @@ export default function DoubleSlitLab() {
                   title={soundEnabled ? "Audio chimes active (Click to Mute)" : "Muted (Click to enable audio chimes)"}
                   aria-pressed={soundEnabled}
                 >
-                  <span>{soundEnabled ? "🔊 AUDIO" : "🔇 MUTED"}</span>
+                  <span>{soundEnabled ? "AUDIO ON" : "MUTED"}</span>
                 </button>
 
                 <button
@@ -1597,7 +1598,7 @@ export default function DoubleSlitLab() {
                   className={`hud-tool-btn ${showLabels ? "tool-active" : ""}`}
                   title="Toggle 3D object identity callouts & component labels"
                 >
-                  <span>🏷️ {showLabels ? "LABELS ON" : "LABELS"}</span>
+                  <span>{showLabels ? "LABELS ON" : "LABELS"}</span>
                 </button>
 
 
@@ -1779,7 +1780,7 @@ export default function DoubleSlitLab() {
                 className="swatch-indicator"
                 style={{
                   backgroundColor: currentColor.hex,
-                  boxShadow: `0 0 16px ${currentColor.hex}`,
+                  boxShadow: "inset 0 0 0 1px rgba(16, 18, 20, 0.25)",
                 }}
               />
               <input
@@ -1806,7 +1807,7 @@ export default function DoubleSlitLab() {
               <div className="spectral-pills">
                 {[
                   { nm: 405, label: "405nm Violet", hex: "#9b51e0", note: "Tighter Fringes" },
-                  { nm: 488, label: "488nm Cyan", hex: "#00d4ff", note: "Argon Line" },
+                  { nm: 488, label: "488nm Cyan", hex: "#00a8d8", note: "Argon Line" },
                   { nm: 532, label: "532nm Green", hex: "#00ff87", note: "Reference DPSS" },
                   { nm: 633, label: "633nm He-Ne Red", hex: "#ff3b30", note: "Wider Fringes" },
                 ].map((spec) => (
@@ -1911,7 +1912,7 @@ export default function DoubleSlitLab() {
                 className="companion-btn companion-theory-btn"
                 title="Read mathematical and physical explanation"
               >
-                <span>📖 Physics &amp; Mathematics Guide</span>
+                <span>Physics &amp; Mathematics Guide</span>
               </button>
             </div>
           </div>
