@@ -938,8 +938,14 @@
 
 .plot-canvas-large {
   position: relative;
-  background: #0f1113;
-  border: 1px solid var(--border-dim);
+  background: var(--stage-bg);
+  /* Dark data plate on the paper bench: stage-scoped tokens so the
+     hairline and axis labels read on the dark surface */
+  --border-dim: var(--stage-rule-soft);
+  --border-light: var(--stage-rule);
+  --ink-muted: var(--stage-ink-3);
+  --ink-secondary: var(--stage-ink-2);
+  border: 1px solid var(--stage-rule-soft);
   border-radius: 4px;
   padding: 0.85rem 0.75rem 1.8rem 0.75rem;
   height: 155px;
@@ -1002,7 +1008,7 @@
 }
 
 .diagnostic-tile {
-  background: rgba(16, 18, 20, 0.75);
+  background: var(--lab-bg);
   border: 1px solid var(--border-dim);
   border-radius: 4px;
   padding: 0.75rem 0.95rem;
@@ -2417,58 +2423,6 @@
   transition: opacity 0.3s ease, filter 0.3s ease;
 }
 
-.theta-dial-card {
-  transition: all 0.25s ease;
-}
-
-.dial-visual-row {
-  display: flex;
-  align-items: center;
-  gap: 1.25rem;
-  margin-top: 0.65rem;
-  padding: 0.65rem 0.85rem;
-  background: rgba(15, 17, 19, 0.6);
-  border-radius: 4px;
-  border: 1px solid var(--border-dim);
-}
-
-.dial-canvas-wrap {
-  width: 80px;
-  height: 80px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.dial-stat-stack {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  flex: 1;
-}
-
-.dial-stat-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-}
-
-.dial-stat-item .kicker {
-  color: var(--ink-muted);
-}
-
-.dial-stat-item .val {
-  font-weight: 700;
-  color: var(--lab-ink);
-}
-
-.dial-stat-item .val-cyan {
-  color: #e25a45;
-}
-
 .walkthrough-banner {
   background: var(--lab-surface);
   border: 1px solid var(--border-light);
@@ -2532,7 +2486,7 @@
   align-items: center;
   gap: 0.4rem;
   padding: 0.45rem 0.85rem;
-  background: rgba(15, 17, 19, 0.6);
+  background: var(--lab-bg);
   border: 1px solid var(--border-dim);
   border-radius: 4px;
   color: var(--ink-muted);
@@ -2982,8 +2936,7 @@
   min-width: 0;
   flex: 1;
   justify-content: flex-end;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+  flex-wrap: wrap;
   scrollbar-width: none;
 }
 

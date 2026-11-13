@@ -2076,6 +2076,9 @@ a { color: inherit; }
   .mobile-menu-toggle { display: flex; }
   .nav-search-trigger { display: none; }
   .nav-github-btn { display: none; }
+  /* The mobile drawer carries the experiment links; the header launch dropdown
+     is redundant and overflows at phone widths */
+  .nav-launch-wrapper { display: none; }
   .btn-launch-header { padding: 9px 12px; }
   .platform-nav-actions { gap: 12px; }
   .brand-tagline { display: none; }
