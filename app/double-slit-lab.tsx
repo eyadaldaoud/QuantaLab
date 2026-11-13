@@ -263,7 +263,7 @@ function DoubleSlitScene({
       powerPreference: "high-performance",
     });
     renderer.setSize(host.clientWidth, host.clientHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, window.innerWidth < 768 ? 1.5 : 2));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.35;
@@ -818,21 +818,52 @@ function DoubleSlitScene({
       waveLines.push(line);
     }
 
-    // Orbit & Pointer Controls
+    // Orbit & Pointer Controls (touch: one-finger orbit, two-finger pinch zoom)
     const spherical = new THREE.Spherical().setFromVector3(camera.position.clone().sub(currentLookAt.current));
     let isDragging = false;
     let prevMouseX = 0;
     let prevMouseY = 0;
+    const activePointers = new Map<number, { x: number; y: number }>();
+    let pinchStartDist = 0;
+    let pinchStartRadius = 0;
+
+    const pinchDistance = () => {
+      const pts = [...activePointers.values()];
+      return Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+    };
 
     const onPointerDown = (e: PointerEvent) => {
-      isDragging = true;
-      prevMouseX = e.clientX;
-      prevMouseY = e.clientY;
-      renderer.domElement.style.cursor = "grabbing";
+      activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (activePointers.size === 2) {
+        isDragging = false;
+        pinchStartDist = pinchDistance();
+        pinchStartRadius = spherical.radius;
+      } else if (activePointers.size === 1) {
+        isDragging = true;
+        prevMouseX = e.clientX;
+        prevMouseY = e.clientY;
+        renderer.domElement.style.cursor = "grabbing";
+      }
       renderer.domElement.setPointerCapture(e.pointerId);
     };
 
     const onPointerMove = (e: PointerEvent) => {
+      if (activePointers.has(e.pointerId)) {
+        activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      }
+      if (activePointers.size >= 2) {
+        if (pinchStartDist > 0) {
+          const dist = pinchDistance();
+          spherical.radius = THREE.MathUtils.clamp(
+            pinchStartRadius * (pinchStartDist / Math.max(dist, 1)),
+            1.8,
+            18.0
+          );
+          camera.position.setFromSpherical(spherical).add(currentLookAt.current);
+          camera.lookAt(currentLookAt.current);
+        }
+        return;
+      }
       if (!isDragging) return;
       const dx = e.clientX - prevMouseX;
       const dy = e.clientY - prevMouseY;
@@ -846,9 +877,18 @@ function DoubleSlitScene({
       camera.lookAt(currentLookAt.current);
     };
 
-    const onPointerUp = () => {
-      isDragging = false;
-      renderer.domElement.style.cursor = "grab";
+    const onPointerUp = (e: PointerEvent) => {
+      activePointers.delete(e.pointerId);
+      if (activePointers.size < 2) pinchStartDist = 0;
+      if (activePointers.size === 0) {
+        isDragging = false;
+        renderer.domElement.style.cursor = "grab";
+      } else if (activePointers.size === 1) {
+        const remaining = [...activePointers.values()][0];
+        prevMouseX = remaining.x;
+        prevMouseY = remaining.y;
+        isDragging = true;
+      }
     };
 
     const onWheel = (e: WheelEvent) => {
@@ -868,7 +908,10 @@ function DoubleSlitScene({
       if (!host) return;
       const width = host.clientWidth;
       const height = host.clientHeight;
-      camera.aspect = width / height;
+      const aspect = width / height;
+      camera.aspect = aspect;
+      // Portrait viewports keep the bench fully in frame by widening the FOV.
+      camera.fov = aspect < 1 ? Math.min(40 / Math.max(aspect, 0.45), 72) : 40;
       camera.updateProjectionMatrix();
       renderer.setSize(width, height, false);
     };
@@ -1773,6 +1816,73 @@ export default function DoubleSlitLab() {
                 {speed.label}
               </button>
             ))}
+          </div>
+        </div>
+        <div className="mobile-viewport-row">
+          <span className="mobile-speed-label">CAMERA</span>
+          <div className="mobile-pill-scroll">
+            {CAMERA_PRESETS.map((preset) => (
+              <button
+                key={preset.id}
+                type="button"
+                onClick={() => selectPreset(preset.id)}
+                className={`hud-cam-btn ${activePreset === preset.id ? "active" : ""}`}
+                title={preset.description}
+              >
+                {preset.name}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="mobile-viewport-row">
+          <span className="mobile-speed-label">VIEW</span>
+          <div className="mobile-pill-scroll">
+            <button
+              type="button"
+              onClick={toggleSound}
+              className={`hud-tool-btn ${soundEnabled ? "tool-active" : ""}`}
+              title={soundEnabled ? "Audio chimes active (Click to Mute)" : "Muted (Click to enable audio chimes)"}
+              aria-pressed={soundEnabled}
+            >
+              {soundEnabled ? "AUDIO ON" : "MUTED"}
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowWaveOverlay((v) => !v)}
+              className={`hud-tool-btn ${showWaveOverlay ? "tool-active" : ""}`}
+              title="Overlay continuous theoretical wave fringes on phosphor detector screen"
+              aria-pressed={showWaveOverlay}
+            >
+              {showWaveOverlay ? "WAVE ON" : "WAVE"}
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowLabels((v) => !v)}
+              className={`hud-tool-btn ${showLabels ? "tool-active" : ""}`}
+              title="Toggle 3D object identity callouts & component labels"
+              aria-pressed={showLabels}
+            >
+              {showLabels ? "LABELS ON" : "LABELS"}
+            </button>
+            <button
+              type="button"
+              onClick={handleReset}
+              className="hud-tool-btn clear-btn"
+              title="Clear accumulated hits on detector screen"
+            >
+              <IconReset className="icon-svg" />
+              <span>CLEAR</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsMaximized((m) => !m)}
+              className={`hud-tool-btn ${isMaximized ? "tool-active" : ""}`}
+              title={isMaximized ? "Exit Fullscreen Theater View" : "Expand to Fullscreen Theater View"}
+              aria-pressed={isMaximized}
+            >
+              {isMaximized ? <IconCollapse className="icon-svg" /> : <IconExpand className="icon-svg" />}
+              <span>{isMaximized ? "EXIT" : "EXPAND"}</span>
+            </button>
           </div>
         </div>
       </div>

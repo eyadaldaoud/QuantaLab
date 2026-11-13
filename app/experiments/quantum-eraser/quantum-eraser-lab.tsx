@@ -485,6 +485,112 @@ export default function QuantumEraserLab() {
         </div>
       </section>
 
+      {/* On mobile, keep playback and viewport controls in the page flow below
+          the scene so they never cover the 3D experiment. */}
+      <div className="mobile-playback-controls">
+        <div className="mobile-playback-actions">
+          <button
+            type="button"
+            onClick={() => setIsRunning((r) => !r)}
+            className={`hud-stream-btn ${isRunning ? "stream-pause" : "stream-play"}`}
+            title={isRunning ? "Pause continuous photon stream" : "Resume photon stream"}
+          >
+            {isRunning ? <IconPause className="icon-svg" /> : <IconPlay className="icon-svg" />}
+            <span>{isRunning ? "PAUSE STREAM" : "RESUME STREAM"}</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setSingleShotTrigger((s) => s + 1)}
+            className="hud-single-btn"
+            title="Fire exactly 1 photon in slow motion"
+          >
+            <IconPhoton className="icon-svg" />
+            <span>FIRE 1 PHOTON</span>
+          </button>
+        </div>
+        <div className="mobile-speed-control">
+          <span className="mobile-speed-label">SPEED</span>
+          <div className="hud-speed-pills" role="radiogroup" aria-label="Simulation Speed">
+            {[
+              { value: 0.1, label: "0.1x" },
+              { value: 0.25, label: "0.25x" },
+              { value: 0.5, label: "0.5x" },
+              { value: 1.0, label: "1x" },
+              { value: 2.0, label: "2x" },
+              { value: 4.0, label: "4x" },
+            ].map((speed) => (
+              <button
+                key={speed.value}
+                type="button"
+                onClick={() => setSpeedMultiplier(speed.value)}
+                className={`hud-speed-btn ${speedMultiplier === speed.value ? "active" : ""}`}
+                aria-pressed={speedMultiplier === speed.value}
+              >
+                {speed.label}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="mobile-viewport-row">
+          <span className="mobile-speed-label">CAMERA</span>
+          <div className="mobile-pill-scroll">
+            {CAMERA_PRESETS.map((preset) => (
+              <button
+                key={preset.id}
+                type="button"
+                onClick={() => setActivePreset(preset.id)}
+                className={`hud-cam-btn ${activePreset === preset.id ? "active" : ""}`}
+                title={preset.description}
+              >
+                {preset.name}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="mobile-viewport-row">
+          <span className="mobile-speed-label">VIEW</span>
+          <div className="mobile-pill-scroll">
+            <button
+              type="button"
+              onClick={toggleSound}
+              className={`hud-tool-btn ${soundEnabled ? "tool-active" : ""}`}
+              title={soundEnabled ? "Audio chimes active" : "Audio muted"}
+              aria-pressed={soundEnabled}
+            >
+              {soundEnabled ? "AUDIO ON" : "MUTED"}
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowLabels((v) => !v)}
+              className={`hud-tool-btn ${showLabels ? "tool-active" : ""}`}
+              title="Toggle 3D object identity callouts & component labels"
+              aria-pressed={showLabels}
+            >
+              {showLabels ? "LABELS ON" : "LABELS"}
+            </button>
+            <button
+              type="button"
+              onClick={handleReset}
+              className="hud-tool-btn clear-btn"
+              title="Clear accumulated hits on detector screen"
+            >
+              <IconReset className="icon-svg" />
+              <span>CLEAR</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsMaximized((m) => !m)}
+              className={`hud-tool-btn ${isMaximized ? "tool-active" : ""}`}
+              title={isMaximized ? "Exit theater view" : "Expand to theater view"}
+              aria-pressed={isMaximized}
+            >
+              {isMaximized ? <IconCollapse className="icon-svg" /> : <IconExpand className="icon-svg" />}
+              <span>{isMaximized ? "EXIT" : "EXPAND"}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
       {/* 2-Column Analytical Console & Control Deck */}
       <section className="dashboard-console-grid">
         {/* Left Column: Live Histogram & Analytic Intensity Plot */}
@@ -1020,7 +1126,7 @@ function QuantumEraserScene({
       powerPreference: "high-performance",
     });
     renderer.setSize(host.clientWidth, host.clientHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, window.innerWidth < 768 ? 1.5 : 2));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.35;
@@ -1538,21 +1644,52 @@ function QuantumEraserScene({
       phosphorTexture.needsUpdate = true;
     }
 
-    // Controls: pointer dragging
+    // Controls: pointer dragging (touch: one-finger orbit, two-finger pinch zoom)
     let isDragging = false;
     let prevMouseX = 0;
     let prevMouseY = 0;
+    const activePointers = new Map<number, { x: number; y: number }>();
+    let pinchStartDist = 0;
+    let pinchStartRadius = 0;
     const spherical = new THREE.Spherical().setFromVector3(camera.position.clone().sub(currentLookAt.current));
 
+    const pinchDistance = () => {
+      const pts = [...activePointers.values()];
+      return Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+    };
+
     const onPointerDown = (e: PointerEvent) => {
-      isDragging = true;
-      prevMouseX = e.clientX;
-      prevMouseY = e.clientY;
-      renderer.domElement.style.cursor = "grabbing";
+      activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (activePointers.size === 2) {
+        isDragging = false;
+        pinchStartDist = pinchDistance();
+        pinchStartRadius = spherical.radius;
+      } else if (activePointers.size === 1) {
+        isDragging = true;
+        prevMouseX = e.clientX;
+        prevMouseY = e.clientY;
+        renderer.domElement.style.cursor = "grabbing";
+      }
       renderer.domElement.setPointerCapture(e.pointerId);
     };
 
     const onPointerMove = (e: PointerEvent) => {
+      if (activePointers.has(e.pointerId)) {
+        activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      }
+      if (activePointers.size >= 2) {
+        if (pinchStartDist > 0) {
+          const dist = pinchDistance();
+          spherical.radius = THREE.MathUtils.clamp(
+            pinchStartRadius * (pinchStartDist / Math.max(dist, 1)),
+            2.5,
+            18.0
+          );
+          camera.position.setFromSpherical(spherical).add(currentLookAt.current);
+          camera.lookAt(currentLookAt.current);
+        }
+        return;
+      }
       if (!isDragging) return;
       const dx = e.clientX - prevMouseX;
       const dy = e.clientY - prevMouseY;
@@ -1566,9 +1703,18 @@ function QuantumEraserScene({
       camera.lookAt(currentLookAt.current);
     };
 
-    const onPointerUp = () => {
-      isDragging = false;
-      renderer.domElement.style.cursor = "grab";
+    const onPointerUp = (e: PointerEvent) => {
+      activePointers.delete(e.pointerId);
+      if (activePointers.size < 2) pinchStartDist = 0;
+      if (activePointers.size === 0) {
+        isDragging = false;
+        renderer.domElement.style.cursor = "grab";
+      } else if (activePointers.size === 1) {
+        const remaining = [...activePointers.values()][0];
+        prevMouseX = remaining.x;
+        prevMouseY = remaining.y;
+        isDragging = true;
+      }
     };
 
     const onWheel = (e: WheelEvent) => {
@@ -1581,6 +1727,7 @@ function QuantumEraserScene({
     renderer.domElement.addEventListener("pointerdown", onPointerDown);
     renderer.domElement.addEventListener("pointermove", onPointerMove);
     renderer.domElement.addEventListener("pointerup", onPointerUp);
+    renderer.domElement.addEventListener("pointercancel", onPointerUp);
     renderer.domElement.addEventListener("wheel", onWheel, { passive: false });
 
     // Photon Spawning
@@ -1775,7 +1922,10 @@ function QuantumEraserScene({
     const onResize = () => {
       const w = host.clientWidth;
       const h = host.clientHeight;
-      camera.aspect = w / h;
+      const aspect = w / h;
+      camera.aspect = aspect;
+      // Portrait viewports keep the bench fully in frame by widening the FOV.
+      camera.fov = aspect < 1 ? Math.min(40 / Math.max(aspect, 0.45), 72) : 40;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h, false);
     };

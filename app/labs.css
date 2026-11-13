@@ -15,7 +15,7 @@
   --lab-card-hover: #f6f5f1;
   --lab-rule: var(--qb-rule);         /* default hairline */
   --lab-rule-soft: var(--qb-rule-soft); /* etched hairline */
-  --lab-rule-bright: #8d9196;         /* active hairline */
+  --lab-rule-bright: #8b8c83;         /* active hairline — warm bench gray, never slate */
 
   --lab-ink: var(--qb-ink);       /* body ink, 16.8:1 on --lab-bg */
   --lab-ink-2: var(--qb-ink-2);   /* secondary, 7.2:1 on --lab-surface */
@@ -2958,4 +2958,137 @@
 .square-vertex-row code {
   color: var(--lab-ink-2);
   overflow-wrap: anywhere;
+}
+
+
+/* ==========================================================================
+   Mobile 3D viewport optimization
+   On phones the overlay decks cede the stage: only the primary mode
+   switcher stays overlaid; camera, utility, and playback controls live in
+   paper panels in the page flow below the viewport. The stage re-used HUD
+   classes re-skin to bench paper values so no dark slate chips sit on white.
+   ========================================================================== */
+
+.mobile-viewport-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mobile-pill-scroll {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  min-width: 0;
+  flex: 1;
+  justify-content: flex-end;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.mobile-pill-scroll::-webkit-scrollbar { display: none; }
+
+@media (max-width: 768px) {
+  /* Narrow stage: taller canvas now that the decks have left the overlay. */
+  .grand-viewport-section {
+    height: clamp(430px, 62vh, 560px);
+  }
+  .hud-mode-pill-group {
+    flex-wrap: wrap;
+  }
+  /* Only the mode switcher remains overlaid on the viewport. */
+  .viewport-top-hud .hud-center-section,
+  .viewport-top-hud .hud-right-section,
+  .viewport-top-hud .hud-section-divider {
+    display: none;
+  }
+  /* The square bench keeps its 2D/3D toggle overlaid and its bottom deck
+     (mobile metric + clear & draw) visible — the stage is its instrument. */
+  .square-studio .viewport-top-hud .hud-right-section {
+    display: flex;
+  }
+  .square-studio .square-deck-telemetry {
+    display: none;
+  }
+  .square-studio .square-mobile-metric {
+    display: flex;
+    flex-direction: column;
+  }
+  .square-studio .viewport-bottom-hud {
+    display: flex;
+  }
+  .square-studio .viewport-bottom-hud .hud-telemetry-cluster {
+    display: none;
+  }
+
+  /* Dark-stage HUD skins re-used inside the paper flow panels re-skin to
+     bench values — dark slate chips on white read as leftovers. */
+  .mobile-playback-controls .hud-stream-btn.stream-pause {
+    background: var(--lab-card);
+    border-color: var(--lab-rule);
+    color: var(--lab-ink);
+  }
+  .mobile-playback-controls .hud-stream-btn.stream-pause:hover {
+    background: var(--lab-card-hover);
+    border-color: var(--lab-rule-bright);
+  }
+  .mobile-playback-controls .hud-stream-btn.stream-play {
+    background: var(--lab-green);
+    border-color: var(--lab-green);
+    color: #fdfcf8;
+  }
+  .mobile-playback-controls .hud-stream-btn.stream-play:hover {
+    background: #26703c;
+  }
+  .mobile-playback-controls .hud-single-btn {
+    background: var(--lab-card);
+    border-color: var(--lab-rule);
+    color: var(--lab-ink);
+  }
+  .mobile-playback-controls .hud-single-btn:hover {
+    background: var(--lab-card-hover);
+    border-color: var(--lab-rule-bright);
+  }
+  .mobile-playback-controls .hud-speed-pills {
+    background: var(--lab-card-hover);
+    border-color: var(--lab-rule-soft);
+  }
+  .mobile-playback-controls .hud-speed-btn {
+    color: var(--lab-ink-2);
+  }
+  .mobile-playback-controls .hud-speed-btn:hover {
+    color: var(--lab-ink);
+  }
+  .mobile-playback-controls .hud-speed-btn.active {
+    background: var(--lab-ink);
+    color: var(--lab-bg);
+  }
+  .mobile-playback-controls .hud-cam-btn,
+  .mobile-playback-controls .hud-tool-btn {
+    background: var(--lab-card);
+    border-color: var(--lab-rule-soft);
+    color: var(--lab-ink-2);
+    min-height: 36px;
+  }
+  .mobile-playback-controls .hud-cam-btn:hover,
+  .mobile-playback-controls .hud-tool-btn:hover {
+    background: var(--lab-card-hover);
+    color: var(--lab-ink);
+    border-color: var(--lab-rule);
+  }
+  .mobile-playback-controls .hud-cam-btn.active,
+  .mobile-playback-controls .hud-tool-btn.tool-active {
+    background: var(--lab-ink);
+    border-color: var(--lab-ink);
+    color: var(--lab-bg);
+  }
+  .mobile-playback-controls .hud-tool-btn.clear-btn {
+    color: var(--lab-brass);
+    border-color: rgba(138, 106, 47, 0.45);
+  }
+  .mobile-playback-controls .hud-tool-btn.clear-btn:hover {
+    background: var(--lab-brass-glow);
+    color: var(--lab-brass);
+  }
 }
