@@ -1815,6 +1815,12 @@
   .viewport-bottom-hud::-webkit-scrollbar {
     display: none;
   }
+  /* Re-anchor on the bottom edge: the shared top:0.4rem above would stretch
+     this bar across the whole stage and swallow canvas drags (square bench) */
+  .viewport-bottom-hud {
+    top: auto;
+    bottom: 0.4rem;
+  }
   .hud-section {
     flex-shrink: 0;
   }
@@ -2635,15 +2641,6 @@
     font-size: 0.65rem;
     padding: 0.28rem 0.55rem;
     flex-shrink: 0;
-  }
-  .dial-visual-row {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-  .dial-stat-item {
-    justify-content: center;
-    gap: 0.75rem;
   }
   .walkthrough-step-tabs {
     overflow-x: auto;
